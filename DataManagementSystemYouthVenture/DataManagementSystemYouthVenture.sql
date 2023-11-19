@@ -1,3 +1,4 @@
+/*Drop Database if required, comment or uncomment line 2*/
 DROP DATABASE IF EXISTS `DataManagementSystemYouthVenture`;
 
 CREATE DATABASE IF NOT EXISTS `DataManagementSystemYouthVenture`;
