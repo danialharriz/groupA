@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
   'Name' VARCHAR(45) NULL,
   `Email` VARCHAR(45) NULL,
   `Password` VARCHAR(255) NULL,
-  'Role' VARCHAR(45) NULL,
+  'Role' VARCHAR(45) NULL, --0 for admin, 1 for student, 2 for lecturer, 3 for partner company staff
   'profilePic' VARCHAR(255) NULL,
   PRIMARY KEY (`UserID`))
 
@@ -30,15 +30,6 @@ CREATE TABLE IF NOT EXISTS 'Course'(
     PRIMARY KEY ('CourseID'),
     FOREIGN KEY ('InstituteID') REFERENCES 'Institute'('InstituteID'))
 
-CREATE TABLE IF NOT EXISTS 'Event'(
-    'EventID' INT NOT NULL AUTO_INCREMENT,
-    'Name' VARCHAR(45) NULL,
-    'Date' DATE NULL,
-    'Time' TIME NULL,
-    'Location' VARCHAR(45) NULL,
-    'Description' VARCHAR(45) NULL,
-    PRIMARY KEY ('EventID'))
-
 CREATE TABLE IF NOT EXISTS 'Student'(   
     'UserID' INT NOT NULL,
     'InstituteID' INT NOT NULL,
@@ -48,6 +39,15 @@ CREATE TABLE IF NOT EXISTS 'Student'(
     FOREIGN KEY ('InstituteID') REFERENCES 'Institute'('InstituteID'),
     FOREIGN KEY ('CourseID') REFERENCES 'Course'('CourseID'),
     PRIMARY KEY ('UserID','InstituteID'))
+
+CREATE TABLE IF NOT EXISTS 'Event'(
+    'EventID' INT NOT NULL AUTO_INCREMENT,
+    'Name' VARCHAR(45) NULL,
+    'Date' DATE NULL,
+    'Time' TIME NULL,
+    'Location' VARCHAR(45) NULL,
+    'Description' VARCHAR(45) NULL,
+    PRIMARY KEY ('EventID'))
 
 CREATE TABLE IF NOT EXISTS 'StudentEvent'(
     'StudentID' INT NOT NULL,
@@ -139,9 +139,28 @@ CREATE TABLE IF NOT EXISTS 'Staff'(
     'StaffID' INT NOT NULL,
     'Type' INT NOT NULL, --0 for full time, 1 for part time
     'Active' INT NOT NULL, --0 for inactive, 1 for active
-    'joinDate' DATE NOT NULL,
-    'leaveDate' DATE NULL,
     'JobTitle' VARCHAR(255) NULL,
     FOREIGN KEY ('UserID') REFERENCES 'Users'('UserID'),
     FOREIGN KEY ('InstituteID') REFERENCES 'Institute'('InstituteID'),
     PRIMARY KEY ('UserID','InstituteID'))
+
+CREATE TABLE IF NOT EXISTS 'JobHistory'(
+    'JobHistoryID' INT NOT NULL AUTO_INCREMENT,
+    'StaffID' INT NOT NULL,
+    'PartnerCompanyID' INT NOT NULL,
+    'JobTitle' VARCHAR(255) NULL,
+    'StartDate' DATE NOT NULL,
+    'EndDate' DATE NULL,
+    FOREIGN KEY ('StaffID') REFERENCES 'Staff'('StaffID'),
+    FOREIGN KEY ('PartnerCompanyID') REFERENCES 'PartnerCompany'('PartnerCompanyID'),
+    PRIMARY KEY ('JobHistoryID'))
+
+CREATE TABLE IF NOT EXISTS 'PartnerCompanyJobHistory'(
+    'JobHistoryID' INT NOT NULL AUTO_INCREMENT,
+    'PartnerCompanyID' INT NOT NULL,
+    'JobTitle' VARCHAR(255) NULL,
+    'StartDate' DATE NOT NULL,
+    'EndDate' DATE NULL,
+    FOREIGN KEY ('PartnerCompanyID') REFERENCES 'PartnerCompany'('PartnerCompanyID'),
+    PRIMARY KEY ('JobHistoryID'))
+
