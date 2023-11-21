@@ -54,9 +54,10 @@ CREATE TABLE IF NOT EXISTS `Course`(
 
 CREATE TABLE IF NOT EXISTS `Student`(   
     `UserID` INT NOT NULL,
+    `MatricNo` VARCHAR(2555) NULL,
     `InstituteID` INT NOT NULL,
     `CourseID` INT NOT NULL,
-    `Resume` VARCHAR(45) NULL,
+    `Resume` TEXT NULL,
     FOREIGN KEY (`UserID`) REFERENCES `Users`(`UserID`),
     FOREIGN KEY (`InstituteID`) REFERENCES `Institute`(`InstituteID`),
     FOREIGN KEY (`CourseID`) REFERENCES `Course`(`CourseID`),
