@@ -8,6 +8,7 @@ USE `DataManagementSystemYouthVenture`;
 CREATE TABLE IF NOT EXISTS `Users` (
   `UserID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NULL,
+  `Nickname` VARCHAR(45) NULL,
   `Email` VARCHAR(45) NULL,
   `Password` VARCHAR(255) NULL,
   `Role` VARCHAR(45) NULL, /* 0 for admin, 1 for student, 2 for lecturer, 3 for partner company staff */
