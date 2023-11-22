@@ -68,19 +68,15 @@ CREATE TABLE IF NOT EXISTS `Event`(
     `EventID` INT NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(45) NULL,
     `Description` TEXT NULL,
-    `DateAndTime` DATETIME NULL,
+    `StartDateAndTime` DATETIME NULL,
+    `EndDateAndTime` DATETIME NULL,
     `Location` VARCHAR(45) NULL,
-    `Organizer` INT NULL,
     `EventType` INT NULL, /* 0 for workshop, 1 for competition, 2 for seminar, 3 for talk */
     `RewardPoints` INT NULL,
-    `InstituteID` INT NULL,
-    `CompanyID` INT NULL,
     `OrganizationID` INT NULL,
     `UserID` INT NULL,
     PRIMARY KEY (`EventID`),
     FOREIGN KEY (`UserID`) REFERENCES `Users`(`UserID`),
-    FOREIGN KEY (`InstituteID`) REFERENCES `Institute`(`InstituteID`),
-    FOREIGN KEY (`CompanyID`) REFERENCES `Company`(`CompanyID`),
     FOREIGN KEY (`OrganizationID`) REFERENCES `Organization`(`OrganizationID`)
 );
 
