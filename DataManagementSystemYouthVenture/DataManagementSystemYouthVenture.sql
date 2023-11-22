@@ -32,6 +32,13 @@ CREATE TABLE IF NOT EXISTS `Organization`(
 CREATE TABLE IF NOT EXISTS `Company`(
     `CompanyID` INT NOT NULL AUTO_INCREMENT,
     `OrganizationID` INT NOT NULL,
+    `CompanyName` VARCHAR(45) NULL,
+    `CompanyAddress` VARCHAR(45) NULL,
+    `CompanyCity` VARCHAR(45) NULL,
+    `CompanyState` VARCHAR(45) NULL,
+    `CompanyWebsite` VARCHAR(45) NULL,
+    `CompanyContactEmail` VARCHAR(45) NULL,
+    `CompanyContactPhone` INT NULL,
     PRIMARY KEY (`CompanyID`),
     FOREIGN KEY (`OrganizationID`) REFERENCES `Organization`(`OrganizationID`)
 );
@@ -39,6 +46,13 @@ CREATE TABLE IF NOT EXISTS `Company`(
 CREATE TABLE IF NOT EXISTS `Institute`(
     `InstituteID` INT NOT NULL AUTO_INCREMENT,
     `OrganizationID` INT NOT NULL,
+    `InstituteName` VARCHAR(45) NULL,
+    `InstituteAddress` VARCHAR(45) NULL,
+    `InstituteCity` VARCHAR(45) NULL,
+    `InstituteState` VARCHAR(45) NULL,
+    `InstituteWebsite` VARCHAR(45) NULL,
+    `InstituteContactEmail` VARCHAR(45) NULL,
+    `InstituteContactPhone` INT NULL,
     PRIMARY KEY (`InstituteID`),
     FOREIGN KEY (`OrganizationID`) REFERENCES `Organization`(`OrganizationID`)
 );
