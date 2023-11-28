@@ -1,41 +1,48 @@
 <?php
-// Start or resume a session
-session_start();
+    // Start or resume a session
+    session_start();
+    include 'db_conn.php';
 
-// Function to check if a user is logged in
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
-}
+    if(isset($_SESSION['user_id'])) {
+        $userID = $_SESSION['user_id'];
+        $role = $_SESSION['role'];
 
-// Function to redirect to the login page if not logged in
-function redirectToLogin() {
-    if (!isLoggedIn()) {
-        header("Location: login.php"); // Change 'login.php' to your actual login page
-        exit();
+        $mysql = "SELECT * FROM Users WHERE UserID = '$userID'";
+        $result = $conn->query($mysql);
+        $row = $result->fetch_assoc();
+
+        $name = $row['Name'];
+        $email = $row['Email'];
+        $nickname = $row['Nickname'];
+        $profilePicture = $row['ProfilePic'];
+
+        if($role == 3) {
+            $mysql = "SELECT * FROM Organization WHERE (SELECT OrganizationID FROM Staff WHERE UserID = '$userID') = OrganizationID";
+            $result = $conn->query($mysql);
+            $row = $result->fetch_assoc();
+
+            $organizationName = $row['Name'];
+            $organizationID = $row['OrganizationID'];
+        }
+        else if($role == 2) {
+            $mysql = "SELECT * FROM Organization WHERE (SELECT OrganizationID FROM OrganizationLecturer WHERE UserID = '$userID') = OrganizationID";
+            $result = $conn->query($mysql);
+            $row = $result->fetch_assoc();
+
+            $organizationID = $row['OrganizationID'];
+            $organizationName = $row['Name'];
+        }
+        else if($row == 1){
+            $mysql = "SELECT * FROM Organization WHERE (SELECT OrganizationID FROM Student WHERE UserID = '$userID') = OrganizationID";
+            $result = $conn->query($mysql);
+            $row = $result->fetch_assoc();
+
+            $organizationID = $row['OrganizationID'];
+            $organizationName = $row['Name'];
+        }
     }
-}
-
-// Function to set user data in the session
-function setUserData($user_id, $username, $role) {
-    $_SESSION['user_id'] = $user_id;
-    $_SESSION['username'] = $username;
-    $_SESSION['role'] = $role;
-}
-
-// Function to get user data from the session
-function getUserData() {
-    return [
-        'user_id' => $_SESSION['user_id'] ?? null,
-        'username' => $_SESSION['username'] ?? null,
-        'role' => $_SESSION['role'] ?? null,
-    ];
-}
-
-// Function to destroy the session and log out the user
-function logout() {
-    session_unset();
-    session_destroy();
-    header("Location: login.php"); // Change 'login.php' to your actual login page
-    exit();
-}
+    else {
+        echo "<script>alert('Please login to continue.');</script>";
+        echo "<script>window.location.href='login.php';</script>";
+    }
 ?>

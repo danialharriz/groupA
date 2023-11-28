@@ -1,5 +1,4 @@
 <?php
-require_once('session.php');
 require_once('db_conn.php');
 
 // Check if the form is submitted
@@ -24,9 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Verify the password
             if (password_verify($password, $row['Password'])) {
                 // Password is correct
-
+                session_start();
                 // Set user data in the session
-                setUserData($row['UserID'], $row['Name'], $row['Role']);
+                $_SESSION['user_id'] = $row['UserID'];  // Replace 'user_id' with your actual session variable name
+                $_SESSION['role'] = $row['Role'];  // Replace 'role' with your actual session variable name
 
                 // Check if the user is logging in for the first time (role is empty)
                 if (empty($row['Role'])) {
@@ -35,9 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 } 
                 else {
-                    // Redirect to the dashboard or home page for regular login
-                    header("Location: dashboard.php"); // Change 'dashboard.php' to your actual dashboard or home page
-                    exit();
+                    if(($row['Role']) == 0){
+                        header("Location: admin.php");
+                        exit();
+                    }
+                    else if(($row['Role']) == 1){
+                        header("Location: student.php");
+                        exit();
+                    }
+                    else if(($row['Role']) == 2){
+                        header("Location: lecturer.php");
+                        exit();
+                    }
+                    else if(($row['Role']) == 3){
+                        header("Location: staff.php");
+                        exit();
+                    }
+                    else if(($row['Role']) == 4){
+                        header("Location: public_user.php");
+                        exit();
+                    }
+                    else{
+                        header("Location: select_role.php"); // Change 'select_role.php' to your actual role selection page
+                        exit();
+                    }
                 }
             } 
             else {
