@@ -1,8 +1,8 @@
 <?php
 ob_start();
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "niagaped_groupA_user";
+$password = "GroupA*&&%@^#";
 $dbname = "DataManagementSystemYouthVenture";
 
 // Create connection
