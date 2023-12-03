@@ -3,7 +3,7 @@ ob_start();
 $servername = "localhost";
 $username = "niagaped_groupA_user";
 $password = "GroupA*&&%@^#";
-$dbname = "DataManagementSystemYouthVenture";
+$dbname = "niagaped_groupA";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
