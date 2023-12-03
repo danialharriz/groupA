@@ -1,9 +1,10 @@
-/* Drop Database if required, comment or uncomment line 2 */
+/* Drop Database if required, comment or uncomment line 2 
 DROP DATABASE IF EXISTS `DataManagementSystemYouthVenture`;
 
 CREATE DATABASE IF NOT EXISTS `DataManagementSystemYouthVenture`;
 
 USE `DataManagementSystemYouthVenture`;
+*/
 
 CREATE TABLE IF NOT EXISTS `Users` (
   `UserID` INT NOT NULL AUTO_INCREMENT,
