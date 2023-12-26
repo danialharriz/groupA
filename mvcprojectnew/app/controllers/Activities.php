@@ -33,7 +33,8 @@ class Activities extends Controller{
             [
             'user_id' => $_SESSION['user_id'],
             'act_title' => trim($_POST['act_title']),
-            'act_desc' => trim($_POST['act_desc'])
+            'act_desc' => trim($_POST['act_desc']),
+            'act_datetime' => date('Y-m-d H:i:s')
             ];
 
 
@@ -54,6 +55,8 @@ class Activities extends Controller{
 
         $this->view('activities/index', $data);
     }
+
+    
 
 }
 ?>

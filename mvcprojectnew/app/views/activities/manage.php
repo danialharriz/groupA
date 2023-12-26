@@ -22,7 +22,7 @@
                     <tr>
                         <td><?php echo $activity->act_title; ?></td>
                         <td><?php echo $activity->act_desc; ?></td>
-                        <td><?php echo date('F j h:m', strtotime($activityt->act_datetime)); ?></td>
+                        <td><?php echo date('F j h:m', strtotime($activity->act_datetime)); ?></td>
                         
                         
                     </tr>
