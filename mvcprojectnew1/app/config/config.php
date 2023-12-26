@@ -9,7 +9,7 @@
     define('APPROOT', dirname(dirname(__FILE__)));
 
     //URLROOT (Dynamic links)
-    define('URLROOT', 'http://localhost/mvcprojectnew');
+    define('URLROOT', 'http://localhost/groupA/mvcprojectnew1');
 
     //Sitename
     define('SITENAME', 'Login & Register script');

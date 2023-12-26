@@ -24,7 +24,7 @@
         <?php
 
                     $c_url = URLROOT . "/activities"; 
-                   // $t_url = URLROOT . "/posts/create"; 
+                    $t_url = URLROOT . "/activities/create"; 
 
                     // if (isset($data['post']) && is_object($data['post'])) {
                     // $u_url = URLROOT . "/posts/update/".$data['post']->id; 
@@ -36,6 +36,12 @@
         
                         require 'manage.php';
 
+                    }elseif($url == $t_url){
+                            
+                        require 'create.php';
+
+                    }else{
+                
                     }
 
                     ?>
