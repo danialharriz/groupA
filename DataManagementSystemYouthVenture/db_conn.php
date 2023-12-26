@@ -1,4 +1,5 @@
 <?php
+ob_start();
 $servername = "localhost";
 $username = "niagaped_groupA_user";
 $password = "GroupA*&&%@^#";
