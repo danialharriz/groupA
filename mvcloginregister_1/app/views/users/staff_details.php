@@ -49,7 +49,7 @@
 </head>
 <body>
     <h1><?php echo $data['title']; ?></h1>
-    <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+    <form method="POST" action="<?php echo URLROOT; ?>/users/staff_details">
         <label for="organizationId">Organization:</label>
         <select name="organizationId">
             <?php foreach ($data['organizations'] as $organization) : ?>

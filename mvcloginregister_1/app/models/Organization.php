@@ -118,6 +118,14 @@ class Organization {
             return false;
         }
     }
+    //get all company type = 0
+    public function getAllCompany(){
+        $this->db->query('SELECT * FROM organization WHERE Type = 0');
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
     public function deleteOrganization($organizationId) {
         $this->db->query('DELETE FROM Organization WHERE OrganizationID = :organizationId');
         $this->db->bind(':organizationId', $organizationId);

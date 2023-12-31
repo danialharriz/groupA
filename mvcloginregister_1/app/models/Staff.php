@@ -6,17 +6,15 @@ class Staff {
         $this->db = new Database;
     }
 
-    public function addStaff() {
-        $last_id = $this->getlastid();
-
-        $this->db->query('INSERT INTO Staff (StaffId, UserId, OrganizationId, Type, JobTitle) VALUES(:staffId, :userId, :organizationId, :type, :jobTitle');
+    public function addStaff($data) {
+        $this->db->query('INSERT INTO Staff (StaffID, UserID, OrganizationID, JobTitle) VALUES(:staffId, :userId, :organizationId, :jobTitle)');
 
         //Bind values
-        $this->db->bind(':staffId', $last_id);
+        $this->db->bind(':staffId', $data['staffId']);
         $this->db->bind(':userId', $_SESSION['user_id']);
-        $this->db->bind(':organizationId', $data['organization_id']);
-        $this->db->bind(':type', $data['type']);
-        $this->db->bind(':jobTitle', $data['job_title']);
+        $this->db->bind(':organizationId', $data['organizationId']);
+        //$this->db->bind(':type', $data['type']);
+        $this->db->bind(':jobTitle', $data['jobTitle']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -46,6 +44,18 @@ class Staff {
         $results = $this->db->resultSet();
 
         return $results;
+    }
+    //get max staff id
+    public function getLastStaffId() {
+        $this->db->query('SELECT MAX(StaffId) AS maxStaffId FROM Staff');
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row->maxStaffId;
+        } else {
+            return false;
+        }
     }
 }
 
