@@ -34,7 +34,12 @@ class User {
 
         $row = $this->db->single();
 
-        $hashedPassword = $row->Password;
+        if ($row !== false) {
+            $hashedPassword = $row->Password;
+        } else {
+            // Handle the case when $row is false
+            return false;
+        }
 
         if (password_verify($password, $hashedPassword)) {
             return $row;
@@ -84,16 +89,19 @@ class User {
         }
     }
 
+    //get Role  
     public function getRole() {
-        $this->db->query('SELECT Role FROM User WHERE UserID = :userId');
+        $this->db->query('SELECT Role FROM user WHERE UserID = :userId');
 
         //Bind values
         $this->db->bind(':userId', $_SESSION['user_id']);
 
         $row = $this->db->single();
 
-        $role = $row->role;
-
-        return $role;
+        if ($row) {
+            return $row->Role;
+        } else {
+            return false;
+        }
     }
 }

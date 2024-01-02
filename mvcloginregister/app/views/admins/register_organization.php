@@ -51,59 +51,52 @@
     </style>
 </head>
 <body>
-    <h2>Orgnanization Registration</h2>
-    <form action="<?php echo URLROOT; ?>/admins/register_organization" method="POST">
-        <div class="form-group">
-            <label for="organization_name">Organization Name</label>
-            <input type="text" name="organization_name" value="<?php echo $data['organizationName']; ?>" class="form-control">
-            <span class="error"><?php echo $data['organization_name_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" name="address" value="<?php echo $data['address']; ?>" class="form-control">
-            <span class="error"><?php echo $data['address_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="city">City</label>
-            <input type="text" name="city" value="<?php echo $data['city']; ?>" class="form-control">
-            <span class="error"><?php echo $data['city_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="state">State</label>
-            <input type="text" name="state" value="<?php echo $data['state']; ?>" class="form-control">
-            <span class="error"><?php echo $data['state_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="website">Website</label>
-            <input type="text" name="website" value="<?php echo $data['website']; ?>" class="form-control">
-            <span class="error"><?php echo $data['website_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="type">Type</label>
-            <select name="type" class="form-control">
-                <option value="0" <?php echo (isset($data['type']) && $data['type'] == 0) ? 'selected' : ''; ?>>Company</option>
-                <option value="1" <?php echo (isset($data['type']) && $data['type'] == 1) ? 'selected' : ''; ?>>Institute</option>
-            </select>
-            <span class="error"><?php echo $data['type_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="contact_email">Contact Email</label>
-            <input type="email" name="contact_email" value="<?php echo $data['contactEmail']; ?>" class="form-control">
-            <span class="error"><?php echo $data['contact_email_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="contact_phone">Contact Phone</label>
-            <input type="text" name="contact_phone" value="<?php echo $data['contactPhone']; ?>" class="form-control">
-            <span class="error"><?php echo $data['contact_phone_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <label for="pass">Password</label>
-            <input type="password" name="pass" value="<?php echo $data['pass']; ?>" class="form-control">
-            <span class="error"><?php echo $data['pass_err']; ?></span>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Register" class="btn btn-primary">
-        </div>
-    </form>
+    <h2>Organization Registration</h2>
+    <div class="container">
+        <form action="register_organization.php" method="POST">
+            <div class="form-group">
+                <label for="organizationName">Organization Name</label>
+                <input type="text" name="organizationName" id="organizationName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" name="address" id="address" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" name="city" id="city" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" name="state" id="state" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="website">Website</label>
+                <input type="text" name="website" id="website" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select name="type" id="type" class="form-control" required>
+                    <option value="1">Institute</option>
+                    <option value="2">Company</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="contactEmail">Contact Email</label>
+                <input type="email" name="contactEmail" id="contactEmail" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="contactPhone">Contact Phone</label>
+                <input type="text" name="contactPhone" id="contactPhone" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="emailending">Email Ending</label>
+                <input type="text" name="emailending" id="emailending" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+    
 </body>
 </html>

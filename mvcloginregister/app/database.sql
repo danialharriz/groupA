@@ -43,15 +43,15 @@ CREATE TABLE `course` (
 
 CREATE TABLE `event` (
     `EventID` varchar(6) NOT NULL,
-    `EventName` int(45) NOT NULL,
-    `Description` int(45) NOT NULL,
-    `StartDateAndTime` datetime NOT NULL,
-    `EndDateAndTime` datetime NOT NULL,
+    `EventName` varchar(45) NOT NULL,
+    `Description` text NOT NULL,
+    `StartDateAndTime` datetime NULL,
+    `EndDateAndTime` datetime NULL,
     `Location` varchar(255) NOT NULL,
-    `EventType` varchar(15) NOT NULL,
-    `RewardPoints` int(11) NOT NULL,
-    `OrganizationID` varchar(6) NOT NULL,
-    `Validated` varchar(3) NOT NULL,
+    `EventType` int(1) NULL,
+    `RewardPoints` int(11) NULL,
+    `OrganizationID` varchar(6) NULL,
+    `Validated` varchar(3) NULL,
     PRIMARY KEY (`EventID`),
     KEY `OrganizationID` (`OrganizationID`),
     CONSTRAINT `event_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
@@ -88,7 +88,7 @@ CREATE TABLE `organization` (
     `Type` int(1) NOT NULL,
     `ContactEmail` varchar(45) NOT NULL,
     `ContactPhone` int(11) NOT NULL,
-    `Pass` varchar(255) NOT NULL,
+    `emailending` varchar(45) NOT NULL,
     PRIMARY KEY (`OrganizationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -100,7 +100,7 @@ CREATE TABLE `participant` (
     `ParticipantID` varchar(6) NOT NULL,
     `StudentID` varchar(6) NOT NULL,
     `EventID` varchar(6) NOT NULL,
-    `Attendance` varchar(15) NOT NULL,
+    `Attendance` varchar(15) NULL,
     PRIMARY KEY (`ParticipantID`),
     KEY `StudentID` (`StudentID`),
     KEY `EventID` (`EventID`),
@@ -116,13 +116,22 @@ CREATE TABLE `staff` (
     `StaffID` varchar(6) NOT NULL,
     `UserID` varchar(6) NOT NULL,
     `OrganizationID` varchar(6) NOT NULL,
-    `Type` varchar(45) NOT NULL,
-    `JobTitle` varchar(45) NOT NULL,
+    `Type` varchar(45) NULL,
+    `JobTitle` varchar(45) NULL,
     PRIMARY KEY (`StaffID`),
     KEY `OrganizationID` (`OrganizationID`),
     KEY `UserID` (`UserID`),
     CONSTRAINT `staff_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`),
     CONSTRAINT `staff_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `resume` (
+    `ResumeID` varchar(6) NOT NULL,
+    `StudentID` varchar(6) NOT NULL,
+    `Resume` text NOT NULL,
+    PRIMARY KEY (`ResumeID`),
+    KEY `StudentID` (`StudentID`),
+    CONSTRAINT `resume_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `student` (`StudentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -132,13 +141,19 @@ CREATE TABLE `staff` (
 CREATE TABLE `student` (
     `StudentID` varchar(6) NOT NULL,
     `UserID` varchar(6) NOT NULL,
+    `OrganizationID` varchar(6) NULL,
     `CourseID` varchar(6) NOT NULL,
-    `Resume` varchar(6) NOT NULL,
+    `Address` varchar(45) NOT NULL,
+    `resumeID` varchar(6) NULL,
     PRIMARY KEY (`StudentID`),
     KEY `CourseID` (`CourseID`),
     KEY `UserID` (`UserID`),
+    KEY `OrganizationID` (`OrganizationID`),
+    KEY `resumeID` (`resumeID`),
     CONSTRAINT `student_ibfk_1` FOREIGN KEY (`CourseID`) REFERENCES `course` (`CourseID`),
-    CONSTRAINT `student_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
+    CONSTRAINT `student_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
+    CONSTRAINT `student_ibfk_3` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`),
+    CONSTRAINT `student_ibfk_4` FOREIGN KEY (`resumeID`) REFERENCES `resume` (`ResumeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -148,6 +163,8 @@ CREATE TABLE `student` (
 CREATE TABLE `user` (
     `UserID` varchar(6) NOT NULL,
     `Name` varchar(45) NOT NULL,
+    `NickName` varchar(45) NOT NULL,
+    `Phone` varchar(45) NOT NULL,
     `Email` varchar(45) NOT NULL,
     `Password` varchar(255) NOT NULL,
     `Role` varchar(45) NOT NULL,
@@ -156,6 +173,11 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 COMMIT;
+
+
+INSERT INTO `organization` (`OrganizationID`, `OrganizationName`, `Address`, `City`, `State`, `Website`, `Type`, `ContactEmail`, `ContactPhone`, `emailending`) VALUES
+('O00001', 'Youth Venture', '1234 Main St', 'San Jose', 'CA', 'www.youthventure.com', 2, 'admin@youthventure.com', 4081234567, 'youthventure.com');
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

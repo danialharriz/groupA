@@ -146,29 +146,38 @@ class Users extends Controller {
             exit();
         } 
         else {
-            // NEED CHANGE
-            if(($_SESSION['role']) == 0){
-                header('location:' . URLROOT . '/pages/admin');
-                exit();
-            }
-            else if(($_SESSION['role']) == 1){
-                header('location:' . URLROOT . '/pages/student');
-                exit();
-            }
-            else if(($_SESSION['role']) == 2){
-                header('location:' . URLROOT . '/pages/staff');
-                exit();
-            }
-            else{
-                header('location:' . URLROOT . '/users/selectRole'); // Change 'selectRole.php' to your actual role selection page
-                //set currentMethod to selectRole
+            // Redirect to the specific page for the selected role
+            //redirect to eg. users/staff_details.php or users/student_details.php
+            $this->redirectToRole($_SESSION['role']);
+        }
+    }
 
-                exit();
-            }
+    //redirect to /index for each role
+    function redirectToRole($role) {
+        switch ($role) {
+            case 3:
+                header('location:' . URLROOT . '/admins');
+                break;
+            case 1:
+                header('location:' . URLROOT . '/staffs');
+                break;
+            case 2:
+                header('location:' . URLROOT . '/students');
+                break;
+            default:
+                header('location:' . URLROOT . '/users/selectRole');
+                break;
         }
     }
 
     public function selectRole() {
+        //verify if user already selected role
+        if (!empty($_SESSION['role'])) {
+            // Redirect to the specific page for the selected role
+            //redirect to eg. users/staff_details.php or users/student_details.php
+            header('location:' . URLROOT . '/users/' . $_SESSION['role'] . '_details');
+            exit();
+        }
         $data = [
             'title' => 'Select Role',
             'selected_role' => '',
@@ -197,10 +206,10 @@ class Users extends Controller {
         //if user already
         $staffAccount = $this->staffModel->getOrganizationId($_SESSION['user_id']);
         if ($staffAccount) {
-            if ($_SESSION['role'] == 0) {
-                header('location:' . URLROOT . '/pages/admins');
-            } else {
-                header('location:' . URLROOT . '/pages/staffs');
+            if ($_SESSION['role'] == 3) {
+                header('location:' . URLROOT . '/admins');
+            } else if ($_SESSION['role'] == 1) {
+                header('location:' . URLROOT . '/staffs');
             }
         }
         $data = [
@@ -218,13 +227,12 @@ class Users extends Controller {
                 'staffId' => '',
                 'organizationId' => $_POST['organizationId'],
             ];
-            //check if user already got staff account
-            $staffAccount = $this->staffModel->getOrganizationId($_SESSION['user_id']);
             // Validate the user input (you may want to add more validation)
             if (empty($data['jobTitle'])) {
                 echo "<script>alert('Please enter all required fields.');</script>";
-            } else if (!empty($staffAccount)) {
-                echo "<script>alert('You already have a staff account.');</script>";
+            //verify the user email if are member of organization
+            } else if (!$this->organizationModel->verifyOrganizationEmail($data['organizationId'], $_SESSION['email'])) {
+                echo "<script>alert('Please use your organization email.');</script>";
             }else {
                 //get last staff id, if no staff, set staffid to S0001 else increment by 1
                 $lastStaffId = $this->staffModel->getLastStaffId();
@@ -247,26 +255,28 @@ class Users extends Controller {
                 //Run SQL
                 $registerNewStaff = $this->staffModel->addStaff($data);
                 if ($registerNewStaff) {
-                    //if organization id is O0001, set type to 0, else set type to 1
-                    if ($data['organizationId'] == 'O0001') {
-                        $this->userModel->addRole(0);
+                    //if organization id is O0001, set type to 3, else set type to 1
+                    if ($data['organizationId'] == 'O00001') {
+                        $this -> userModel -> addRole(3);
+                        $_SESSION['role'] = 3;
                     } else {
-                        $this->userModel->addRole(1);
+                        $this -> userModel -> addRole(1);
+                        $_SESSION['role'] = 1;
                     }
+                    $this -> redirectToRole($_SESSION['role']);
+
                     exit();
-                    if ($_SESSION['role'] == 0) {
-                        header('location:' . URLROOT . '/admins');
-                    } else {
-                        header('location:' . URLROOT . '/staffs');
-                    }
+
                 } else {
                     // Registration failed
-                    die('Something went wrong.');
+                    echo "<script>alert('Something went wrong.');</script>";
                 }
             }
         }
         $this->view('users/staff_details', $data);
     }
+    //student details
+    //forgot password
     //index
     public function index() {
         $this->view('index');

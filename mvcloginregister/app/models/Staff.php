@@ -37,13 +37,17 @@ class Staff {
     }
     //get the organization id of the staff
     public function getOrganizationId($userId) {
-        $this->db->query('SELECT OrganizationId FROM Staff WHERE UserId = :userId');
+        $this->db->query('SELECT * FROM staff WHERE UserId = :userId');
 
         $this->db->bind(':userId', $userId);
 
-        $results = $this->db->resultSet();
+        $results = $this->db->single();
 
-        return $results;
+        if ($results) {
+            return $results->OrganizationID;
+        } else {
+            return null; // or handle the case when $results is false
+        }
     }
     //get max staff id
     public function getLastStaffId() {

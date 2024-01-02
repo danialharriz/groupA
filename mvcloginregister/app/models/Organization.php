@@ -10,7 +10,7 @@ CREATE TABLE `organization` (
     `Type` int(1) NOT NULL,
     `ContactEmail` varchar(45) NOT NULL,
     `ContactPhone` int(11) NOT NULL,
-    `Pass` varchar(6) NOT NULL,
+    `emailending` varchar(45) NOT NULL,
     PRIMARY KEY (`OrganizationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 */
@@ -22,7 +22,7 @@ class Organization {
 
     //add organization
     public function addOrganization($data) {
-        $this->db->query('INSERT INTO Organization (OrganizationID, OrganizationName, Address, City, State, Website, Type, ContactEmail, ContactPhone, Pass) VALUES(:organizationId, :organizationName, :address, :city, :state, :website, :type, :contactEmail, :contactPhone, :pass)');
+        $this->db->query('INSERT INTO Organization (OrganizationID, OrganizationName, Address, City, State, Website, Type, ContactEmail, ContactPhone, emailending) VALUES(:organizationId, :organizationName, :address, :city, :state, :website, :type, :contactEmail, :contactPhone, :emailending)');
 
         //Bind values
         $this->db->bind(':organizationId', $data['organizationId']);
@@ -34,7 +34,7 @@ class Organization {
         $this->db->bind(':type', $data['type']);
         $this->db->bind(':contactEmail', $data['contactEmail']);
         $this->db->bind(':contactPhone', $data['contactPhone']);
-        $this->db->bind(':pass', $data['pass']);
+        $this->db->bind(':emailending', $data['emailending']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -56,21 +56,6 @@ class Organization {
         $this->db->bind(':type', $data['type']);
         $this->db->bind(':contactEmail', $data['contactEmail']);
         $this->db->bind(':contactPhone', $data['contactPhone']);
-
-        //Execute function
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function updateOrganizationPassword($data) {
-        $this->db->query('UPDATE Organization SET Pass = :pass WHERE OrganizationID = :organizationId');
-
-        //Bind values
-        $this->db->bind(':organizationId', $data['organizationId']);
-        $this->db->bind(':pass', $data['pass']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -118,9 +103,9 @@ class Organization {
             return false;
         }
     }
-    //get all company type = 0
+    //get all company type = 2
     public function getAllCompany(){
-        $this->db->query('SELECT * FROM organization WHERE Type = 0');
+        $this->db->query('SELECT * FROM organization WHERE Type = 2');
 
         $results = $this->db->resultSet();
 
@@ -131,21 +116,51 @@ class Organization {
         $this->db->bind(':organizationId', $organizationId);
         $this->db->execute();
     }
-    //verify organization password
-    public function verifyOrganizationPassword($organizationId, $pass) {
-        $this->db->query('SELECT * FROM Organization WHERE OrganizationID = :organizationId');
+    //select organizationid by emailending
+    public function getOrganizationIdByEmailEnding($emailending) {
+        $this->db->query('SELECT OrganizationID FROM Organization WHERE emailending = :emailending');
+
+        $this->db->bind(':emailending', $emailending);
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row->OrganizationID;
+        } else {
+            return false;
+        }
+    }
+    public function getOrganizationName($organizationId) {
+        $this->db->query('SELECT OrganizationName FROM Organization WHERE OrganizationID = :organizationId');
 
         $this->db->bind(':organizationId', $organizationId);
 
         $row = $this->db->single();
 
-        $hashedPassword = $row->Pass;
-
-        if (password_verify($pass, $hashedPassword)) {
-            return true;
+        if ($row) {
+            return $row->OrganizationName;
         } else {
             return false;
         }
     }
-}
+    //verify organization pusing email ending
+    public function verifyOrganizationEmail($organizationId, $email) {
+        $this->db->query('SELECT * FROM Organization WHERE OrganizationID = :organizationId');
+
+        $this->db->bind(':organizationId', $organizationId);
+
+        $row = $this->db->single();
+        //verify if user is from ornagization using email ending
+        $emailending = explode("@", $email);
+        if ($row) {
+            if ($row->emailending == $emailending[1]) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+} 
 ?>

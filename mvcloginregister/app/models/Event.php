@@ -18,6 +18,8 @@ CREATE TABLE `event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 */
 
+
+
 class Event{
     private $db;
 
@@ -26,19 +28,29 @@ class Event{
     }
 
     public function addEvent($data){
-        $this->db->query('INSERT INTO Event (EventID, EventName, Description, StartDateAndTime, EndDateAndTime, Location, EventType, RewardPoints, OrganizationID, Validated) VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :validated)');
-
+        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Validated`)  VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :validated)");
+        
         //Bind values
-        $this->db->bind(':eventId', $data['event_id']);
-        $this->db->bind(':eventName', $data['event_name']);
+        $this->db->bind(':eventId', $data['eventId']);
+        $this->db->bind(':eventName', $data['eventName']);
         $this->db->bind(':description', $data['description']);
-        $this->db->bind(':startDateAndTime', $data['start_date_and_time']);
-        $this->db->bind(':endDateAndTime', $data['end_date_and_time']);
+        $this->db->bind(':startDateAndTime', $data['startDateAndTime']);
+        $this->db->bind(':endDateAndTime', $data['endDateAndTime']);
         $this->db->bind(':location', $data['location']);
-        $this->db->bind(':eventType', $data['event_type']);
-        $this->db->bind(':rewardPoints', $data['reward_points']);
-        $this->db->bind(':organizationId', $data['organization_id']);
-        $this->db->bind(':validated', $data['validated']);
+        $this->db->bind(':eventType', $data['eventType']);
+        $this->db->bind(':organizationId', $data['organizationId']);
+        
+        if (isset($data['rewardPoints'])) {
+            $this->db->bind(':rewardPoints', $data['rewardPoints'], PDO::PARAM_INT);
+        } else {
+            $this->db->bind(':rewardPoints', null, PDO::PARAM_NULL);
+        }
+        
+        if (isset($data['validated'])) {
+            $this->db->bind(':validated', $data['validated']);
+        } else {
+            $this->db->bind(':validated', null, PDO::PARAM_NULL);
+        }
 
         //Execute function
         if ($this->db->execute()) {
@@ -84,7 +96,7 @@ class Event{
         return $results;
     }
     public function getAllEvent(){
-        $this->db->query('SELECT * FROM Event');
+        $this->db->query('SELECT * FROM Event ORDER BY StartDateAndTime DESC');
 
         $results = $this->db->resultSet();
 
@@ -92,18 +104,17 @@ class Event{
     }
 
     public function updateEvent($data){
-        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, OrganizationID = :organizationId, Validated = :validated WHERE EventID = :eventId');
+        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, Validated = :validated WHERE EventID = :eventId');
 
         //Bind values
-        $this->db->bind(':eventId', $data['event_id']);
-        $this->db->bind(':eventName', $data['event_name']);
+        $this->db->bind(':eventId', $data['eventId']);
+        $this->db->bind(':eventName', $data['eventName']);
         $this->db->bind(':description', $data['description']);
-        $this->db->bind(':startDateAndTime', $data['start_date_and_time']);
-        $this->db->bind(':endDateAndTime', $data['end_date_and_time']);
+        $this->db->bind(':startDateAndTime', $data['startDateAndTime']);
+        $this->db->bind(':endDateAndTime', $data['endDateAndTime']);
         $this->db->bind(':location', $data['location']);
-        $this->db->bind(':eventType', $data['event_type']);
-        $this->db->bind(':rewardPoints', $data['reward_points']);
-        $this->db->bind(':organizationId', $data['organization_id']);
+        $this->db->bind(':eventType', $data['eventType']);
+        $this->db->bind(':rewardPoints', $data['rewardPoints']);
         $this->db->bind(':validated', $data['validated']);
 
         //Execute function
@@ -113,11 +124,17 @@ class Event{
             return false;
         }
     }
-    //get the last event id
-    public function getLastid(){
-        $this->db->query('SELECT EventID FROM Event ORDER BY EventID DESC LIMIT 1');
-        $results = $this->db->resultSet();
-        return $results;
+    //get the max event id
+    public function getMaxEventId(){
+        $this->db->query('SELECT MAX(EventID) AS id FROM Event');
+
+        $row = $this->db->single();
+
+        if($row){
+            return $row->id;
+        }else{
+            return false;
+        }
     }
 
     public function getEventById($eventId){
@@ -128,6 +145,20 @@ class Event{
         $row = $this->db->single();
 
         return $row;
+    }
+
+    public function deleteEvent($eventId){
+        $this->db->query('DELETE FROM Event WHERE EventID = :eventId');
+
+        //Bind values
+        $this->db->bind(':eventId', $eventId);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 ?>

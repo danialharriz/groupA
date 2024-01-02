@@ -1,56 +1,11 @@
 <?php
-/*
-//database
-CREATE TABLE `organization` (
-    `OrganizationID` varchar(6) NOT NULL,
-    `OrganizationName` varchar(45) NOT NULL,
-    `Address` varchar(45) NOT NULL,
-    `City` varchar(45) NOT NULL,
-    `State` varchar(45) NOT NULL,
-    `Website` varchar(45) NOT NULL,
-    `Type` int(1) NOT NULL,
-    `ContactEmail` varchar(45) NOT NULL,
-    `ContactPhone` int(11) NOT NULL,
-    `Pass` varchar(6) NOT NULL,
-    PRIMARY KEY (`OrganizationID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-//model
-class Organization {
-    private $db;
-    public function __construct() {
-        $this->db = new Database;
-    }
-
-    public function addOrganization($data) {
-        $this->db->query('INSERT INTO Organization (OrganizationID, OrganizationName, Address, City, State, Website, Type, ContactEmail, ContactPhone, Pass) VALUES(:organizationId, :organizationName, :address, :city, :state, :website, :type, :contactEmail, :contactPhone, :pass)');
-
-        //Bind values
-        $this->db->bind(':organizationId', $data['organizationId']);
-        $this->db->bind(':organizationName', $data['organizationName']);
-        $this->db->bind(':address', $data['address']);
-        $this->db->bind(':city', $data['city']);
-        $this->db->bind(':state', $data['state']);
-        $this->db->bind(':website', $data['website']);
-        $this->db->bind(':type', $data['type']);
-        $this->db->bind(':contactEmail', $data['contactEmail']);
-        $this->db->bind(':contactPhone', $data['contactPhone']);
-        $this->db->bind(':pass', $data['pass']);
-
-        //Execute function
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-*/
-
 class Admins extends Controller {
     public function __construct() {
         $this->adminModel = $this->model('Staff');
         $this->organizationModel = $this->model('Organization');
+        $this->eventModel = $this->model('Event');      
+        $this->courseModel = $this->model('Course');
     }
-    //register organization
     public function register_organization() {
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -69,15 +24,15 @@ class Admins extends Controller {
             }
             $data = [
                 'organizationId' => $organization_id,
-                'organizationName' => trim($_POST['organization_name']),
+                'organizationName' => trim($_POST['organizationName']),
                 'address' => trim($_POST['address']),
                 'city' => trim($_POST['city']),
                 'state' => trim($_POST['state']),
                 'website' => trim($_POST['website']),
                 'type' => trim($_POST['type']),
-                'contactEmail' => trim($_POST['contact_email']),
-                'contactPhone' => trim($_POST['contact_phone']),
-                'pass' => trim($_POST['pass']),
+                'contactEmail' => trim($_POST['contactEmail']),
+                'contactPhone' => trim($_POST['contactPhone']),
+                'emailending' => trim($_POST['emailending']),
                 'organization_id_err' => '',
                 'organization_name_err' => '',
                 'address_err' => '',
@@ -87,31 +42,17 @@ class Admins extends Controller {
                 'type_err' => '',
                 'contact_email_err' => '',
                 'contact_phone_err' => '',
-                'pass_err' => '',
+                'emailending_err' => '',
             ];
-            // Validate organization name
-            if (empty($data['organizationName'])) {
-                $data['organization_name_err'] = 'Please enter organization name';
+            //check if organization is registered
+            if ($this->organizationModel->getOrganizationByName($data['organizationName'])) {
+                $data['organization_name_err'] = 'Organization name is already taken';
             }
-            // validate pass
-            if (empty($data['pass'])) {
-                $data['pass_err'] = 'Please enter pass';
-            }
-            // Make sure errors are empty
-            if (empty($data['organization_name_err']) && empty($data['pass_err'])) {
-                // Validated
-                // Hash password
-                $data['pass'] = password_hash($data['pass'], PASSWORD_DEFAULT);
-                // Register organization
-                if ($this->organizationModel->addOrganization($data)) {
-                    // Redirect to login
-                    header('location: ' . URLROOT . '/admins');
-                } else {
-                    die('Something went wrong');
-                }
+            //run add model
+            if ($this->organizationModel->addOrganization($data)) {
+                header('location: ' . URLROOT . '/admins');
             } else {
-                // Load view with errors
-                $this->view('admins/register_organization', $data);
+                echo "<script>alert('Something went wrong');</script>";
             }
         } else {
             // Init data
@@ -125,7 +66,7 @@ class Admins extends Controller {
                 'type' => '',
                 'contactEmail' => '',
                 'contactPhone' => '',
-                'pass' => '',
+                'emailending' => '',
                 'organization_id_err' => '',
                 'organization_name_err' => '',
                 'address_err' => '',
@@ -135,14 +76,74 @@ class Admins extends Controller {
                 'type_err' => '',
                 'contact_email_err' => '',
                 'contact_phone_err' => '',
-                'pass_err' => '',
+                'emailending_err' => '',
             ];
             // Load view
             $this->view('admins/register_organization', $data);
         }
         $this->view('admins/register_organization');
     }
-    
+    public function register_course() {
+        // Check for POST
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            //auto generate course id
+            $course_id = $this->courseModel->getCourseId();
+            //if there is no course id in database, set course id to C00001, else auto increment
+            if ($course_id == null) {
+                $course_id = 'C00001';
+            } else {
+                $course_id = substr($course_id, 1);
+                $course_id = intval($course_id);
+                $course_id = 'C' . sprintf('%05d', $course_id + 1);
+            }
+            $data = [
+                'courseId' => $course_id,
+                'courseName' => trim($_POST['course_name']),
+                'courseDescription' => trim($_POST['course_description']),
+                'course_id_err' => '',
+                'course_name_err' => '',
+                'course_description_err' => '',
+            ];
+            // Validate course name
+            if (empty($data['courseName'])) {
+                $data['course_name_err'] = 'Please enter course name';
+            }
+            // validate course description
+            if (empty($data['courseDescription'])) {
+                $data['course_description_err'] = 'Please enter course description';
+            }
+            // Make sure errors are empty
+            if (empty($data['course_name_err']) && empty($data['course_description_err'])) {
+                // Validated
+                // Register course
+                if ($this->courseModel->addCourse($data)) {
+                    // Redirect to login
+                    header('location: ' . URLROOT . '/admins');
+                } else {
+                    die('Something went wrong');
+                }
+            } else {
+                // Load view with errors
+                $this->view('admins/register_course', $data);
+            }
+        } else {
+            // Init data
+            $data = [
+                'courseId' => '',
+                'courseName' => '',
+                'courseDescription' => '',
+                'course_id_err' => '',
+                'course_name_err' => '',
+                'course_description_err' => '',
+            ];
+            // Load view
+            $this->view('admins/register_course', $data);
+        }
+        $this->view('admins/register_course');
+    }
     //create event
     public function create_event() {
         // Check for POST
@@ -151,26 +152,29 @@ class Admins extends Controller {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             //auto generate event id
-            $event_id = $this->eventModel->getEventId();
+            $last_event_id = $this->eventModel->getMaxEventId();
             //if there is no event id in database, set event id to E00001, else auto increment
-            if ($event_id == null) {
-                $event_id = 'E00001';
+            if ($last_event_id) {
+                //get the last 4 digits of event id
+                $last_event_id = substr($last_event_id, 1);
+                //convert string to integer
+                $last_event_id = intval($last_event_id);
+                //increment by 1
+                $eventid = 'E' . sprintf('%05d', $last_event_id + 1);
             } else {
-                $event_id = substr($event_id, 1);
-                $event_id = intval($event_id);
-                $event_id = 'E' . sprintf('%05d', $event_id + 1);
+                $eventid = 'E00001';
             }
             $data = [
-                'eventId' => $event_id,
+                'eventId' => $eventid,
                 'eventName' => trim($_POST['event_name']),
                 'description' => trim($_POST['description']),
                 'startDateAndTime' => trim($_POST['start_date_and_time']),
                 'endDateAndTime' => trim($_POST['end_date_and_time']),
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
-                'rewardPoints' => trim($_POST['reward_points']),
+                //'rewardPoints' => trim($_POST['reward_points']),
                 //get the organization id from stafff table
-                'organizationId' => $this->adminModel->getOrganizationIdByStaffId($_SESSION['user_id']),
+                'organizationId' => $this->adminModel->getOrganizationId($_SESSION['user_id']),
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -201,21 +205,22 @@ class Admins extends Controller {
             if(empty($data['eventType'])){
                 $data['event_type_err'] = 'Please enter event type';
             }
-            if(empty($data['rewardPoints'])){
-                $data['reward_points_err'] = 'Please enter reward points';
-            }
             if(empty($data['organizationId'])){
                 $data['organization_id_err'] = 'Something went wrong';
             }
+            //verify if end time is later than start time
+            if($data['endDateAndTime'] < $data['startDateAndTime']){
+                $data['end_date_and_time_err'] = 'End date and time must be later than start date and time';
+                echo "<script>alert('End date and time must be later than start date and time');</script>";
+            }
             // Make sure errors are empty
-            if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['reward_points_err']) && empty($data['organization_id_err'])) {
+            if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['organization_id_err']) && empty($data['end_date_and_time_err'])) {
                 // Validated
                 // Register event
                 if ($this->eventModel->addEvent($data)) {
-                    // Redirect to login
-                    header('location: ' . URLROOT . '/admins');
+                    header('location: ' . URLROOT . '/admins/all_events');
                 } else {
-                    die('Something went wrong');
+                    echo "<script>alert('Something went wrong');</script>";
                 }
             } else {
                 // Load view with errors
@@ -250,7 +255,10 @@ class Admins extends Controller {
         $this->view('admins/create_event');
     }
     //update event
-    public function update_event($eventId) {
+    public function update_event() {
+        //get event id from url
+        $url = $this->getUrl();
+        $eventId = $url[2];
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Process form
@@ -264,8 +272,7 @@ class Admins extends Controller {
                 'endDateAndTime' => trim($_POST['end_date_and_time']),
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
-                'rewardPoints' => trim($_POST['reward_points']),
-                'organizationId' => $this->adminModel->getOrganizationIdByStaffId($_SESSION['user_id']),
+                //'rewardPoints' => trim($_POST['reward_points']),
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -296,21 +303,16 @@ class Admins extends Controller {
             if(empty($data['eventType'])){
                 $data['event_type_err'] = 'Please enter event type';
             }
-            if(empty($data['rewardPoints'])){
-                $data['reward_points_err'] = 'Please enter reward points';
-            }
-            if(empty($data['organizationId'])){
-                $data['organization_id_err'] = 'Something went wrong';
-            }
             // Make sure errors are empty
-            if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['reward_points_err']) && empty($data['organization_id_err'])) {
+            if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) ) {
                 // Validated
                 // Register event
                 if ($this->eventModel->updateEvent($data)) {
                     // Redirect to login
-                    header('location: ' . URLROOT . '/admins');
+                    //redirect to all events page
+                    echo "<script>alert('Event updated successfully'); window.location.href = '" . URLROOT . "/admins/all_events';</script>";
                 } else {
-                    die('Something went wrong');
+                    echo "<script>alert('Something went wrong');</script>";
                 }
             } else {
                 // Load view with errors
@@ -319,10 +321,7 @@ class Admins extends Controller {
         } else {
             // Get existing event from model
             $event = $this->eventModel->getEventById($eventId);
-            // Check for owner
-            if ($event->OrganizationId != $_SESSION['user_id']) {
-                header('location: ' . URLROOT . '/admins');
-            }
+
             $data = [
                 'eventId' => $eventId,
                 'eventName' => $event->EventName,
@@ -332,7 +331,7 @@ class Admins extends Controller {
                 'location' => $event->Location,
                 'eventType' => $event->EventType,
                 'rewardPoints' => $event->RewardPoints,
-                'organizationId' => $event->OrganizationId,
+                'organizationId' => $event->OrganizationID,
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -350,21 +349,15 @@ class Admins extends Controller {
         $this->view('admins/update_event');
     }
     //delete event
-    public function delete_event($eventId) {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Get existing event from model
-            $event = $this->eventModel->getEventById($eventId);
-            // Check for owner
-            if ($event->OrganizationId != $_SESSION['user_id']) {
-                header('location: ' . URLROOT . '/admins');
-            }
-            if ($this->eventModel->deleteEvent($eventId)) {
-                header('location: ' . URLROOT . '/admins');
-            } else {
-                die('Something went wrong');
-            }
+    public function delete_event() {
+        //get event id from url
+        $url = $this->getUrl();
+        $eventId = $url[2];
+        //delete event
+        if ($this->eventModel->deleteEvent($eventId)) {
+            header('location: ' . URLROOT . '/admins/all_events');
         } else {
-            header('location: ' . URLROOT . '/admins');
+            echo "<script>alert('Something went wrong');</script>";
         }
     }
     //view event
@@ -393,14 +386,7 @@ class Admins extends Controller {
         ];
         $this->view('admins/view_event', $data);
     }
-    //view all events   
-    public function view_all_events() {
-        $events = $this->eventModel->getAllEvents();
-        $data = [
-            'events' => $events,
-        ];
-        $this->view('admins/view_all_events', $data);
-    }
+
     //view participants of an event
     public function view_participants($eventId) {
         $participants = $this->participantModel->getParticipantByEventId($eventId);
@@ -409,7 +395,28 @@ class Admins extends Controller {
         ];
         $this->view('admins/view_participants', $data);
     }
+    public function all_events(){
+        $events = $this->eventModel->getAllEvent();
+        //get the organizer name of each event
+        foreach($events as $event){
+            $event->OrganizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+        }
+        $data = [
+            'events' => $events,
+        ];
+        $this->view('admins/all_events', $data);
+    }
+
+    public function getUrl(){
+        if(isset($_GET['url'])){
+          $url = rtrim($_GET['url'], '/');
+          $url = filter_var($url, FILTER_SANITIZE_URL);
+          $url = explode('/', $url);
+          return $url;
+        }
+    }
     public function index() {
         $this->view('admins/index');
     }
 }
+?>
