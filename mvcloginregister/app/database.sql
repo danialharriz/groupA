@@ -41,6 +41,18 @@ CREATE TABLE `course` (
 -- Table structure for table `event`
 --
 
+CREATE TABLE `eventOutside` (
+    `OEventID` varchar(6) NOT NULL,
+    `OEventName` varchar(45) NOT NULL,
+    `ODescription` text NOT NULL,
+    `OStartDateAndTime` datetime NULL,
+    `OEndDateAndTime` datetime NULL,
+    `OLocation` varchar(255) NOT NULL,
+    `OEventType` int(1) NULL,
+    `OOrganization` varchar(255) NULL,
+    PRIMARY KEY (`OEventID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `event` (
     `EventID` varchar(6) NOT NULL,
     `EventName` varchar(45) NOT NULL,
@@ -51,7 +63,6 @@ CREATE TABLE `event` (
     `EventType` int(1) NULL,
     `RewardPoints` int(11) NULL,
     `OrganizationID` varchar(6) NULL,
-    `Validated` varchar(3) NULL,
     PRIMARY KEY (`EventID`),
     KEY `OrganizationID` (`OrganizationID`),
     CONSTRAINT `event_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
@@ -128,7 +139,7 @@ CREATE TABLE `staff` (
 CREATE TABLE `resume` (
     `ResumeID` varchar(6) NOT NULL,
     `StudentID` varchar(6) NOT NULL,
-    `Resume` text NOT NULL,
+    `Resume` text NULL,
     PRIMARY KEY (`ResumeID`),
     KEY `StudentID` (`StudentID`),
     CONSTRAINT `resume_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `student` (`StudentID`)
@@ -143,17 +154,16 @@ CREATE TABLE `student` (
     `UserID` varchar(6) NOT NULL,
     `OrganizationID` varchar(6) NULL,
     `CourseID` varchar(6) NOT NULL,
-    `Address` varchar(45) NOT NULL,
-    `resumeID` varchar(6) NULL,
+    `Address` varchar(255) NOT NULL,
+    `Gender` varchar(1) NOT NULL,
+    `DateOfBirth` date NOT NULL,
     PRIMARY KEY (`StudentID`),
     KEY `CourseID` (`CourseID`),
     KEY `UserID` (`UserID`),
     KEY `OrganizationID` (`OrganizationID`),
-    KEY `resumeID` (`resumeID`),
     CONSTRAINT `student_ibfk_1` FOREIGN KEY (`CourseID`) REFERENCES `course` (`CourseID`),
     CONSTRAINT `student_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
-    CONSTRAINT `student_ibfk_3` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`),
-    CONSTRAINT `student_ibfk_4` FOREIGN KEY (`resumeID`) REFERENCES `resume` (`ResumeID`)
+    CONSTRAINT `student_ibfk_3` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -176,9 +186,11 @@ COMMIT;
 
 
 INSERT INTO `organization` (`OrganizationID`, `OrganizationName`, `Address`, `City`, `State`, `Website`, `Type`, `ContactEmail`, `ContactPhone`, `emailending`) VALUES
-('O00001', 'Youth Venture', '1234 Main St', 'San Jose', 'CA', 'www.youthventure.com', 2, 'admin@youthventure.com', 4081234567, 'youthventure.com');
+('O00001', 'Youth Venture', '1234 Main St', 'San Jose', 'CA', 'www.youthventure.com', 2, 'admin@youthventure.com', 4081234567, 'youthventure.com'),
+('O00002', 'institute1', '1234 Main St', 'San Jose', 'CA', 'www.institutetest.com', 1, 'admin@institutetest.com', 4081234567, 'institutetest.com');
 
-
+INSERT INTO `course` (`CourseID`, `InstitudeID`, `CourseName`) VALUES
+('C00001', 'O00002', 'Course1');
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

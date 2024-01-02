@@ -4,7 +4,11 @@ class Users extends Controller {
     public function __construct() {
         $this->userModel = $this->model('User');
         $this->organizationModel = $this->model('Organization');
+        $this->courseModel = $this->model('Course');
         $this->staffModel = $this->model('Staff');
+        $this->participantModel = $this->model('Participant');
+        $this->studentModel = $this->model('Student');
+        $this->resumeModel = $this->model('Resume');
     }
     
     public function signup() {
@@ -276,6 +280,107 @@ class Users extends Controller {
         $this->view('users/staff_details', $data);
     }
     //student details
+    public function student_details()
+    {
+        //if user already have role, redirect to index
+        if ($_SESSION['role'] == 3) {
+            header('location:' . URLROOT . '/admins');
+        } else if ($_SESSION['role'] == 1) {
+            header('location:' . URLROOT . '/staffs');
+        } else if ($_SESSION['role'] == 2) {
+            header('location:' . URLROOT . '/students');
+        }
+
+        $institution = $this->organizationModel->getAllInstitute();
+        $course = $this->courseModel->getAllCourse();
+
+        if(empty($institution) || empty($course)){
+            echo "<script>alert('Please add institution and course first.');</script>";
+        }
+        $data = [
+            'title' => 'Student Details',
+            'userID' => $_SESSION['user_id'],
+            'studentID' => '',
+            'organizationID' => '',
+            'courseID' => '',
+            'address' => '',
+            'gender' => '',
+            'dateOfBirth' => '',
+            'resumeID' => '',
+            'resume' => '',
+            'institution' => $institution,
+            'course' => $course,
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            //get last student id, if no student, set studentid to S0001 else increment by 1
+            $studentID = $this->studentModel->getMaxStudentId();
+            if ($studentID) {
+                //get the last 4 digits of the last student id
+                $last4Digits = substr($studentID, -4);
+                //convert the last 4 digits to integer
+                $last4Digits = intval($last4Digits);
+                //increment by 1
+                $last4Digits++;
+                //convert back to string
+                $last4Digits = strval($last4Digits);
+                //pad with leading zeros
+                $last4Digits = str_pad($last4Digits, 4, '0', STR_PAD_LEFT);
+                //concatenate with S
+                $data['studentID'] = 'S' . $last4Digits;
+            } else {
+                $data['studentID'] = 'S0001';
+            }
+
+            //do the same for resume id
+            $resumeID = $this->resumeModel->getMaxResumeId();
+            if (!empty($resumeID)   ) {
+                //get the last 4 digits of the last resume id
+                $last4Digits = substr($resumeID, -4);
+                //convert the last 4 digits to integer
+                $last4Digits = intval($last4Digits);
+                //increment by 1
+                $last4Digits++;
+                //convert back to string
+                $last4Digits = strval($last4Digits);
+                //pad with leading zeros
+                $last4Digits = str_pad($last4Digits, 4, '0', STR_PAD_LEFT);
+                //concatenate with R
+                $data['resumeID'] = 'R' . $last4Digits;
+            } else {
+                $data['resumeID'] = 'R0001';
+            }
+
+            $data['organizationID'] = $_POST['organizationID'];
+            $data['courseID'] = $_POST['courseID'];
+            $data['address'] = $_POST['address'];
+            $data['gender'] = $_POST['gender'];
+            $data['dateOfBirth'] = $_POST['dateOfBirth'];
+            $data['resume'] = NULL;
+
+            // Validate the user input (you may want to add more validation)
+            if (empty($data['studentID']) || empty($data['organizationID']) || empty($data['courseID'])) {
+                echo "<script>alert('Please enter all required fields.');</script>";
+            } else {
+                // Run SQL
+                $registerNewStudent = $this->studentModel->addStudent($data);
+                $createResume = $this->resumeModel->addResume($data);
+                if ($registerNewStudent&&$createResume) {
+                    $this->userModel->addRole(2);
+                    $_SESSION['role'] = 2;
+                    $this->redirectToRole($_SESSION['role']);
+                    exit();
+                } else {
+                    // Registration failed
+                    echo "<script>alert('Something went wrong.');</script>";
+                }
+            }
+        }
+
+        $this->view('users/student_details', $data);
+    }
     //forgot password
     //index
     public function index() {

@@ -50,7 +50,7 @@ class Admins extends Controller {
             }
             //run add model
             if ($this->organizationModel->addOrganization($data)) {
-                header('location: ' . URLROOT . '/admins');
+                echo "<script>alert('Organization registered successfully'); window.location.href = '" . URLROOT . "/admins';</script>";
             } else {
                 echo "<script>alert('Something went wrong');</script>";
             }

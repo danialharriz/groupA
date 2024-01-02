@@ -58,7 +58,32 @@ class Participant{
 
         return $results;
     }
+    //get eventid by userid
+    public function get_eventid($userid){
+        $this->db->query('SELECT EventID FROM participant WHERE StudentID = :userid');
 
+        $this->db->bind(':userid', $userid);
+
+        $results = $this->db->resultSet();
+
+        if ($this->db->rowCount() > 0) {
+            return $results;
+        } else {
+            return false;
+        }
+    }
+    public function cancel_participation($userid, $eventid){
+        $this->db->query('DELETE FROM participant WHERE StudentID = :userid AND EventID = :eventid');
+
+        $this->db->bind(':userid', $userid);
+        $this->db->bind(':eventid', $eventid);
+
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

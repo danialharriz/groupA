@@ -88,8 +88,8 @@ class Event{
 
         return $results;
     }
-    public function getUpcomingEvent(){
-        $this->db->query('SELECT * FROM Event WHERE StartDateAndTime > NOW()');
+    public function getUpcomingEvents(){
+        $this->db->query('SELECT * FROM Event WHERE StartDateAndTime > NOW() ORDER BY StartDateAndTime ASC');
 
         $results = $this->db->resultSet();
 
