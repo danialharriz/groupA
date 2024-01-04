@@ -50,6 +50,7 @@ CREATE TABLE `eventOutside` (
     `OLocation` varchar(255) NOT NULL,
     `OEventType` int(1) NULL,
     `OOrganization` varchar(255) NULL,
+    `approvalStatus` int(1) NULL,
     PRIMARY KEY (`OEventID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -129,6 +130,7 @@ CREATE TABLE `staff` (
     `OrganizationID` varchar(6) NOT NULL,
     `Type` varchar(45) NULL,
     `JobTitle` varchar(45) NULL,
+    `validated` int(1) NULL,
     PRIMARY KEY (`StaffID`),
     KEY `OrganizationID` (`OrganizationID`),
     KEY `UserID` (`UserID`),

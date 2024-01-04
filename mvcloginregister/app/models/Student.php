@@ -62,6 +62,23 @@ class Student {
         }
         return $maxId;
     }
+
+    //get student by user id
+    public function getStudentByUserId($userId){
+        $this->db->query('SELECT * FROM student WHERE UserID = :userId');
+
+
+        $this->db->bind(':userId', $userId);
+
+        $results = $this->db->resultSet();
+
+        if ($this->db->rowCount() > 0) {
+            return $results[0];
+        } else {
+            echo "<script>alert('Something went wrong. Please try again.');</script>";
+            return false;
+        }
+    }
 }
 
 ?>

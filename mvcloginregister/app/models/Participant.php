@@ -20,14 +20,22 @@ class Participant{
         $this->db = new Database;
     }
 
+    //get last participant id
+    public function getLastParticipantId(){
+        $this->db->query('SELECT ParticipantID FROM participant ORDER BY ParticipantID DESC LIMIT 1');
+
+        $results = $this->db->single();
+
+        return $results->ParticipantID;
+    }
+
     public function addParticipant($data){
-        $this->db->query('INSERT INTO participant (ParticipantID, StudentID, EventID, Attendance) VALUES(:participantId, :studentId, :eventId, :attendance)');
+        $this->db->query('INSERT INTO participant (ParticipantID, StudentID, EventID) VALUES(:participantId, :studentId, :eventId)');
 
         //Bind values
         $this->db->bind(':participantId', $data['participant_id']);
         $this->db->bind(':studentId', $data['student_id']);
         $this->db->bind(':eventId', $data['event_id']);
-        $this->db->bind(':attendance', $data['attendance']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -72,14 +80,43 @@ class Participant{
             return false;
         }
     }
-    public function cancel_participation($userid, $eventid){
-        $this->db->query('DELETE FROM participant WHERE StudentID = :userid AND EventID = :eventid');
+    public function cancel_participation($participantid){
+        $this->db->query('DELETE FROM participant WHERE ParticipantID = :participantid');
+        
+        $this->db->bind(':participantid', $participantid);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function check_participated($userid, $eventid){
+        $this->db->query('SELECT * FROM participant WHERE StudentID = :userid AND EventID = :eventid');
 
         $this->db->bind(':userid', $userid);
         $this->db->bind(':eventid', $eventid);
 
-        if ($this->db->execute()) {
+        $results = $this->db->resultSet();
+
+        if ($this->db->rowCount() > 0) {
             return true;
+        } else {
+            return false;
+        }
+    }
+    //get participant id
+    public function get_participant_id($studentid, $eventid){
+        $this->db->query('SELECT ParticipantID FROM participant WHERE StudentID = :studentid AND EventID = :eventid');
+
+        $this->db->bind(':studentid', $studentid);
+        $this->db->bind(':eventid', $eventid);
+
+        $results = $this->db->single();
+
+        if ($this->db->rowCount() > 0) {
+            return $results->ParticipantID;
         } else {
             return false;
         }

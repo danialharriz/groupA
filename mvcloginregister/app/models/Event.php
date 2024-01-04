@@ -28,7 +28,7 @@ class Event{
     }
 
     public function addEvent($data){
-        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Validated`)  VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :validated)");
+        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`)  VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId)");
         
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -46,11 +46,6 @@ class Event{
             $this->db->bind(':rewardPoints', null, PDO::PARAM_NULL);
         }
         
-        if (isset($data['validated'])) {
-            $this->db->bind(':validated', $data['validated']);
-        } else {
-            $this->db->bind(':validated', null, PDO::PARAM_NULL);
-        }
 
         //Execute function
         if ($this->db->execute()) {
