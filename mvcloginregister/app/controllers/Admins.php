@@ -5,6 +5,22 @@ class Admins extends Controller {
         $this->organizationModel = $this->model('Organization');
         $this->eventModel = $this->model('Event');      
         $this->courseModel = $this->model('Course');
+        $this->participantModel = $this->model('Participant');
+        $this->outsideEventModel = $this->model('EventOutside');
+        $this->userModel = $this->model('User');
+        $this->studentModel = $this->model('Student');
+        $this->feedbackModel = $this->model('Feedback');
+
+        //check if user is logged in
+        if (!isLoggedIn()) {
+            //if not logged in, redirect to login page
+            header('location: ' . URLROOT . '/users/login');
+        }
+        //check if user is admin
+        if ($_SESSION['role'] != 3) {
+            //if not admin, redirect to login page
+            header('location: ' . URLROOT . '/users/logout');
+        }
     }
     public function register_organization() {
         // Check for POST
@@ -353,9 +369,21 @@ class Admins extends Controller {
         //get event id from url
         $url = $this->getUrl();
         $eventId = $url[2];
-        //delete event
-        if ($this->eventModel->deleteEvent($eventId)) {
-            header('location: ' . URLROOT . '/admins/all_events');
+        //get all participants of the event
+        $participantId = $this->participantModel->getParticipantByEventId($eventId);
+        //delete all feedbacks of the event
+        if($this->feedbackModel->deleteFeedbackByParticipantId($participantId)){
+            //delete all participants of the event
+            if($this->participantModel->deleteParticipantByEventId($eventId)){
+                //delete event
+                if($this->eventModel->deleteEvent($eventId)){
+                    echo "<script>alert('Event deleted successfully'); window.location.href = '" . URLROOT . "/admins/all_events';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            } else {
+                echo "<script>alert('Something went wrong');</script>";
+            }
         } else {
             echo "<script>alert('Something went wrong');</script>";
         }
@@ -406,7 +434,126 @@ class Admins extends Controller {
         ];
         $this->view('admins/all_events', $data);
     }
+    public function show_participants($eventId){
+        $participants = $this->participantModel->getParticipantByEventId($eventId);
+        foreach ($participants as $participant){
+            $participant->Student = $this->studentModel->getStudentById($participant->StudentID);
+            $participant->User = $this->userModel->getUserById($participant->Student->UserID);
+            $participant->Organization = $this->organizationModel->getOrganizationById($participant->Student->OrganizationID);
+        }
+        $data = [
+            'participants' => $participants,
+        ];
+        $this->view('admins/show_participants', $data);
+    }
+    public function remove_participant($participantID){
+        if($this->participantModel->cancel_participation($participantID)){
+            echo "<script>alert('Participant removed successfully'); window.location.href = '" . URLROOT . "/admins/all_events';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
+    public function pending_approval_staff(){
+        $staffs = $this->adminModel->getPendingStaff();
+        foreach($staffs as $staff){
+            $staff->OrganizationName = $this->organizationModel->getOrganizationName($staff->OrganizationID);
+            $staff->User = $this->userModel->getUserById($staff->UserID);
+        }
+        $data = [
+            'staffs' => $staffs,
+        ];
+        $this->view('admins/pending_approval_staff', $data);
+    }
+    //approve staff
+    public function approve_staff(){
+        $url = $this->getUrl();
+        $staffId = $url[2];
+        $userid = $this->adminModel->getStaff($staffId)->UserID;
+        if($this->adminModel->approveStaff($staffId)){
+            $orgid = $this->adminModel->getStaff($staffId)->OrganizationID;
+            if($orgid = "O00001"){
+                if($this->userModel->setRole($userid, 3)){
+                    echo "<script>alert('Staff approved successfully'); window.location.href = '" . URLROOT . "/admins/pending_approval_staff';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            } else {
+                if($this->userModel->setRole($userrid, 1)){
+                    echo "<script>alert('Staff approved successfully'); window.location.href = '" . URLROOT . "/admins/pending_approval_staff';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            }
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
+    //reject staff
+    public function reject_staff(){
+        $url = $this->getUrl();
+        $staffId = $url[2];
+        if($this->adminModel->rejectStaff($staffId)){
+            echo "<script>alert('Staff rejected successfully'); window.location.href = '" . URLROOT . "/admins/pending_approval_staff';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
 
+    //view all outside events
+    public function viewOutsideEvents(){
+        $outsideEvents = $this->outsideEventModel->getEventNA();
+        $data = [
+            'outsideEvents' => $outsideEvents,
+        ];
+        $this->view('admins/viewOutsideEvents', $data);
+    }
+
+    //view outside event
+    public function view_outside_event(){
+        $url = $this->getUrl();
+        $eventId = $url[2];
+        $outsideEvent = $this->outsideEventModel->getEventById($eventId);
+        $data = [
+            'eventId' => $eventId,
+            'eventName' => $outsideEvent->OEventName,
+            'description' => $outsideEvent->ODescription,
+            'startDateAndTime' => $outsideEvent->OStartDateAndTime,
+            'endDateAndTime' => $outsideEvent->OEndDateAndTime,
+            'location' => $outsideEvent->OLocation,
+            'eventType' => $outsideEvent->OEventType,
+            'organization' => $outsideEvent->OOrganization,
+            'event_id_err' => '',
+            'event_name_err' => '',
+            'description_err' => '',
+            'start_date_and_time_err' => '',
+            'end_date_and_time_err' => '',
+            'location_err' => '',
+            'event_type_err' => '',
+            'organization_err' => '',
+        ];
+        //show request student info
+        $data['student'] = $this->studentModel->getStudentById($outsideEvent->studentID);
+        //student user info
+        $data['user'] = $this->userModel->getUserById($data['student']->UserID);
+        $this->view('admins/view_outside_event', $data);
+    }
+
+    //approve outside event
+    public function approve_outside_event($eventId){
+        if($this->outsideEventModel->approveEvent($eventId)){
+            echo "<script>alert('Event approved successfully'); window.location.href = '" . URLROOT . "/admins/viewOutsideEvents';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
+    //reject outside event
+    public function reject_outside_event($eventId){
+        if($this->outsideEventModel->rejectEvent($eventId)){
+            echo "<script>alert('Event rejected successfully'); window.location.href = '" . URLROOT . "/admins/viewOutsideEvents';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
     public function getUrl(){
         if(isset($_GET['url'])){
           $url = rtrim($_GET['url'], '/');

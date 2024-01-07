@@ -76,6 +76,20 @@ class User {
             return false;
         }
     }
+    public function getUserById($userId) {
+        $this->db->query('SELECT * FROM user WHERE UserID = :userId');
+
+        // Email param will be binded with the email variable
+        $this->db->bind(':userId', $userId);
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row;
+        } else {
+            return false;
+        }
+    }
     public function addRole($role) {
         $this->db->query('UPDATE User SET Role = :role WHERE UserID = :userId');
 
@@ -88,7 +102,19 @@ class User {
             return false;
         }
     }
+    public function setRole($userid, $role) {
+        $this->db->query('UPDATE User SET Role = :role WHERE UserID = :userId');
 
+        //Bind values
+        $this->db->bind(':userId', $userid);
+        $this->db->bind(':role', $role);
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
     //get Role  
     public function getRole() {
         $this->db->query('SELECT Role FROM user WHERE UserID = :userId');

@@ -9,10 +9,16 @@ class Students extends Controller {
         $this->participateModel = $this->model('Participant');
         $this->feedbackModel = $this->model('Feedback');
         $this->outsideEventModel = $this->model('EventOutside');
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+        if (isLoggedIn() && $_SESSION['role'] != 2) {
+            redirect('users/login');
+        }
     }
 
     public function addOutsideEvent() {
-
         $data = [
             'title' => 'Add Outside Event',
             'eventName' => '',
@@ -261,15 +267,179 @@ class Students extends Controller {
     }
 
     public function viewOutsideEvents() {
+        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
         $data = [
             'title' => 'Outside Events',
             'events' => '',
             'Error' => '',
         ];
-        $data['events'] = $this->outsideEventModel->getAllEvent();
+        $data['events'] = $this->outsideEventModel->getEventByStudentId($student_id);
+        if(empty($data['events'])){
+            echo "<script>alert('You have not added any outside event yet.');window.location.href = '" . URLROOT . "/students/viewUpcomingEvents';</script>";    
+        }
         $this->view('students/viewOutsideEvents', $data);
     }
 
+    public function viewOutsideEvent(){
+        $url = $this->getUrl();
+        $eventid = $url[2];
+        $data = [
+            'title' => 'View Outside Event',
+            'event' => '',
+            'Error' => '',
+        ];
+        $data['event'] = $this->outsideEventModel->getEventById($eventid);
+        $this->view('students/viewOutsideEvent', $data);
+    }
+
+    public function deleteOutsideEvent() {
+        $url = $this->getUrl();
+        $eventid = $url[2];
+        $data = [
+            'title' => 'Delete Outside Event',
+            'event' => '',
+            'Error' => '',
+        ];
+        $data['event'] = $this->outsideEventModel->getEventById($eventid);
+        if ($this->outsideEventModel->deleteEvent($eventid)) {
+            echo "<script>alert('Event deleted successfully.'); window.location.href = '" . URLROOT . "/students/viewOutsideEvents';</script>";
+        } else {
+            echo "<script>alert('Something went wrong. Please try again.');</script>";
+        }
+    }
+
+    public function updateOutsideEvent() {
+        $url = $this->getUrl();
+        $eventid = $url[2];
+        //fetch existing event details
+        $data = [
+            'title' => 'Update Outside Event',
+            'event' => '',
+            'eventNameError' => '',
+            'descriptionError' => '',
+            'startDateTimeError' => '',
+            'endDateTimeError' => '',
+            'locationError' => '',
+            'eventTypeError' => '',
+            'organizationError' => '',
+            'approvalStatusError' => '',
+            'studentIdError' => '',
+        ];
+        $data['event'] = $this->outsideEventModel->getEventById($eventid);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            // Process form
+            $data = [
+                'title' => 'Update Outside Event',
+                'eventId' => $eventid, //this is the event id of the event that is being updated, not the new event id
+                'event' => $this->outsideEventModel->getEventById($eventid),
+                'eventName' => trim($_POST['eventName']),
+                'description' => trim($_POST['description']),
+                'startDateTime' => trim($_POST['startDateTime']),
+                'endDateTime' => trim($_POST['endDateTime']),
+                'location' => trim($_POST['location']),
+                'eventType' => trim($_POST['eventType']),
+                'organization' => trim($_POST['organization']),
+                'approvalStatus' => 0,
+                'studentId' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID,
+                'eventNameError' => '',
+                'descriptionError' => '',
+                'startDateTimeError' => '',
+                'endDateTimeError' => '',
+                'locationError' => '',
+                'eventTypeError' => '',
+                'organizationError' => '',
+                'approvalStatusError' => '',
+                'studentIdError' => '',
+            ];
+            // Validate Event Name
+            if (empty($data['eventName'])) {
+                $data['eventNameError'] = 'Please enter event name';
+            }
+            // Validate Description
+            if (empty($data['description'])) {
+                $data['descriptionError'] = 'Please enter description';
+            }
+            // Validate Start Date and Time
+            if (empty($data['startDateTime'])) {
+                $data['startDateTimeError'] = 'Please enter start date and time';
+            }
+            // Validate End Date and Time
+            if (empty($data['endDateTime'])) {
+                $data['endDateTimeError'] = 'Please enter end date and time';
+            }
+            if ($data['startDateTime'] > $data['endDateTime']) {
+                $data['endDateTimeError'] = 'End date and time must be later than start date and time';
+            }
+            if ($data['startDateTime'] == $data['endDateTime']) {
+                $data['endDateTimeError'] = 'End date and time must be later than start date and time';
+            }
+            if ($data['endDateTime'] >= date("Y-m-d H:i:s")) {
+                $data['endDateTimeError'] = 'You can only add event after the event ended';
+            }
+            // Validate Location
+            if (empty($data['location'])) {
+                $data['locationError'] = 'Please enter location';
+            }
+            // Validate Event Type
+            if (empty($data['eventType'])) {
+                $data['eventTypeError'] = 'Please enter event type';
+            }
+            if (empty($data['eventNameError']) && empty($data['descriptionError']) && empty($data['startDateTimeError']) && empty($data['endDateTimeError']) && empty($data['locationError']) && empty($data['eventTypeError'])) {
+                if ($this->outsideEventModel->updateEvent($data)) {
+                    echo "<script>alert('Event updated successfully.'); window.location.href = '" . URLROOT . "/students/viewOutsideEvents';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong. Please try again.');</script>";
+                }
+            }
+            $this->view('students/updateOutsideEvent', $data);
+        }
+        $this->view('students/updateOutsideEvent', $data);
+    }
+
+    public function feedback(){
+        $data = [
+            'title' => 'Feedback',
+            'event' => '',
+            'Error' => '',
+        ];
+        $url = $this->getUrl();
+        $eventid = $url[2];
+        $studentid = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $participantid = $this->participateModel->get_participant_id($studentid, $eventid);
+        $data['event'] = $this->eventModel->getEventById($eventid);
+        $data['event']->organization_name = $this->organizationModel->getOrganizationName($data['event']->OrganizationID);
+        $data['event']->participant_id = $participantid;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            // Process form
+            $data = [
+                'title' => 'Feedback',
+                'event' => $this->eventModel->getEventById($eventid),
+                'participant_id' => $participantid,
+                'feedback' => trim($_POST['feedback']),
+                'submitted_date_and_time' => date("Y-m-d H:i:s"),
+                'feedbackError' => '',
+            ];
+            // Validate Feedback
+            if (empty($data['feedback'])) {
+                $data['feedbackError'] = 'Please enter feedback';
+            }
+            if (empty($data['feedbackError'])) {
+                if ($this->feedbackModel->addfeedback($data)) {
+                    echo "<script>alert('Feedback submitted successfully.'); window.location.href = '" . URLROOT . "/students/view_event/" . $eventid . "';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong. Please try again.');</script>";
+                }
+            }
+            $this->view('students/feedback', $data);
+        }
+        $this->view('students/feedback', $data);
+    }
     public function index() {
         $data = [
             'title' => 'Student Dashboard',

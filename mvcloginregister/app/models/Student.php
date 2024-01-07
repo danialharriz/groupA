@@ -48,6 +48,14 @@ class Student {
         return $maxId;
     }
 
+    //get student by id
+    public function getStudentById($studentId){
+        $this->db->query('SELECT * FROM student WHERE StudentID = :studentId');
+        $this->db->bind(':studentId', $studentId);
+        $result = $this->db->single();
+        return $result;
+    }
+
     //get student by user id
     public function getStudentByUserId($userId){
         $this->db->query('SELECT * FROM student WHERE UserID = :userId');

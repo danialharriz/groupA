@@ -177,5 +177,18 @@ class Organization {
             return false;
         }
     }
+    public function getOrganizationById($organizationId) {
+        $this->db->query('SELECT * FROM organization WHERE OrganizationID = :organizationId');
+
+        $this->db->bind(':organizationId', $organizationId);
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row;
+        } else {
+            return false;
+        }
+    }
 } 
 ?>

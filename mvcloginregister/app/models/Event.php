@@ -99,7 +99,7 @@ class Event{
     }
 
     public function updateEvent($data){
-        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, Validated = :validated WHERE EventID = :eventId');
+        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType WHERE EventID = :eventId');
 
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -109,9 +109,7 @@ class Event{
         $this->db->bind(':endDateAndTime', $data['endDateAndTime']);
         $this->db->bind(':location', $data['location']);
         $this->db->bind(':eventType', $data['eventType']);
-        $this->db->bind(':rewardPoints', $data['rewardPoints']);
-        $this->db->bind(':validated', $data['validated']);
-
+        
         //Execute function
         if ($this->db->execute()) {
             return true;

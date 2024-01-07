@@ -121,6 +121,17 @@ class Participant{
             return false;
         }
     }
-}
+    public function deleteParticipantByEventId($eventId){
+        $this->db->query('DELETE FROM participant WHERE EventID = :eventId');
+        
+        $this->db->bind(':eventId', $eventId);
 
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 ?>

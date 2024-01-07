@@ -12,7 +12,6 @@ class Staff {
         $this->db->bind(':staffId', $data['staffId']);
         $this->db->bind(':userId', $_SESSION['user_id']);
         $this->db->bind(':organizationId', $data['organizationId']);
-        //$this->db->bind(':type', $data['type']);
         $this->db->bind(':jobTitle', $data['jobTitle']);
         $this->db->bind(':validated', $data['validated']);
 
@@ -23,7 +22,39 @@ class Staff {
             return false;
         }
     }
+    public function getPendingStaff() {
+        $this->db->query('SELECT * FROM Staff WHERE validated = 3');
 
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
+    public function approvestaff($staffId) {
+        $this->db->query('UPDATE Staff SET validated = 1 WHERE StaffId = :staffId');
+
+        //Bind values
+        $this->db->bind(':staffId', $staffId);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function rejectstaff($staffId) {
+        $this->db->query('UPDATE Staff SET validated = 2 WHERE StaffId = :staffId');
+
+        //Bind values
+        $this->db->bind(':staffId', $staffId);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function getlastid() {
         $result = $this->db->query('SELECT StaffId FROM Staff ORDER BY StaffId DESC LIMIT 1');
         $latestUserId = $result->fetchColumn();
@@ -59,6 +90,33 @@ class Staff {
             return $row->maxStaffId;
         } else {
             return false;
+        }
+    }
+
+    public function getStaffByUserId($userId) {
+        $this->db->query('SELECT * FROM staff WHERE UserId = :userId');
+
+        $this->db->bind(':userId', $userId);
+
+        $results = $this->db->single();
+
+        if ($results) {
+            return $results;
+        } else {
+            return null; // or handle the case when $results is false
+        }
+    }
+    public function getStaff($staffId) {
+        $this->db->query('SELECT * FROM staff WHERE StaffId = :staffId');
+
+        $this->db->bind(':staffId', $staffId);
+
+        $results = $this->db->single();
+
+        if ($results) {
+            return $results;
+        } else {
+            return null; // or handle the case when $results is false
         }
     }
 }

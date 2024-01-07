@@ -3,53 +3,57 @@
     <title><?php echo $data['title']; ?></title>
     <style>
         body {
-            background-color: #f3f3f3;
-        }
-        h1 {
-            text-align: center;
-            font-family: "Trebuchet MS", Helvetica, sans-serif;
-            color: #003300;
-        }
-        form {
-            width: 50%;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #B0C4DE;
-            background: white;
-            border-radius: 0px 0px 10px 10px;
-        }
-        .form-control {
-            display: block;
-            width: 100%;
-            height: calc(1.5em + 0.75rem + 2px);
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #495057;
-            background-color: white;
-            background-clip: padding-box;
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-        }
-        label {
-            font-family: "Trebuchet MS", Helvetica, sans-serif;
-            font-size: 18px;
-            color: #003300;
-        }
-        #submit {
-            font-family: "Trebuchet MS", Helvetica, sans-serif;
-            font-size: 18px;
-            background: #003300;
-            color: #fff;
-            border-radius: 5px;
-            padding: 5px;
-            border: none;
-            width: 100px;
-        }
-        .invalidFeedback {
-            color: red;
-        }
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    width: 50%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.invalidFeedback {
+    color: red;
+    margin-top: 5px;
+    display: block;
+}
+
     </style>
 </head>
 <body>

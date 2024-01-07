@@ -62,9 +62,22 @@ class EventOutside{
         }
     }
 
-    public function getAllEvent(){
-        $this->db->query('SELECT * FROM eventOutside');
+    public function rejectEvent($eventId){
+        $this->db->query('UPDATE eventOutside SET approvalStatus = 2 WHERE OEventID = :eventId');
 
+        //Bind values
+        $this->db->bind(':eventId', $eventId);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getEventNA(){
+        $this->db->query('SELECT * FROM eventOutside WHERE approvalStatus = 0');
         $results = $this->db->resultSet();
 
         return $results;
@@ -87,8 +100,8 @@ class EventOutside{
         $this->db->bind(':eventId', $data['eventId']);
         $this->db->bind(':eventName', $data['eventName']);
         $this->db->bind(':description', $data['description']);
-        $this->db->bind(':startDateAndTime', $data['startDateAndTime']);
-        $this->db->bind(':endDateAndTime', $data['endDateAndTime']);
+        $this->db->bind(':startDateAndTime', $data['startDateTime']);
+        $this->db->bind(':endDateAndTime', $data['endDateTime']);
         $this->db->bind(':location', $data['location']);
         $this->db->bind(':eventType', $data['eventType']);
         $this->db->bind(':organization', $data['organization']);
@@ -115,7 +128,15 @@ class EventOutside{
             return false;
         }
     }
+    public function getEventByStudentId($studentId){
+        $this->db->query('SELECT * FROM eventOutside WHERE studentID = :studentId');
 
+        $this->db->bind(':studentId', $studentId);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
     //get the max event id
     public function getMaxEventId(){
         $this->db->query('SELECT MAX(OEventID) AS id FROM eventOutside');

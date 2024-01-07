@@ -85,5 +85,18 @@ class feedback{
             return false;
         }
     }
+
+    public function deletefeedbackByParticipantId($participantId){
+        $this->db->query('DELETE FROM feedback WHERE ParticipantID = :participantId');
+
+        $this->db->bind(':participantId', $participantId);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 ?>

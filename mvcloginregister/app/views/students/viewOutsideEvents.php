@@ -111,9 +111,9 @@
                                         }
                                     ?></td>
                                     <?php if ($event->approvalStatus == 2) : ?>
-                                        <td><a href="<?php echo URLROOT; ?>/students/UpdateOutsideEvent/<?php echo $event->OEventID; ?>">Update</a></td>
+                                        <td><a href="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $event->OEventID; ?>">Update</a></td>
                                     <?php else : ?>
-                                        <td><a href="<?php echo URLROOT; ?>/students/OutsideEvent/<?php echo $event->OEventID; ?>">View</a></td>
+                                        <td><a href="<?php echo URLROOT; ?>/students/viewOutsideEvent/<?php echo $event->OEventID; ?>">View</a></td>
                                     <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>

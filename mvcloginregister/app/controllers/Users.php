@@ -97,6 +97,11 @@ class Users extends Controller {
             'credentialsError' => '',
         ];
 
+        //check if user is logged in
+        if (isset($_SESSION['user_id'])) {
+            $this->redirectToRole($_SESSION['role']);
+        }
+
         // Check if the form is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Get the user input
@@ -191,15 +196,16 @@ class Users extends Controller {
             header('location:' . URLROOT . '/users/' . $_SESSION['role'] . '_details');
             exit();
         }
-        $staffAccount = $this->staffModel->getOrganizationId($_SESSION['user_id']);
+        $staffAccount = $this->staffModel->getStaffByUserId($_SESSION['user_id']);
         if ($staffAccount) {
             if ($_SESSION['role'] == 3) {
                 header('location:' . URLROOT . '/admins');
             } else if ($_SESSION['role'] == 1) {
                 header('location:' . URLROOT . '/staffs');
-            }else if ($staffAccount->Validated == 0) {
-                //logout ('location:' . URLROOT . '/users/logout');
-                echo "<script>alert('Your staff account is pending for approval.'; window.location.href='logout';</script>";
+            }else if ($staffAccount->validated == 3) {
+                echo "<script>alert('Your staff account is pending for approval. Use your organization email to avoid this.'); window.location.href='" . URLROOT . "/users/logout';</script>";
+            }else if ($staffAccount->validated == 2) {
+                echo "<script>alert('Your staff account is rejected. Please contact admin for more information.'); window.location.href='" . URLROOT . "/users/logout';</script>";
             }
         }
         //get the email hosting after @
@@ -268,6 +274,24 @@ class Users extends Controller {
                 'organizationId' => '',
                 'validated' => '',
             ];
+            //get last staff id, if no staff, set staffid to S0001 else increment by 1
+            $lastStaffId = $this->staffModel->getLastStaffId();
+            if ($lastStaffId) {
+                //get the last 4 digits of the last staff id
+                $last4Digits = substr($lastStaffId, -4);
+                //convert the last 4 digits to integer
+                $last4Digits = intval($last4Digits);
+                //increment by 1
+                $last4Digits++;
+                //convert back to string
+                $last4Digits = strval($last4Digits);
+                //pad with leading zeros
+                $last4Digits = str_pad($last4Digits, 4, '0', STR_PAD_LEFT);
+                //concatenate with S
+                $data['staffId'] = 'S' . $last4Digits;
+            } else {
+                $data['staffId'] = 'S0001';
+            }
             $emailEnd = explode('@', $_SESSION['email']);
             $org = $this->organizationModel->checkEmailEnding($emailEnd[1]);
             if(!empty($org)){
@@ -280,33 +304,15 @@ class Users extends Controller {
                 echo "<script>alert('Please enter all required fields.');</script>";
             //verify the user email if are member of organization
             } else if (!$this->organizationModel->verifyOrganizationEmail($data['organizationId'], $_SESSION['email'])) {
-                $data['validated'] = 0;
+                $data['validated'] = 3;
                 $registerNewStaff = $this->staffModel->addStaff($data);
                 if ($registerNewStaff) {
-                    echo "<script>alert('Your staff account is pending for approval. Use your organization email to avoid this.');</script>";
+                    echo "<script>alert('Your staff account is pending for approval. Use your organization email to avoid this.'); window.location.href='" . URLROOT . "/users/logout';</script>";
                 } else {
                     // Registration failed
                     echo "<script>alert('Something went wrong.');</script>";
                 }
             }else {
-                //get last staff id, if no staff, set staffid to S0001 else increment by 1
-                $lastStaffId = $this->staffModel->getLastStaffId();
-                if ($lastStaffId) {
-                    //get the last 4 digits of the last staff id
-                    $last4Digits = substr($lastStaffId, -4);
-                    //convert the last 4 digits to integer
-                    $last4Digits = intval($last4Digits);
-                    //increment by 1
-                    $last4Digits++;
-                    //convert back to string
-                    $last4Digits = strval($last4Digits);
-                    //pad with leading zeros
-                    $last4Digits = str_pad($last4Digits, 4, '0', STR_PAD_LEFT);
-                    //concatenate with S
-                    $data['staffId'] = 'S' . $last4Digits;
-                } else {
-                    $data['staffId'] = 'S0001';
-                }
                 $data['validated'] = 1;
                 //Run SQL
                 $registerNewStaff = $this->staffModel->addStaff($data);
@@ -455,6 +461,9 @@ class Users extends Controller {
     //forgot password
     //index
     public function index() {
+        if (isset($_SESSION['user_id'])) {
+            $this->redirectToRole($_SESSION['role']);
+        }
         $this->view('index');
     }
 }
