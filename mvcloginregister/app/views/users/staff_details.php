@@ -127,12 +127,14 @@
     ?>
     <h1><?php echo $data['title']; ?></h1>
     <form method="POST" action="<?php echo URLROOT; ?>/users/staff_details">
-        <label for="organizationId">Organization:</label>
-        <select name="organizationId">
-            <?php foreach ($data['organizations'] as $organization) : ?>
-                <option value="<?php echo $organization->OrganizationID; ?>"><?php echo $organization->OrganizationName; ?></option>
-            <?php endforeach; ?>
-        </select>
+        <?php if (empty($data['organizationId'])) : ?>
+            <label for="organizationId">Organization:</label>
+            <select name="organizationId">
+                <?php foreach ($data['organizations'] as $organization) : ?>
+                    <option value="<?php echo $organization->OrganizationID; ?>"><?php echo $organization->OrganizationName; ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php endif; ?>
         <br>
         <label for="jobTitle">Job Title:</label>
         <input type="text" name="jobTitle" id="jobTitle" value="<?php echo $data['jobTitle']; ?>">

@@ -32,8 +32,8 @@ class Course{
         }
     }
 
-    public function getCourseByInstitudeId($institudeId){
-        $this->db->query('SELECT * FROM Course WHERE InstitudeID = :institudeId');
+    public function getCourseByOrganizationId($institudeId){
+        $this->db->query('SELECT * FROM Course WHERE OrganizationID = :institudeId');
 
         $this->db->bind(':institudeId', $institudeId);
 

@@ -22,28 +22,13 @@ class Student {
         } else {
             return false;
         }
-    }   
-
-    public function addOutsideEvent($data) {
-        $this->db->query('INSERT INTO Event (Name, Description, StartDateAndTime, EndDateAndTime, Location, EventType, OrganizationId, UserId)
-        VALUES (:name, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :organizationId, :userId');
-
-        //Bind values
-        $this->db->bind(':userId', $last_id);
-        $this->db->bind(':name', $data['eventName']);
-        $this->db->bind(':description', $data['description']);
-        $this->db->bind(':startDateAndTime', $data['startDateTime']);
-        $this->db->bind(':endDateAndTime', $data['endDateTime']);
-        $this->db->bind(':location', $data['location']);
-        $this->db->bind(':eventType', $data['eventType']);
-        // $this->db->bind(':organizationId', $data['organizationId']);
-        $this->db->bind(':userId', $_SESSION['user_id']);
-        
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        };
+    }
+    
+    public function getOrganizationId($userId) {
+        $this->db->query('SELECT OrganizationID FROM student WHERE UserID = :userId');
+        $this->db->bind(':userId', $userId);
+        $result = $this->db->single();
+        return $result;
     }
     
     public function getAllId() {

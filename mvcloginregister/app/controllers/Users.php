@@ -66,12 +66,21 @@ class Users extends Controller {
                 } else {
                     $data['userId'] = 'U0001';
                 }
+
+                //Check Email
+                $emailEnd = explode('@', $data['email']);
+
                 //Run SQL
                 $registerNewUser = $this->userModel->signup($data);
                 if ($registerNewUser) {
                     echo "<script>alert('Registration successful!');</script>";
-                    $loggedInUser = $this->userModel->login($data['email'], $data['password']);
-                    $this->createUserSession($loggedInUser);
+                    $loggedInUser = $this->userModel->login($data['email'], $_POST['password']);
+                    if(empty($loggedInUser)){
+                        echo "<script>alert('Something went wrong.');</script>";
+                    }
+                    else{
+                        $this->createUserSession($loggedInUser);
+                    }
                 } else {
                     // Registration failed
                     die('Something went wrong.');
@@ -182,6 +191,27 @@ class Users extends Controller {
             header('location:' . URLROOT . '/users/' . $_SESSION['role'] . '_details');
             exit();
         }
+        $staffAccount = $this->staffModel->getOrganizationId($_SESSION['user_id']);
+        if ($staffAccount) {
+            if ($_SESSION['role'] == 3) {
+                header('location:' . URLROOT . '/admins');
+            } else if ($_SESSION['role'] == 1) {
+                header('location:' . URLROOT . '/staffs');
+            }else if ($staffAccount->Validated == 0) {
+                //logout ('location:' . URLROOT . '/users/logout');
+                echo "<script>alert('Your staff account is pending for approval.'; window.location.href='logout';</script>";
+            }
+        }
+        //get the email hosting after @
+        $emailEnd = explode('@', $_SESSION['email']);
+        $Org = $this->organizationModel->checkEmailEnding($emailEnd[1]);
+        if(!empty($Org)){
+            if($Org->Type == 1){
+                header('location:' . URLROOT . '/users/student_details');
+            }else if($Org->Type == 2){
+                header('location:' . URLROOT . '/users/staff_details');
+            }
+        }
         $data = [
             'title' => 'Select Role',
             'selected_role' => '',
@@ -214,13 +244,19 @@ class Users extends Controller {
                 header('location:' . URLROOT . '/admins');
             } else if ($_SESSION['role'] == 1) {
                 header('location:' . URLROOT . '/staffs');
-            }
+            } 
         }
         $data = [
             'title' => 'Staff Details',
             'organizations' => $this->organizationModel->getAllCompany(),
             'jobTitle' => '',
+            `organizationId` => '',
         ];
+        $emailEnd = explode('@', $_SESSION['email']);
+        $org = $this->organizationModel->checkEmailEnding($emailEnd[1]);
+        if(!empty($org)){
+            $data['organizationId'] = $org->OrganizationID;    
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
@@ -229,14 +265,29 @@ class Users extends Controller {
                 'jobTitle' => $_POST['jobTitle'],
                 'type' => '',
                 'staffId' => '',
-                'organizationId' => $_POST['organizationId'],
+                'organizationId' => '',
+                'validated' => '',
             ];
+            $emailEnd = explode('@', $_SESSION['email']);
+            $org = $this->organizationModel->checkEmailEnding($emailEnd[1]);
+            if(!empty($org)){
+                $data['organizationId'] = $org->OrganizationID;    
+            } else {
+                $data['organizationId'] = $_POST['organizationId'];
+            }
             // Validate the user input (you may want to add more validation)
             if (empty($data['jobTitle'])) {
                 echo "<script>alert('Please enter all required fields.');</script>";
             //verify the user email if are member of organization
             } else if (!$this->organizationModel->verifyOrganizationEmail($data['organizationId'], $_SESSION['email'])) {
-                echo "<script>alert('Please use your organization email.');</script>";
+                $data['validated'] = 0;
+                $registerNewStaff = $this->staffModel->addStaff($data);
+                if ($registerNewStaff) {
+                    echo "<script>alert('Your staff account is pending for approval. Use your organization email to avoid this.');</script>";
+                } else {
+                    // Registration failed
+                    echo "<script>alert('Something went wrong.');</script>";
+                }
             }else {
                 //get last staff id, if no staff, set staffid to S0001 else increment by 1
                 $lastStaffId = $this->staffModel->getLastStaffId();
@@ -256,6 +307,7 @@ class Users extends Controller {
                 } else {
                     $data['staffId'] = 'S0001';
                 }
+                $data['validated'] = 1;
                 //Run SQL
                 $registerNewStaff = $this->staffModel->addStaff($data);
                 if ($registerNewStaff) {
@@ -282,15 +334,12 @@ class Users extends Controller {
     //student details
     public function student_details()
     {
-        //if user already have role, redirect to index
-        if ($_SESSION['role'] == 3) {
-            header('location:' . URLROOT . '/admins');
-        } else if ($_SESSION['role'] == 1) {
-            header('location:' . URLROOT . '/staffs');
-        } else if ($_SESSION['role'] == 2) {
-            header('location:' . URLROOT . '/students');
+        if(!empty($_SESSION['role'])){
+            $this->redirectToRole($_SESSION['role']);
         }
 
+        $emailEnd = explode('@', $_SESSION['email']);
+        $org = $this->organizationModel->checkEmailEnding($emailEnd[1]);
         $institution = $this->organizationModel->getAllInstitute();
         $course = $this->courseModel->getAllCourse();
 
@@ -300,8 +349,7 @@ class Users extends Controller {
         $data = [
             'title' => 'Student Details',
             'userID' => $_SESSION['user_id'],
-            'studentID' => '',
-            'organizationID' => '',
+            'studentID' => '',  
             'courseID' => '',
             'address' => '',
             'gender' => '',
@@ -311,6 +359,10 @@ class Users extends Controller {
             'institution' => $institution,
             'course' => $course,
         ];
+
+        if(!empty($org)){
+            $data['organizationId'] = $org->OrganizationID;    
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -353,7 +405,11 @@ class Users extends Controller {
                 $data['resumeID'] = 'R0001';
             }
 
-            $data['organizationID'] = $_POST['organizationID'];
+            if(!empty($org)){
+                $data['organizationID'] = $org->OrganizationID;    
+            } else {
+                $data['organizationID'] = $_POST['organizationID'];
+            }
             $data['courseID'] = $_POST['courseID'];
             $data['address'] = $_POST['address'];
             $data['gender'] = $_POST['gender'];
@@ -378,8 +434,23 @@ class Users extends Controller {
                 }
             }
         }
-
         $this->view('users/student_details', $data);
+    }
+
+    // In your controller
+    public function get_courses_by_organization_id() {
+        $organizationId = $this->getUrl()[2];
+        $courses = $this->courseModel->getCourseByOrganizationId($organizationId);
+        echo json_encode($courses);
+    }
+    
+    public function getUrl(){
+        if(isset($_GET['url'])){
+          $url = rtrim($_GET['url'], '/');
+          $url = filter_var($url, FILTER_SANITIZE_URL);
+          $url = explode('/', $url);
+          return $url;
+        }
     }
     //forgot password
     //index

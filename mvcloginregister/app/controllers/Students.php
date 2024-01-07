@@ -7,9 +7,12 @@ class Students extends Controller {
         $this->organizationModel = $this->model('Organization');
         $this->eventModel = $this->model('Event');
         $this->participateModel = $this->model('Participant');
+        $this->feedbackModel = $this->model('Feedback');
+        $this->outsideEventModel = $this->model('EventOutside');
     }
 
     public function addOutsideEvent() {
+
         $data = [
             'title' => 'Add Outside Event',
             'eventName' => '',
@@ -18,43 +21,100 @@ class Students extends Controller {
             'endDateTime' => '',
             'location' => '',
             'eventType' => '',
-            'Error' => '',
+            'organization' => '',
+            'approvalStatus' => '',
+            'studentId' => '',
+            'eventNameError' => '',
+            'descriptionError' => '',
+            'startDateTimeError' => '',
+            'endDateTimeError' => '',
+            'locationError' => '',
+            'eventTypeError' => '',
+            'organizationError' => '',
+            'approvalStatusError' => '',
+            'studentIdError' => '',
         ];
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Get the user input
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            // Process form
             $data = [
                 'title' => 'Add Outside Event',
-                'eventName' => $_POST['name'],
-                'description' => $_POST['description'],
-                'startDateTime' => $_POST['start_date_and_time'],
-                'endDateTime' => $_POST['end_date_and_time'],
-                'location' => $_POST['location'],
-                'eventType' => $_POST['event_type'],
-                'Error' => '',
+                'eventName' => trim($_POST['eventName']),
+                'description' => trim($_POST['description']),
+                'startDateTime' => trim($_POST['startDateTime']),
+                'endDateTime' => trim($_POST['endDateTime']),
+                'location' => trim($_POST['location']),
+                'eventType' => trim($_POST['eventType']),
+                'organization' => trim($_POST['organization']),
+                'approvalStatus' => 0,
+                'studentId' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID,
+                'eventNameError' => '',
+                'descriptionError' => '',
+                'startDateTimeError' => '',
+                'endDateTimeError' => '',
+                'locationError' => '',
+                'eventTypeError' => '',
+                'organizationError' => '',
+                'approvalStatusError' => '',
+                'studentIdError' => '',
             ];
-        
-            // Validate the user input (you may want to add more validation)
-            if (empty($_POST['name']) || empty($_POST['start_date_and_time']) || empty($_POST['end_date_and_time']) || empty($_POST['location']) || empty($_POST['event_type'])) {
-                // Handle validation errors
-                $data['Error'] = 'Please enter all required fields.';
-            } else {
-
-                //Run SQL
-                $addEvent = $this->studentModel->addOutsideEvent($data);
-                if ($addEvent) {
-                    $addEventDone = "Successful submitted the event to the admin. Waiting admin to approve it.";
-
-                    header('location: ' . URLROOT . '/posts/index');
-                } else {
-                    // Registration failed
-                    die('Something went wrong.');
-                }
-
+            $id = $this->outsideEventModel->getMaxEventId();
+            if(empty($id)){
+                $data['eventId'] = "OE0001";
             }
+            else{
+                $id = substr($id, 2);
+                $id = intval($id);
+                $id = $id + 1;
+                $id = str_pad($id, 4, '0', STR_PAD_LEFT);
+                $data['eventId'] = 'OE' . $id;
+            }
+            // Validate Event Name
+            if (empty($data['eventName'])) {
+                $data['eventNameError'] = 'Please enter event name';
+            }
+            // Validate Description
+            if (empty($data['description'])) {
+                $data['descriptionError'] = 'Please enter description';
+            }
+            // Validate Start Date and Time
+            if (empty($data['startDateTime'])) {
+                $data['startDateTimeError'] = 'Please enter start date and time';
+            }
+            // Validate End Date and Time
+            if (empty($data['endDateTime'])) {
+                $data['endDateTimeError'] = 'Please enter end date and time';
+            }
+            if ($data['startDateTime'] > $data['endDateTime']) {
+                $data['endDateTimeError'] = 'End date and time must be later than start date and time';
+            }
+            if ($data['startDateTime'] == $data['endDateTime']) {
+                $data['endDateTimeError'] = 'End date and time must be later than start date and time';
+            }
+            if ($data['endDateTime'] >= date("Y-m-d H:i:s")) {
+                $data['endDateTimeError'] = 'You can only add event after the event ended';
+            }
+            // Validate Location
+            if (empty($data['location'])) {
+                $data['locationError'] = 'Please enter location';
+            }
+            // Validate Event Type
+            if (empty($data['eventType'])) {
+                $data['eventTypeError'] = 'Please enter event type';
+            }
+            if (empty($data['eventNameError']) && empty($data['descriptionError']) && empty($data['startDateTimeError']) && empty($data['endDateTimeError']) && empty($data['locationError']) && empty($data['eventTypeError'])) {
+                if ($this->outsideEventModel->addEvent($data)) {
+                    echo "<script>alert('Event added successfully.'); window.location.href = '" . URLROOT . "/students/viewOutsideEvents';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong. Please try again.');</script>";
+                }
+            }
+            $this->view('students/addOutsideEvent', $data);
         }
-        $this->view('students/student_add_event', $data);
+        $this->view('students/addOutsideEvent', $data);
     }
     
     public function event_participated(){
@@ -66,15 +126,20 @@ class Students extends Controller {
         $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
         $event_participated = $this->participateModel->get_eventid($student_id);
         //for each event participated, get the event details
-        foreach ($event_participated as $event) {
-            $event->event_details = $this->eventModel->getEventById($event->EventID);
+        if(!empty($event_participated)){
+            foreach ($event_participated as $event) {
+                $event->event_details = $this->eventModel->getEventById($event->EventID);
+            }
+            //get event organization name
+            foreach ($event_participated as $event) {
+                $event->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+            }
+            $data['events'] = $event_participated;
+            $this->view('students/event_participated', $data);
         }
-        //get event organization name
-        foreach ($event_participated as $event) {
-            $event->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+        else{
+            echo "<script>alert('You have not participated any event yet.');window.location.href = '" . URLROOT . "/students/viewUpcomingEvents';</script>";    
         }
-        $data['events'] = $event_participated;
-        $this->view('students/event_participated', $data);
     }
 
     public function viewUpcomingEvents() {
@@ -93,7 +158,6 @@ class Students extends Controller {
         $this->view('students/viewUpcomingEvents', $data);
     }
     public function view_event(){
-        
         $eventid = $this->getUrl()[2];
         $data = [
             'title' => 'View Event',
@@ -109,17 +173,19 @@ class Students extends Controller {
         $event->canparticipate = false;
         $event->cancancel = false;
         $event->canfeedback = false;
+        if($participated == true){
+            $event->participant_id = $this->participateModel->get_participant_id($studentid, $eventid);
+            //check if feedback already submitted
+            $feedback = $this->feedbackModel->getfeedbackByParticipantId($event->participant_id);
+        }
         if($participated == false && $event->StartDateAndTime > $current_date){
             $event->canparticipate = true;
         } //if event participated and event is not expired
         else if($participated == true && $event->StartDateAndTime > $current_date){
             $event->cancancel = true;
         } //if event participated and event is ended and
-        else if($participated == true && $event-> EndDateAndTime < $current_date){
+        else if($participated == true && $event-> EndDateAndTime < $current_date && empty($feedback)){
             $event->canfeedback = true;
-        }
-        if($participated == true){
-            $event->participant_id = $this->participateModel->get_participant_id($studentid, $eventid);
         }
         $data['event'] = $event;
         $this->view('students/view_event', $data);
@@ -192,6 +258,16 @@ class Students extends Controller {
         }
         $data['events'] = $events;
         $this->view('students/view_participated_event', $data);
+    }
+
+    public function viewOutsideEvents() {
+        $data = [
+            'title' => 'Outside Events',
+            'events' => '',
+            'Error' => '',
+        ];
+        $data['events'] = $this->outsideEventModel->getAllEvent();
+        $this->view('students/viewOutsideEvents', $data);
     }
 
     public function index() {

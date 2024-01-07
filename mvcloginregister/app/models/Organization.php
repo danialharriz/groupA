@@ -162,5 +162,20 @@ class Organization {
             return false;
         }
     }
+
+    //Check email ending while register
+    public function checkEmailEnding($emailEnd) {
+        $this->db->query('SELECT * FROM Organization WHERE emailending = :emailEnd');
+
+        $this->db->bind(':emailEnd', $emailEnd);
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row;
+        } else {
+            return false;
+        }
+    }
 } 
 ?>

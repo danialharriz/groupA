@@ -32,8 +32,10 @@ USE `2_databasemanagementsystemyouthventure`;
 
 CREATE TABLE `course` (
     `CourseID` varchar(6) NOT NULL,
-    `InstitudeID` varchar(6) NOT NULL,
+    `OrganizationID` varchar(6) NOT NULL,
     `CourseName` varchar(45) NOT NULL,
+    KEY `OrganizationID` (`OrganizationID`),
+    CONSTRAINT `course_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`),
     PRIMARY KEY (`CourseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -51,8 +53,13 @@ CREATE TABLE `eventOutside` (
     `OEventType` int(1) NULL,
     `OOrganization` varchar(255) NULL,
     `approvalStatus` int(1) NULL,
+    `studentID` varchar(6) NOT NULL,
+    KEY `studentID` (`studentID`),
+    CONSTRAINT `eventOutside_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `student` (`StudentID`),
     PRIMARY KEY (`OEventID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 CREATE TABLE `event` (
     `EventID` varchar(6) NOT NULL,
@@ -100,7 +107,7 @@ CREATE TABLE `organization` (
     `Type` int(1) NOT NULL,
     `ContactEmail` varchar(45) NOT NULL,
     `ContactPhone` int(11) NOT NULL,
-    `emailending` varchar(45) NOT NULL,
+    `emailending` varchar(45) NULL,
     PRIMARY KEY (`OrganizationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -191,7 +198,7 @@ INSERT INTO `organization` (`OrganizationID`, `OrganizationName`, `Address`, `Ci
 ('O00001', 'Youth Venture', '1234 Main St', 'San Jose', 'CA', 'www.youthventure.com', 2, 'admin@youthventure.com', 4081234567, 'youthventure.com'),
 ('O00002', 'institute1', '1234 Main St', 'San Jose', 'CA', 'www.institutetest.com', 1, 'admin@institutetest.com', 4081234567, 'institutetest.com');
 
-INSERT INTO `course` (`CourseID`, `InstitudeID`, `CourseName`) VALUES
+INSERT INTO `course` (`CourseID`, `OrganizationID`, `CourseName`) VALUES
 ('C00001', 'O00002', 'Course1');
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

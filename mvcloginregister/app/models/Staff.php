@@ -7,14 +7,14 @@ class Staff {
     }
 
     public function addStaff($data) {
-        $this->db->query('INSERT INTO Staff (StaffID, UserID, OrganizationID, JobTitle) VALUES(:staffId, :userId, :organizationId, :jobTitle)');
-
+        $this->db->query('INSERT INTO Staff (StaffID, UserID, OrganizationID, JobTitle, validated) VALUES(:staffId, :userId, :organizationId, :jobTitle, :validated)');
         //Bind values
         $this->db->bind(':staffId', $data['staffId']);
         $this->db->bind(':userId', $_SESSION['user_id']);
         $this->db->bind(':organizationId', $data['organizationId']);
         //$this->db->bind(':type', $data['type']);
         $this->db->bind(':jobTitle', $data['jobTitle']);
+        $this->db->bind(':validated', $data['validated']);
 
         //Execute function
         if ($this->db->execute()) {
