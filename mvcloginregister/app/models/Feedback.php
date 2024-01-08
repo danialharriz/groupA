@@ -40,6 +40,14 @@ class feedback{
         }
     }
 
+    public function getmaxfeedbackId(){
+        $this->db->query('SELECT MAX(FeedbackID) AS max FROM feedback');
+
+        $row = $this->db->single();
+
+        return $row->max;
+    }
+
     public function getfeedbackByParticipantId($participantId){
         $this->db->query('SELECT * FROM feedback WHERE ParticipantID = :participantId');
 

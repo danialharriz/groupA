@@ -112,9 +112,9 @@ input[type="submit"]:hover {
                 <?php elseif ($data['event']->canfeedback == true) : ?>
                     <tr>
                         <td colspan="2">
-                            <form action="<?php echo URLROOT; ?>/students/feedback/<?php echo $data['event']->participant_id; ?>" method="post">
-                                <input type="submit" value="Feedback">
-                            </form>
+                        <form action="<?php echo URLROOT; ?>/students/feedback/<?php echo $data['event']->participant_id; ?>" method="get">
+                            <input type="submit" value="Feedback">
+                        </form>
                         </td>
                     </tr>
                 <?php endif; ?>

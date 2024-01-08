@@ -115,6 +115,12 @@ class Organization {
         $this->db->query('DELETE FROM Organization WHERE OrganizationID = :organizationId');
         $this->db->bind(':organizationId', $organizationId);
         $this->db->execute();
+
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
     //select organizationid by emailending
     public function getOrganizationIdByEmailEnding($emailending) {

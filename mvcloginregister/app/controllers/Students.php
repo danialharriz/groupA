@@ -250,21 +250,6 @@ class Students extends Controller {
           return $url;
         }
     }
-    public function view_participated_event(){
-        $data = [
-            'title' => 'Participated Events',
-            'events' => '',
-            'Error' => '',
-        ];
-        $event_participated = $this->participateModel->get_eventid($_SESSION['user_id']);
-        $events = $this->studentModel->get_participated_events($event_participated);
-        //get event organization name
-        foreach ($events as $event) {
-            $event->organization_name = $this->organizationModel->getOrganizationName($event->organization_id);
-        }
-        $data['events'] = $events;
-        $this->view('students/view_participated_event', $data);
-    }
 
     public function viewOutsideEvents() {
         $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
@@ -400,38 +385,47 @@ class Students extends Controller {
     }
 
     public function feedback(){
+        $url = $this->getUrl();
+        $participantid = $url[2];
         $data = [
             'title' => 'Feedback',
             'event' => '',
             'Error' => '',
         ];
-        $url = $this->getUrl();
-        $eventid = $url[2];
-        $studentid = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
-        $participantid = $this->participateModel->get_participant_id($studentid, $eventid);
+        $eventid = $this->participateModel->getParticipantByParticipantId($participantid)->EventID;
         $data['event'] = $this->eventModel->getEventById($eventid);
-        $data['event']->organization_name = $this->organizationModel->getOrganizationName($data['event']->OrganizationID);
-        $data['event']->participant_id = $participantid;
+        //if post add feedback
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
             // Process form
             $data = [
                 'title' => 'Feedback',
                 'event' => $this->eventModel->getEventById($eventid),
                 'participant_id' => $participantid,
                 'feedback' => trim($_POST['feedback']),
-                'submitted_date_and_time' => date("Y-m-d H:i:s"),
                 'feedbackError' => '',
+                'event_id' => $eventid,
             ];
+            $fid = $this->feedbackModel->getMaxFeedbackId();
+            if(empty($fid)){
+                $data['feedback_id'] = "F00001";
+            }
+            else{
+                $fid = substr($fid, 1);
+                $fid = intval($fid);
+                $fid = $fid + 1;
+                $fid = str_pad($fid, 5, '0', STR_PAD_LEFT);
+                $data['feedback_id'] = 'F' . $fid;
+            }
             // Validate Feedback
             if (empty($data['feedback'])) {
                 $data['feedbackError'] = 'Please enter feedback';
             }
             if (empty($data['feedbackError'])) {
-                if ($this->feedbackModel->addfeedback($data)) {
-                    echo "<script>alert('Feedback submitted successfully.'); window.location.href = '" . URLROOT . "/students/view_event/" . $eventid . "';</script>";
+                $data['submitted_date_and_time'] = date("Y-m-d H:i:s");
+                if ($this->feedbackModel->addFeedback($data)) {
+                    echo "<script>alert('Feedback submitted successfully.'); window.location.href = '" . URLROOT . "/students/event_participated';</script>";
                 } else {
                     echo "<script>alert('Something went wrong. Please try again.');</script>";
                 }

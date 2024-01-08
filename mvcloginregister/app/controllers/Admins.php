@@ -99,6 +99,84 @@ class Admins extends Controller {
         }
         $this->view('admins/register_organization');
     }
+    public function organization(){
+        $organizations = $this->organizationModel->getAllOrganizations();
+        $data = [
+            'organizations' => $organizations,
+        ];
+        $this->view('admins/organization', $data);
+    }
+    public function deleteOrganization(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        if($this->organizationModel->deleteOrganization($organizationId)){
+            echo "<script>alert('Organization deleted successfully'); window.location.href = '" . URLROOT . "/admins/organization';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
+    public function editOrganization(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        // Check for POST
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $data = [
+                'organizationId' => $organizationId,
+                'organizationName' => trim($_POST['organizationName']),
+                'address' => trim($_POST['address']),
+                'city' => trim($_POST['city']),
+                'state' => trim($_POST['state']),
+                'website' => trim($_POST['website']),
+                'type' => trim($_POST['type']),
+                'contactEmail' => trim($_POST['contactEmail']),
+                'contactPhone' => trim($_POST['contactPhone']),
+                'emailending' => trim($_POST['emailending']),
+                'organization_id_err' => '',
+                'organization_name_err' => '',
+                'address_err' => '',
+                'city_err' => '',
+                'state_err' => '',
+                'website_err' => '',
+                'type_err' => '',
+                'contact_email_err' => '',
+                'contact_phone_err' => '',
+                'emailending_err' => '',
+            ];
+            //check if organization is registered
+            if ($this->organizationModel->getOrganizationByName($data['organizationName'])) {
+                $data['organization_name_err'] = 'Organization name is already taken';
+            }
+            //run add model
+            if ($this->organizationModel->updateOrganization($data)) {
+                echo "<script>alert('Organization updated successfully'); window.location.href = '" . URLROOT . "/admins/organization';</script>";
+            } else {
+                echo "<script>alert('Something went wrong');</script>";
+            }
+        } else {
+            // Get existing organization from model
+            $organization = $this->organizationModel->getOrganizationById($organizationId);
+
+            $data = [
+                'organization' => $organization,
+                'organization_id_err' => '',
+                'organization_name_err' => '',
+                'address_err' => '',
+                'city_err' => '',
+                'state_err' => '',
+                'website_err' => '',
+                'type_err' => '',
+                'contact_email_err' => '',
+                'contact_phone_err' => '',
+                'emailending_err' => '',
+            ];
+            // Load view
+            $this->view('admins/editOrganization', $data);
+        }
+        $this->view('admins/editOrganization');
+    }
     public function register_course() {
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -414,7 +492,6 @@ class Admins extends Controller {
         ];
         $this->view('admins/view_event', $data);
     }
-
     //view participants of an event
     public function view_participants($eventId) {
         $participants = $this->participantModel->getParticipantByEventId($eventId);
@@ -452,6 +529,22 @@ class Admins extends Controller {
         } else {
             echo "<script>alert('Something went wrong');</script>";
         }
+    }
+    public function feedback(){
+        $url = $this->getUrl();
+        $eventId = $url[2];
+        $feedbacks = $this->feedbackModel->getFeedbackByEventId($eventId);
+        $event = $this->eventModel->getEventById($eventId);
+        foreach($feedbacks as $feedback){
+            $feedback->Participant = $this->participantModel->getParticipantByParticipantId($feedback->ParticipantID);
+            $feedback->Student = $this->studentModel->getStudentById($feedback->Participant->StudentID);
+            $feedback->User = $this->userModel->getUserById($feedback->Student->UserID);
+        }
+        $data = [
+            'feedbacks' => $feedbacks,
+            'event' => $event,
+        ];
+        $this->view('admins/feedback', $data);
     }
     public function pending_approval_staff(){
         $staffs = $this->adminModel->getPendingStaff();
@@ -498,7 +591,6 @@ class Admins extends Controller {
             echo "<script>alert('Something went wrong');</script>";
         }
     }
-
     //view all outside events
     public function viewOutsideEvents(){
         $outsideEvents = $this->outsideEventModel->getEventNA();
@@ -507,7 +599,6 @@ class Admins extends Controller {
         ];
         $this->view('admins/viewOutsideEvents', $data);
     }
-
     //view outside event
     public function view_outside_event(){
         $url = $this->getUrl();
@@ -537,7 +628,6 @@ class Admins extends Controller {
         $data['user'] = $this->userModel->getUserById($data['student']->UserID);
         $this->view('admins/view_outside_event', $data);
     }
-
     //approve outside event
     public function approve_outside_event($eventId){
         if($this->outsideEventModel->approveEvent($eventId)){

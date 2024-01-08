@@ -66,6 +66,15 @@ class Participant{
 
         return $results;
     }
+    public function getParticipantByParticipantId($participantId){
+        $this->db->query('SELECT * FROM participant WHERE ParticipantID = :participantId');
+
+        $this->db->bind(':participantId', $participantId);
+
+        $results = $this->db->single();
+
+        return $results;
+    }
     //get eventid by userid
     public function get_eventid($userid){
         $this->db->query('SELECT EventID FROM participant WHERE StudentID = :userid');

@@ -1,76 +1,77 @@
 <html>
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f3f3f3;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
 
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-        text-align: center;
-        color: #333;
-    }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+        .button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
 
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
+        .button.edit {
+            background-color: #2196f3;
+        }
 
-    th {
-        background-color: #007bff;
-        color: #fff;
-    }
+        .button.delete {
+            background-color: #f44336;
+        }
 
-    tr:hover {
-        background-color: #e6f7ff;
-    }
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
 
-    button {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        padding: 8px 12px;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-right: 5px;
-    }
+        .table-container {
+            margin-top: 20px;
+        }
 
-    button.edit {
-        background-color: #28a745;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-    button.delete {
-        background-color: #dc3545;
-    }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
 
-    a {
-        text-decoration: none;
-        color: #007bff;
-    }
+        th {
+            background-color: #f2f2f2;
+        }
 
-    a:hover {
-        text-decoration: underline;
-    }
-</style>
+        /* Optional: Add some styling for better readability */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-
+        tr:hover {
+            background-color: #e5e5e5;
+        }
+    </style>
     <head>
         <title>Events</title>
         <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/all_events.css">
@@ -87,9 +88,10 @@
                         <th>Type</th>
                         <th>Event Start</th>
                         <th>Event End</th>
-                        <th>Event End Time</th>
+                        <th>Location</th>
                         <th>Organizer</th>
                         <th>Participants</th>
+                        <th>Feedbacks</th>
                         <th>Actions</th>
                     </tr>
                     <?php foreach($data['events'] as $event) : ?>
@@ -116,6 +118,13 @@
                             <td><?php echo $event->OrganizationName; ?></td>
                             <td>
                                 <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
+                            </td>
+                            <td>
+                                <?php if ($event->EndDateAndTime < date('Y-m-d H:i:s')) : ?>
+                                    <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/feedback/<?php echo $event->EventID; ?>'">Show Feedbacks</button>
+                                <?php else : ?>
+                                    <button class="button" disabled>Unavailable</button>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <button class="button edit" onclick="location.href='<?php echo URLROOT; ?>/admins/update_event/<?php echo $event->EventID; ?>'">View</button>
