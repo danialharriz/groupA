@@ -54,6 +54,7 @@ CREATE TABLE `eventOutside` (
     `OOrganization` varchar(255) NULL,
     `approvalStatus` int(1) NULL,
     `studentID` varchar(6) NOT NULL,
+    `reference` varchar(255) NULL,
     KEY `studentID` (`studentID`),
     CONSTRAINT `eventOutside_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `student` (`StudentID`),
     PRIMARY KEY (`OEventID`)
@@ -162,15 +163,13 @@ CREATE TABLE `student` (
     `StudentID` varchar(6) NOT NULL,
     `UserID` varchar(6) NOT NULL,
     `OrganizationID` varchar(6) NULL,
-    `CourseID` varchar(6) NOT NULL,
+    `CourseID` varchar(50) NOT NULL,
     `Address` varchar(255) NOT NULL,
     `Gender` varchar(1) NOT NULL,
     `DateOfBirth` date NOT NULL,
     PRIMARY KEY (`StudentID`),
-    KEY `CourseID` (`CourseID`),
     KEY `UserID` (`UserID`),
     KEY `OrganizationID` (`OrganizationID`),
-    CONSTRAINT `student_ibfk_1` FOREIGN KEY (`CourseID`) REFERENCES `course` (`CourseID`),
     CONSTRAINT `student_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
     CONSTRAINT `student_ibfk_3` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

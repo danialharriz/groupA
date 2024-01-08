@@ -416,7 +416,11 @@ class Users extends Controller {
             } else {
                 $data['organizationID'] = $_POST['organizationID'];
             }
-            $data['courseID'] = $_POST['courseID'];
+            if($_POST['courseID'] == 'Other'){
+                $data['courseID'] = $_POST['customCourse'];
+            } else {
+                $data['courseID'] = $_POST['courseID'];
+            }
             $data['address'] = $_POST['address'];
             $data['gender'] = $_POST['gender'];
             $data['dateOfBirth'] = $_POST['dateOfBirth'];

@@ -17,12 +17,12 @@ class Course{
     }
 
     public function addCourse($data){
-        $this->db->query('INSERT INTO Course (CourseID, InstitudeID, CourseName) VALUES(:courseId, :institudeId, :courseName)');
+        $this->db->query('INSERT INTO Course (CourseID, OrganizationID, CourseName) VALUES(:courseId, :institudeId, :courseName)');
 
         //Bind values
-        $this->db->bind(':courseId', $data['course_id']);
-        $this->db->bind(':institudeId', $data['institude_id']);
-        $this->db->bind(':courseName', $data['course_name']);
+        $this->db->bind(':courseId', $data['courseId']);
+        $this->db->bind(':institudeId', $data['organizationId']);
+        $this->db->bind(':courseName', $data['courseName']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -43,7 +43,7 @@ class Course{
     }
 
     public function getAllCourse(){
-        $this->db->query('SELECT * FROM Course');
+        $this->db->query('SELECT * FROM Course ORDER BY OrganizationID ASC');
 
         $results = $this->db->resultSet();
 
@@ -78,6 +78,12 @@ class Course{
         } else {
             return false;
         }
+    }
+
+    public function getMaxId(){
+        $this->db->query('SELECT MAX(CourseID) as CourseID FROM Course');
+        $row = $this->db->single();
+        return $row->CourseID;
     }
 }
 ?>

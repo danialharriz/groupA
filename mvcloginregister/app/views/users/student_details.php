@@ -16,7 +16,7 @@
             </select>
 
             <label for="courseID">Course:</label>
-            <select name="courseID" id="courseID" required>
+            <select name="courseID" id="courseID" required onchange="showCustomCourseInput()">
                 <option value="" selected disabled>Please select an institute first</option>
             </select>
 
@@ -24,14 +24,30 @@
 
         <?php if (!empty($data['organizationId'])): ?>
             <label for="courseID">Course:</label>
-            <select name="courseID" id="courseID" required>
+            <select name="courseID" id="courseID" required onchange="showCustomCourseInput()">
                 <?php foreach($data['course'] as $course): ?>
-                    <option value="<?php echo $course->CourseID; ?>"><?php echo $course->CourseName; ?></option>
+                    <option value="<?php echo $course->CourseName; ?>"><?php echo $course->CourseName; ?></option>
                 <?php endforeach; ?>
+                <option value="Other">Other</option>
             </select>
         <?php endif; ?>
 
-        
+        <input type="text" name="customCourse" id="customCourse" style="display: none;" placeholder="Enter your own course">
+
+        <script>
+            function showCustomCourseInput() {
+                let courseID = document.getElementById('courseID');
+                let customCourseInput = document.getElementById('customCourse');
+
+                if (courseID.value === 'Other') {
+                    customCourseInput.style.display = 'block';
+                    customCourseInput.setAttribute('required', 'required');
+                } else {
+                    customCourseInput.style.display = 'none';
+                    customCourseInput.removeAttribute('required');
+                }
+            }
+        </script>
 
         <label for="address">Address:</label>
         <input type="text" name="address" id="address" required>
@@ -71,9 +87,16 @@
                         for (let i = 0; i < data.length; i++) {
                             option = document.createElement('option');
                             option.text = data[i].CourseName;
-                            option.value = data[i].CourseID;
+                            option.value = data[i].CourseName;
                             courseID.add(option);
                         }
+                        option = document.createElement('option');
+                        option.text = 'Other';
+                        option.value = 'Other';
+                        courseID.add(option);
+
+                        // Append the input field to the form
+                        document.querySelector('form').appendChild(customCourseInput);
                     });
             }
         </script>

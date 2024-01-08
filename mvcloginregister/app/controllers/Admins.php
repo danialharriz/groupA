@@ -66,7 +66,7 @@ class Admins extends Controller {
             }
             //run add model
             if ($this->organizationModel->addOrganization($data)) {
-                echo "<script>alert('Organization registered successfully'); window.location.href = '" . URLROOT . "/admins';</script>";
+                echo "<script>alert('Organization registered successfully'); window.location.href = '" . URLROOT . "/admins/organization';</script>";
             } else {
                 echo "<script>alert('Something went wrong');</script>";
             }
@@ -184,7 +184,7 @@ class Admins extends Controller {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             //auto generate course id
-            $course_id = $this->courseModel->getCourseId();
+            $course_id = $this->courseModel->getMaxId();
             //if there is no course id in database, set course id to C00001, else auto increment
             if ($course_id == null) {
                 $course_id = 'C00001';
@@ -195,48 +195,52 @@ class Admins extends Controller {
             }
             $data = [
                 'courseId' => $course_id,
-                'courseName' => trim($_POST['course_name']),
-                'courseDescription' => trim($_POST['course_description']),
+                'organizationId' => trim($_POST['organizationId']),
+                'courseName' => trim($_POST['courseName']),
                 'course_id_err' => '',
+                'organization_id_err' => '',
                 'course_name_err' => '',
-                'course_description_err' => '',
             ];
-            // Validate course name
-            if (empty($data['courseName'])) {
-                $data['course_name_err'] = 'Please enter course name';
-            }
-            // validate course description
-            if (empty($data['courseDescription'])) {
-                $data['course_description_err'] = 'Please enter course description';
-            }
-            // Make sure errors are empty
-            if (empty($data['course_name_err']) && empty($data['course_description_err'])) {
-                // Validated
-                // Register course
-                if ($this->courseModel->addCourse($data)) {
-                    // Redirect to login
-                    header('location: ' . URLROOT . '/admins');
-                } else {
-                    die('Something went wrong');
-                }
+            //run add model
+            if ($this->courseModel->addCourse($data)) {
+                echo "<script>alert('Course registered successfully'); window.location.href = '" . URLROOT . "/admins/course';</script>";
             } else {
-                // Load view with errors
-                $this->view('admins/register_course', $data);
+                echo "<script>alert('Something went wrong');</script>";
             }
         } else {
             // Init data
             $data = [
                 'courseId' => '',
+                'organizationId' => '',
                 'courseName' => '',
-                'courseDescription' => '',
                 'course_id_err' => '',
+                'organization_id_err' => '',
                 'course_name_err' => '',
-                'course_description_err' => '',
+                'organizations' => $this->organizationModel->getAllInstitute(),
             ];
             // Load view
             $this->view('admins/register_course', $data);
         }
         $this->view('admins/register_course');
+    }
+    public function course(){
+        $courses = $this->courseModel->getAllCourse();
+        foreach($courses as $course){
+            $course->Organization = $this->organizationModel->getOrganizationById($course->OrganizationID);
+        }
+        $data = [
+            'courses' => $courses,
+        ];
+        $this->view('admins/course', $data);
+    }
+    public function delete_course(){
+        $url = $this->getUrl();
+        $courseId = $url[2];
+        if($this->courseModel->deleteCourse($courseId)){
+            echo "<script>alert('Course deleted successfully'); window.location.href = '" . URLROOT . "/admins/course';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
     }
     //create event
     public function create_event() {
