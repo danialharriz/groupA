@@ -10,6 +10,7 @@ class Students extends Controller {
         $this->feedbackModel = $this->model('Feedback');
         $this->outsideEventModel = $this->model('EventOutside');
         $this->courseModel = $this->model('Course');
+        $this->rewardModel = $this->model('Reward');
 
         if (!isLoggedIn()) {
             header('location: ' . URLROOT . '/users/logout');
@@ -435,6 +436,92 @@ class Students extends Controller {
         }
         $this->view('students/feedback', $data);
     }
+    public function changepassword(){
+        //if post change password
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $data = [
+                'title' => 'Change Password',
+                'current_password' => trim($_POST['current_password']),
+                'new_password' => trim($_POST['new_password']),
+                'confirm_new_password' => trim($_POST['confirm_new_password']),
+                'current_passwordError' => '',
+                'new_passwordError' => '',
+                'confirm_new_passwordError' => '',
+            ];
+            // Validate Current Password
+            if (empty($data['current_password'])) {
+                $data['current_passwordError'] = 'Please enter current password';
+            }
+            // Validate New Password
+            if (empty($data['new_password'])) {
+                $data['new_passwordError'] = 'Please enter new password';
+            }
+            // Validate Confirm New Password
+            if (empty($data['confirm_new_password'])) {
+                $data['confirm_new_passwordError'] = 'Please enter confirm new password';
+            }
+            if($data['new_password'] != $data['confirm_new_password']){
+                $data['confirm_new_passwordError'] = 'Confirm new password must be same as new password';
+            }
+            if(empty($data['current_passwordError']) && empty($data['new_passwordError']) && empty($data['confirm_new_passwordError'])){
+                $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+                if($this->userModel->login($data['user']->Email, $data['current_password'])){
+                    if($this->userModel->updatePassword($data)){
+                        echo "<script>alert('Password changed successfully.'); window.location.href = '" . URLROOT . "/students/profile';</script>";
+                    }else{
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                }else{
+                    $data['current_passwordError'] = 'Current password is incorrect';
+                    $this->view('students/changepassword', $data);
+                }
+            }
+            $this->view('students/changepassword', $data);
+        }
+        $data = [
+            'title' => 'Change Password',
+            'current_password' => '',
+            'new_password' => '',
+            'confirm_new_password' => '',
+            'current_passwordError' => '',
+            'new_passwordError' => '',
+            'confirm_new_passwordError' => '',
+        ];
+        $this->view('students/changepassword', $data);
+    }
+    public function reward(){
+        $data = [
+            'title' => 'Reward',
+            'rewards' => '',
+            'Error' => '',
+        ];
+        $points = 0;
+        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $events = $this->participateModel->get_eventid($student_id);
+        if($events){
+            foreach ($events as $event) {
+                if($event->event_details->EndDateAndTime > date("Y-m-d H:i:s")){
+                    $points += $this->eventModel->getEventById($event->EventID)->RewardPoints;
+                }
+            }
+        }
+        $data['points'] = $points;
+        $data['rewards'] = $this->rewardModel->getAllRewards();
+        $stage = 0;
+        $totalstage = 0;
+        foreach ($data['rewards'] as $reward) {
+            if ($points >= $reward->RewardPoints) {
+                $stage++;
+            }
+            $totalstage++;
+        }
+        $data['stage'] = $stage;
+        $data['totalstage'] = $totalstage;
+        $this->view('students/reward', $data);
+    }
     public function profile(){
         $data = [
             'title' => 'Profile',
@@ -452,71 +539,124 @@ class Students extends Controller {
         $data['organization'] = $this->organizationModel->getOrganizationById($data['student']->OrganizationID);
         //if post update profile
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            // Process form
-            $data = [
-                'title' => 'Profile',
-                'student' => $this->studentModel->getStudentByUserId($_SESSION['user_id']),
-                'user' => $this->userModel->getUserById($_SESSION['user_id']),
-                'student_id' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID,
-                'name' => trim($_POST['name']),
-                'email' => trim($_POST['email']),
-                'phone' => trim($_POST['phone']),
-                'organization_id' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->OrganizationID,
-                'course' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->CourseID,
-                'address' => trim($_POST['address']),
-                'gender' => trim($_POST['gender']),
-                'date_of_birth' => trim($_POST['date_of_birth']),
-                'nameError' => '',
-                'emailError' => '',
-                'phoneError' => '',
-                'organization_idError' => '',
-                'courseError' => '',
-                'addressError' => '',
-                'date_of_birthError' => '',
-            ];
-            // Validate Name
-            if (empty($data['name'])) {
-                $data['nameError'] = 'Please enter name';
-            }
-            // Validate Email
-            if (empty($data['email'])) {
-                $data['emailError'] = 'Please enter email';
-            }
-            // Validate Phone
-            if (empty($data['phone'])) {
-                $data['phoneError'] = 'Please enter phone';
-            }
-            // Validate Organization ID
-            if (empty($data['organization_id'])) {
-                $data['organization_idError'] = 'Please enter organization id';
-            }
-            // Validate Course
-            if (empty($data['course'])) {
-                $data['courseError'] = 'Please enter course';
-            }
-            // Validate Address
-            if (empty($data['address'])) {
-                $data['addressError'] = 'Please enter address';
-            }
-            if (empty($data['date_of_birth'])) {
-                $data['date_of_birthError'] = 'Please enter date of birth';
+            if(trim($_POST['type']) == "updateprofile"){
+                // Sanitize POST data
+                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+                // Process form
+                $data = [
+                    'title' => 'Profile',
+                    'student' => $this->studentModel->getStudentByUserId($_SESSION['user_id']),
+                    'user' => $this->userModel->getUserById($_SESSION['user_id']),
+                    'student_id' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID,
+                    'name' => trim($_POST['name']),
+                    'email' => trim($_POST['email']),
+                    'phone' => trim($_POST['phone']),
+                    'organization_id' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->OrganizationID,
+                    'course' => $this->studentModel->getStudentByUserId($_SESSION['user_id'])->CourseID,
+                    'address' => trim($_POST['address']),
+                    'gender' => trim($_POST['gender']),
+                    'date_of_birth' => trim($_POST['date_of_birth']),
+                    'nameError' => '',
+                    'emailError' => '',
+                    'phoneError' => '',
+                    'organization_idError' => '',
+                    'courseError' => '',
+                    'addressError' => '',
+                    'date_of_birthError' => '',
+                ];
+                // Validate Name
+                if (empty($data['name'])) {
+                    $data['nameError'] = 'Please enter name';
+                }
+                // Validate Email
+                if (empty($data['email'])) {
+                    $data['emailError'] = 'Please enter email';
+                }
+                // Validate Phone
+                if (empty($data['phone'])) {
+                    $data['phoneError'] = 'Please enter phone';
+                }
+                // Validate Organization ID
+                if (empty($data['organization_id'])) {
+                    $data['organization_idError'] = 'Please enter organization id';
+                }
+                // Validate Course
+                if (empty($data['course'])) {
+                    $data['courseError'] = 'Please enter course';
+                }
+                // Validate Address
+                if (empty($data['address'])) {
+                    $data['addressError'] = 'Please enter address';
+                }
+                if (empty($data['date_of_birth'])) {
+                    $data['date_of_birthError'] = 'Please enter date of birth';
+                }
+    
+                if(empty($data['nameError']) && empty($data['emailError']) && empty($data['organization_idError']) && empty($data['courseError']) && empty($data['addressError']) && empty($data['date_of_birthError'])){
+                    if($this->userModel->updateUser($data) && $this->studentModel->updateStudent($data)){
+                        echo "<script>alert('Profile updated successfully.'); window.location.href = '" . URLROOT . "/students/profile';</script>";
+                    }else{
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                }
             }
 
-            if(empty($data['nameError']) && empty($data['emailError']) && empty($data['organization_idError']) && empty($data['courseError']) && empty($data['addressError']) && empty($data['date_of_birthError'])){
-                if($this->userModel->updateUser($data) && $this->studentModel->updateStudent($data)){
-                    echo "<script>alert('Profile updated successfully.'); window.location.href = '" . URLROOT . "/students/profile';</script>";
-                }else{
-                    echo "<script>alert('Something went wrong. Please try again.');</script>";
+            if(trim($_POST['type']) == "updateprofilepic"){
+                $data = [
+                    'title' => 'Profile Picture',
+                    'user' => $this->userModel->getUserById($_SESSION['user_id']),
+                    'profilePic' => '',
+                    'profilePicError' => '',
+                    'nameError' => '',
+                    'emailError' => '',
+                    'phoneError' => '',
+                    'organization_idError' => '',
+                    'courseError' => '',
+                    'addressError' => '',
+                    'date_of_birthError' => '',
+                ];
+                $data['student'] = $this->studentModel->getStudentByUserId($_SESSION['user_id']);
+                $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+                $data['organization'] = $this->organizationModel->getOrganizationById($data['student']->OrganizationID);
+                
+                $target_dir = "profile_pictures/";
+                $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                $check = getimagesize($_FILES["image"]["tmp_name"]);
+                //check if file name already exist
+                if (file_exists($target_file)) {
+                    //auto rename file
+                    $i = 1;
+                    while (file_exists($target_file)) {
+                        $target_file = $target_dir . basename($_FILES["image"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                        $i++;
+                    }
+                }
+                if ($check !== false) {
+                    //delete existing profile picture
+                    if($data['user']->profilePic != null){
+                        unlink($data['user']->profilePic);
+                    }
+                    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                        $data['profilePic'] = $target_file;
+                        if ($this->userModel->updateProfilePic($data)) {
+                            echo "<script>alert('Profile picture updated successfully.'); window.location.href = '" . URLROOT . "/students/profile';</script>";
+                        } else {
+                            echo "<script>alert('Something went wrong. Please try again.');</script>";
+                        }
+                    } else {
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                } else {
+                    echo "<script>alert('File is not an image.');</script>";
                 }
             }
             
             $this->view('students/profile', $data);
         }
         $this->view('students/profile', $data);
-    
     }
+
     public function index() {
         $data = [
             'title' => 'Student Dashboard',

@@ -132,7 +132,7 @@
     <h1>Profile</h1>
     <hr>
     <!-- profile picture -->
-    <form action = "<?php echo URLROOT; ?>/students/profile" method = "post" enctype = "multipart/form-data" id = "form">
+    <form action = "<?php echo URLROOT; ?>/admins/profile" method = "post" enctype = "multipart/form-data" id = "form">
         <div class="upload">
             <?php if($data['user']->profilePic != null) : ?>
                 <img src="<?php echo URLROOT."/public/".$data['user']->profilePic; ?>" alt="profile picture">
@@ -148,12 +148,12 @@
         <br>
         <br>
         <script type="text/javascript">
-        document.getElementById("image").onchange = function(){
-            document.getElementById("form").submit();
-        };
+            document.getElementById("image").onchange = function(){
+                document.getElementById("form").submit();
+            };
         </script>
     </form>
-    <form action="<?php echo URLROOT; ?>/students/profile" method="post">
+    <form action="<?php echo URLROOT; ?>/admins/profile" method="post">
         <label for="name"><b>Name</b></label>
         <input type="text" placeholder="Enter Name" name="name" value="<?php echo $data['user']->Name; ?>">
         <span style="color:red;"><?php echo $data['nameError']; ?></span>
@@ -165,31 +165,16 @@
         <label for="phone"><b>Phone</b></label>
         <input type="text" placeholder="Enter Phone" name="phone" value="<?php echo $data['user']->Phone; ?>">
         
-        <label for="course"><b>Institute</b></label>
-        <input type="text" placeholder="Enter Institute" name="institute" value="<?php echo $data['organization']->OrganizationName; ?>"disabled>
+        <label for="Organization"><b>Organization</b></label>
+        <input type="text" placeholder="Enter OPrganization" name="Organization" value="<?php echo $data['organization']->OrganizationName; ?>"disabled>
         
-        <label for="course"><b>Course</b></label>
-        <input type="text" placeholder="Enter Course" name="course" value="<?php echo $data['student']->CourseID; ?>"disabled>
-        <span style="color:red;"><?php echo $data['phoneError']; ?></span>
-        
-        <label for="address"><b>Address</b></label>
-        <input type="text" placeholder="Enter Address" name="address" value="<?php echo $data['student']->Address; ?>">
-        <span style="color:red;"><?php echo $data['addressError']; ?></span>
-        
-        <label for="gender"><b>Gender</b></label>
-        <input type="radio" name="gender" value="M" <?php echo ($data['student']->Gender == 'M') ? 'checked' : ''; ?>> Male
-        <input type="radio" name="gender" value="F" <?php echo ($data['student']->Gender == 'F') ? 'checked' : ''; ?>> Female
-        
-        <label for="date_of_birth"><b>Date of Birth</b></label>
-        <input type="date" name="date_of_birth" value="<?php echo $data['student']->DateOfBirth; ?>">
-        <span style="color:red;"><?php echo $data['date_of_birthError']; ?></span>
-        
+        <label for="course"><b>Job Title</b></label>
+        <input type="text" placeholder="Enter Job Title" name="jobtitle" value="<?php echo $data['staff']->JobTitle; ?>" disabled>
         
         <input type="hidden" name="type" value="updateprofile">
 
         <button type="submit" class="btn btn-primary">Update</button>
-        <a href="<?php echo URLROOT; ?>/students/changepassword" class="btn-change-password">Change Password</a>
-        <!--post type = updateprofile-->
+        <a href="<?php echo URLROOT; ?>/admins/changepassword" class="btn-change-password">Change Password</a>
     </form>
 </body>
 </html>

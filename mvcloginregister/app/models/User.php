@@ -154,4 +154,35 @@ class User {
             return false;
         }
     }
+    public function updatePassword($data) {
+        $this->db->query('UPDATE user SET Password = :password WHERE UserID = :userId');
+
+        //hash password
+        $password = password_hash($data['new_password'], PASSWORD_DEFAULT);
+
+        //Bind values
+        $this->db->bind(':userId', $_SESSION['user_id']);
+        $this->db->bind(':password', $password);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function updateProfilePic($data){
+        $this->db->query('UPDATE user SET ProfilePic = :profilePic WHERE UserID = :userId');
+
+        //Bind values
+        $this->db->bind(':userId', $_SESSION['user_id']);
+        $this->db->bind(':profilePic', $data['profilePic']);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

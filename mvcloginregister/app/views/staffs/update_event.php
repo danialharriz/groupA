@@ -81,7 +81,7 @@
         <div class="container">
             <h1>Event Detail</h1>
             <hr>
-            <form action="<?php echo URLROOT; ?>/admins/update_event/<?php echo $data['eventId']; ?>" method="post">
+            <form action="<?php echo URLROOT; ?>/staffs/update_event/<?php echo $data['eventId']; ?>" method="post">
                 <label for="event_name"><b>Event Name</b></label>
                 <input type="text" placeholder="Enter Event Name" name="event_name" value="<?php echo $data['eventName']; ?>">
                 <span style="color:red;"><?php echo $data['event_name_err']; ?></span>
@@ -109,7 +109,7 @@
                 <span style="color:red;"><?php echo $data['reward_points_err']; ?></span>
                 <button type="submit" class="registerbtn">Update</button>
                 <!-- back button -->
-                <a href="<?php echo URLROOT; ?>/admins/all_events" class="button">Back</a>
+                <a href="<?php echo URLROOT; ?>/staffs/all_events" class="button">Back</a>
             </form>
         </div>
     </body>

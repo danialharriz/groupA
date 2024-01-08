@@ -68,7 +68,7 @@
 </head>
 <body>
     <h1>Create Event</h1>
-    <form action="<?php echo URLROOT; ?>/admins/create_event" method="POST">
+    <form action="<?php echo URLROOT; ?>/staffs/create_event" method="POST">
         <!--Event name-->
         <div class="form-group">
             <label for="event_name">Event Name</label>

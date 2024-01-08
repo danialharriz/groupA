@@ -10,6 +10,7 @@ class Admins extends Controller {
         $this->userModel = $this->model('User');
         $this->studentModel = $this->model('Student');
         $this->feedbackModel = $this->model('Feedback');
+        $this->rewardModel = $this->model('Reward');
 
         //check if user is logged in
         if (!isLoggedIn()) {
@@ -331,6 +332,11 @@ class Admins extends Controller {
                 $data['end_date_and_time_err'] = 'End date and time must be later than start date and time';
                 echo "<script>alert('End date and time must be later than start date and time');</script>";
             }
+            //start time must be 3 day later than current time
+            if($data['startDateAndTime'] < date("Y-m-d H:i:s", strtotime("+3 days"))){
+                $data['start_date_and_time_err'] = 'Start date and time must be 3 days later than current time';
+                echo "<script>alert('Start date and time must be 3 days later than current time');</script>";
+            }
             // Make sure errors are empty
             if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['organization_id_err']) && empty($data['end_date_and_time_err'])) {
                 // Validated
@@ -518,40 +524,6 @@ class Admins extends Controller {
             echo "<script>alert('Something went wrong');</script>";
         }
     }
-    //view event
-    public function view_event($eventId) {
-        $event = $this->eventModel->getEventById($eventId);
-        $data = [
-            'eventId' => $eventId,
-            'eventName' => $event->EventName,
-            'description' => $event->Description,
-            'startDateAndTime' => $event->StartDateAndTime,
-            'endDateAndTime' => $event->EndDateAndTime,
-            'location' => $event->Location,
-            'eventType' => $event->EventType,
-            'rewardPoints' => $event->RewardPoints,
-            'organizationId' => $event->OrganizationId,
-            'event_id_err' => '',
-            'event_name_err' => '',
-            'description_err' => '',
-            'start_date_and_time_err' => '',
-            'end_date_and_time_err' => '',
-            'location_err' => '',
-            'event_type_err' => '',
-            'reward_points_err' => '',
-            'organization_id_err' => '',
-            //'validated_err' => '',
-        ];
-        $this->view('admins/view_event', $data);
-    }
-    //view participants of an event
-    public function view_participants($eventId) {
-        $participants = $this->participantModel->getParticipantByEventId($eventId);
-        $data = [
-            'participants' => $participants,
-        ];
-        $this->view('admins/view_participants', $data);
-    }
     public function all_events(){
         $events = $this->eventModel->getAllEvent();
         //get the organizer name of each event
@@ -695,6 +667,222 @@ class Admins extends Controller {
         } else {
             echo "<script>alert('Something went wrong');</script>";
         }
+    }
+    public function reward(){
+        $rewards = $this->rewardModel->getAllRewards();
+        $data = [
+            'rewards' => $rewards,
+            'reward_id_err' => '',
+            'reward_name_err' => '',
+            'reward_points_err' => '',
+        ];
+        //if post add reward
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            //auto generate reward id
+            $rewardId = $this->rewardModel->getMaxRewardId();
+            //if there is no reward id in database, set reward id to R00001, else auto increment
+            if ($rewardId == null) {
+                $rewardId = 'R00001';
+            } else {
+                $rewardId = substr($rewardId, 1);
+                $rewardId = intval($rewardId);
+                $rewardId = 'R' . sprintf('%05d', $rewardId + 1);
+            }
+            $data = [
+                'rewardId' => $rewardId,
+                'rewardName' => trim($_POST['rewardName']),
+                'rewardPoints' => trim($_POST['rewardPoints']),
+                'reward_id_err' => '',
+                'reward_name_err' => '',
+                'reward_points_err' => '',
+            ];
+            //run add model
+            if ($this->rewardModel->addReward($data)) {
+                echo "<script>alert('Reward added successfully'); window.location.href = '" . URLROOT . "/admins/reward';</script>";
+            } else {
+                echo "<script>alert('Something went wrong');</script>";
+            }
+        }
+        $this->view('admins/reward', $data);
+    }
+    public function removeReward(){
+        $url = $this->getUrl();
+        $rewardId = $url[2];
+        if($this->rewardModel->deleteReward($rewardId)){
+            echo "<script>alert('Reward deleted successfully'); window.location.href = '" . URLROOT . "/admins/reward';</script>";
+        } else {
+            echo "<script>alert('Something went wrong');</script>";
+        }
+    }
+    public function changepassword(){
+        //if post change password
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $data = [
+                'title' => 'Change Password',
+                'current_password' => trim($_POST['current_password']),
+                'new_password' => trim($_POST['new_password']),
+                'confirm_new_password' => trim($_POST['confirm_new_password']),
+                'current_passwordError' => '',
+                'new_passwordError' => '',
+                'confirm_new_passwordError' => '',
+            ];
+            // Validate Current Password
+            if (empty($data['current_password'])) {
+                $data['current_passwordError'] = 'Please enter current password';
+            }
+            // Validate New Password
+            if (empty($data['new_password'])) {
+                $data['new_passwordError'] = 'Please enter new password';
+            }
+            // Validate Confirm New Password
+            if (empty($data['confirm_new_password'])) {
+                $data['confirm_new_passwordError'] = 'Please enter confirm new password';
+            }
+            if($data['new_password'] != $data['confirm_new_password']){
+                $data['confirm_new_passwordError'] = 'Confirm new password must be same as new password';
+            }
+            if(empty($data['current_passwordError']) && empty($data['new_passwordError']) && empty($data['confirm_new_passwordError'])){
+                $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+                if($this->userModel->login($data['user']->Email, $data['current_password'])){
+                    if($this->userModel->updatePassword($data)){
+                        echo "<script>alert('Password changed successfully.'); window.location.href = '" . URLROOT . "/admins/profile';</script>";
+                    }else{
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                }else{
+                    $data['current_passwordError'] = 'Current password is incorrect';
+                    $this->view('admins/changepassword', $data);
+                }
+            }
+            $this->view('admins/changepassword', $data);
+        }
+        $data = [
+            'title' => 'Change Password',
+            'current_password' => '',
+            'new_password' => '',
+            'confirm_new_password' => '',
+            'current_passwordError' => '',
+            'new_passwordError' => '',
+            'confirm_new_passwordError' => '',
+        ];
+        $this->view('admins/changepassword', $data);
+    }
+    public function profile(){
+        $data = [
+            'title' => 'Profile',
+            'student' => '',
+            'nameError' => '',
+            'emailError' => '',
+            'phoneError' => '',
+            'organization_idError' => '',
+            'courseError' => '',
+            'addressError' => '',
+            'date_of_birthError' => '', 
+        ]; 
+        $data['staff'] = $this->adminModel->getStaffByUserId($_SESSION['user_id']);
+        $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+        $data['organization'] = $this->organizationModel->getOrganizationById($data['staff']->OrganizationID);
+        //if post update profile
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            if(trim($_POST['type']) == "updateprofilepic"){
+                $data = [
+                    'title' => 'Profile Picture',
+                    'user' => $this->userModel->getUserById($_SESSION['user_id']),
+                    'profilePic' => '',
+                    'profilePicError' => '',
+                    'nameError' => '',
+                    'emailError' => '',
+                    'phoneError' => '',
+                ];
+                $data['staff'] = $this->adminModel->getStaffByUserId($_SESSION['user_id']);
+                $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+                $data['organization'] = $this->organizationModel->getOrganizationById($data['staff']->OrganizationID);
+                
+                $target_dir = "profile_pictures/";
+                $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                $check = getimagesize($_FILES["image"]["tmp_name"]);
+                //check if file name already exist
+                if (file_exists($target_file)) {
+                    //auto rename file
+                    $i = 1;
+                    while (file_exists($target_file)) {
+                        $target_file = $target_dir . basename($_FILES["image"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                        $i++;
+                    }
+                }
+                if ($check !== false) {
+                    //delete old profile picture
+                    if($data['user']->profilePic != "profile_pictures/default.png"){
+                        unlink($data['user']->profilePic);
+                    }
+                    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                        $data['profilePic'] = $target_file;
+                        if ($this->userModel->updateProfilePic($data)) {
+                            echo "<script>alert('Profile picture updated successfully.'); window.location.href = '" . URLROOT . "/admins/profile';</script>";
+                        } else {
+                            echo "<script>alert('Something went wrong. Please try again.');</script>";
+                        }
+                    } else {
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                } else {
+                    echo "<script>alert('File is not an image.');</script>";
+                }
+            }
+
+            if(trim($_POST['type']) == "updateprofile"){
+                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+                $data = [
+                    'title' => 'Profile',
+                    'staff' => $this->adminModel->getStaffByUserId($_SESSION['user_id']),
+                    'user' => $this->userModel->getUserById($_SESSION['user_id']),
+                    'organization' => $this->organizationModel->getOrganizationById($data['staff']->OrganizationID),
+                    'name' => trim($_POST['name']),
+                    'email' => trim($_POST['email']),
+                    'phone' => trim($_POST['phone']),
+                    'nameError' => '',
+                    'emailError' => '',
+                ];
+                // Validate name
+                if (empty($data['name'])) {
+                    $data['nameError'] = 'Please enter name';
+                }
+                // Validate email
+                if (empty($data['email'])) {
+                    $data['emailError'] = 'Please enter email';
+                } else {
+                    // Check email
+                    if ($this->userModel->findUserByEmail($data['email'])) {
+                        if ($data['email'] != $data['user']->Email) {
+                            $data['emailError'] = 'Email is already taken';
+                        }
+                    }
+                }
+                // Make sure errors are empty
+                if (empty($data['nameError']) && empty($data['emailError'])) {
+                    // Validated
+                    // Update user
+                    if ($this->userModel->updateUser($data)) {
+                        // Redirect to login
+                        echo "<script>alert('Profile updated successfully.'); window.location.href = '" . URLROOT . "/admins/profile';</script>";
+                    } else {
+                        echo "<script>alert('Something went wrong. Please try again.');</script>";
+                    }
+                } else {
+                    // Load view with errors
+                    $this->view('admins/profile', $data);
+                }
+            }
+            $this->view('admins/profile', $data);
+        }
+        $this->view('admins/profile', $data);
     }
     public function getUrl(){
         if(isset($_GET['url'])){

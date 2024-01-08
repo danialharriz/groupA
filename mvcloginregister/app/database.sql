@@ -149,7 +149,7 @@ CREATE TABLE `staff` (
 CREATE TABLE `resume` (
     `ResumeID` varchar(6) NOT NULL,
     `StudentID` varchar(6) NOT NULL,
-    `Resume` text NULL,
+    
     PRIMARY KEY (`ResumeID`),
     KEY `StudentID` (`StudentID`),
     CONSTRAINT `resume_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `student` (`StudentID`)
@@ -194,8 +194,9 @@ CREATE TABLE `reward`(
     `RewardID` varchar(6) NOT NULL,
     `RewardName` varchar(45) NOT NULL,
     `RewardPoints` int(11) NOT NULL,
-    PRIMARY KEY (`RewardID`),
+    PRIMARY KEY (`RewardID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 COMMIT;
 
 
