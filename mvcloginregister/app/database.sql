@@ -149,7 +149,10 @@ CREATE TABLE `staff` (
 CREATE TABLE `resume` (
     `ResumeID` varchar(6) NOT NULL,
     `StudentID` varchar(6) NOT NULL,
-    
+    `education` text NULL,
+    `experience` text NULL,
+    `skills` text NULL,
+    `additional` text NULL,
     PRIMARY KEY (`ResumeID`),
     KEY `StudentID` (`StudentID`),
     CONSTRAINT `resume_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `student` (`StudentID`)

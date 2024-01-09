@@ -119,6 +119,19 @@ class Staff {
             return null; // or handle the case when $results is false
         }
     }
+    public function getStaffByOrganizationId($organizationId) {
+        $this->db->query('SELECT * FROM staff WHERE OrganizationId = :organizationId');
+
+        $this->db->bind(':organizationId', $organizationId);
+
+        $results = $this->db->resultSet();
+
+        if ($results) {
+            return $results;
+        } else {
+            return null; // or handle the case when $results is false
+        }
+    }
 }
 
 ?>

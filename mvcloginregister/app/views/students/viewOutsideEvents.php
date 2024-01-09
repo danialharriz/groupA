@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/students/nav.php' ?>
 <html>
 <style>
         <style>
@@ -53,6 +54,14 @@
 </head>
 <body>
     <h1><?php echo $data['title']; ?></h1> 
+    <!--button to add new outside event-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a href="<?php echo URLROOT; ?>/students/addOutsideEvent" class="btn btn-primary">Add New Outside Event</a>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -68,55 +77,62 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach($data['events'] as $event) : ?>
+                            <?php if (empty($data['events'])) : ?>
                                 <tr>
-                                    <td><?php echo $event->OEventName; ?></td>
-                                    <td><?php 
-                                        switch ($event->OEventType) {
-                                            case 1:
-                                                echo 'Workshop';
-                                                break;
-                                            case 2:
-                                                echo 'Seminar';
-                                                break;
-                                            case 3:
-                                                echo 'Conference';
-                                                break;
-                                            case 4:
-                                                echo 'Competition';
-                                                break;
-                                            case 5:
-                                                echo 'Other';
-                                                break;
-                                            default:
-                                                echo 'Unknown';
-                                                break;
-                                        }
-                                    ?></td>
-                                    <td><?php echo $event->OOrganization; ?></td>
-                                    <td><?php 
-                                        switch ($event->approvalStatus) {
-                                            case 0:
-                                                echo 'Pending';
-                                                break;
-                                            case 1:
-                                                echo 'Approved';
-                                                break;
-                                            case 2:
-                                                echo 'Rejected';
-                                                break;
-                                            default:
-                                                echo 'Unknown';
-                                                break;
-                                        }
-                                    ?></td>
-                                    <?php if ($event->approvalStatus == 2) : ?>
-                                        <td><a href="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $event->OEventID; ?>">Update</a></td>
-                                    <?php else : ?>
-                                        <td><a href="<?php echo URLROOT; ?>/students/viewOutsideEvent/<?php echo $event->OEventID; ?>">View</a></td>
-                                    <?php endif; ?>
+                                    <td colspan="5">You don't have any outside event.</td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php else : ?>
+                                <?php foreach($data['events'] as $event) : ?>
+                                    <tr>
+                                        <td><?php echo $event->OEventName; ?></td>
+                                        <td><?php 
+                                            switch ($event->OEventType) {
+                                                case 1:
+                                                    echo 'Workshop';
+                                                    break;
+                                                case 2:
+                                                    echo 'Seminar';
+                                                    break;
+                                                case 3:
+                                                    echo 'Conference';
+                                                    break;
+                                                case 4:
+                                                    echo 'Competition';
+                                                    break;
+                                                case 5:
+                                                    echo 'Other';
+                                                    break;
+                                                default:
+                                                    echo 'Unknown';
+                                                    break;
+                                            }
+                                        ?></td>
+                                        <td><?php echo $event->OOrganization; ?></td>
+                                        <td><?php 
+                                            switch ($event->approvalStatus) {
+                                                case 0:
+                                                    echo 'Pending';
+                                                    break;
+                                                case 1:
+                                                    echo 'Approved';
+                                                    break;
+                                                case 2:
+                                                    echo 'Rejected';
+                                                    break;
+                                                default:
+                                                    echo 'Unknown';
+                                                    break;
+                                            }
+                                        ?></td>
+                                        <?php if ($event->approvalStatus == 2) : ?>
+                                            <td><a href="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $event->OEventID; ?>">Update</a></td>
+                                        <?php else : ?>
+                                            <td><a href="<?php echo URLROOT; ?>/students/viewOutsideEvent/<?php echo $event->OEventID; ?>">View</a></td>
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
                         </tbody>
                     </table>
                 </div>

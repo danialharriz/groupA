@@ -884,6 +884,41 @@ class Admins extends Controller {
         }
         $this->view('admins/profile', $data);
     }
+    public function staffs(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        $staffs = $this->adminModel->getStaffByOrganizationId($organizationId);
+        foreach($staffs as $staff){
+            $staff->User = $this->userModel->getUserById($staff->UserID);
+        }
+        $data = [
+            'staffs' => $staffs,
+        ];
+        $this->view('admins/staffs', $data);
+    }
+    public function staff(){
+        $url = $this->getUrl();
+        $staffId = $url[2];
+        $staff = $this->adminModel->getStaff($staffId);
+        $staff->User = $this->userModel->getUserById($staff->UserID);
+        $staff->Organization = $this->organizationModel->getOrganizationById($staff->OrganizationID);
+        $data = [
+            'staff' => $staff,
+        ];
+        $this->view('admins/staff', $data);
+    }
+    public function students(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        $students = $this->studentModel->getStudentByOrganizationId($organizationId);
+        foreach($students as $student){
+            $student->User = $this->userModel->getUserById($student->UserID);
+        }
+        $data = [
+            'students' => $students,
+        ];
+        $this->view('admins/students', $data);
+    }
     public function getUrl(){
         if(isset($_GET['url'])){
           $url = rtrim($_GET['url'], '/');
@@ -893,6 +928,14 @@ class Admins extends Controller {
         }
     }
     public function index() {
+        $staffs = $this->adminModel->getPendingStaff();
+        foreach($staffs as $staff){
+            $staff->OrganizationName = $this->organizationModel->getOrganizationName($staff->OrganizationID);
+            $staff->User = $this->userModel->getUserById($staff->UserID);
+        }
+        $data = [
+            'staffs' => $staffs,
+        ];
         $this->view('admins/index');
     }
 }

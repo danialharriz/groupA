@@ -1,3 +1,5 @@
+<?php require APPROOT . '/views/admins/nav.php'; ?>
+
 <html>
     <style>
         body {
@@ -75,6 +77,7 @@
         <div class="container">
             <div class="organization">
                 <h1>Organization</h1>
+                <a href="<?php echo URLROOT; ?>/admins/register_organization" class="button">Add Organization</a>
                 <table>
                     <tr>
                         <th>Organization Name</th>
@@ -85,6 +88,7 @@
                         <th>Organization Type</th>
                         <th>Organization Contact Email</th>
                         <th>Organization Contact Phone</th>
+                        <th>Member</th>
                         <th>Action</th>
                     </tr>
                     <?php foreach ($data['organizations'] as $organization) : ?>
@@ -101,6 +105,12 @@
                                 } ?></td>
                             <td><?php echo $organization->ContactEmail; ?></td>
                             <td><?php echo $organization->ContactPhone; ?></td>
+                            <td>
+                                <?php if ($organization->Type == 1) : ?>
+                                    <a href="<?php echo URLROOT; ?>/admins/Students/<?php echo $organization->OrganizationID; ?>" class="button">View Students</a>
+                                <?php elseif ($organization->Type == 2) : ?>
+                                    <a href="<?php echo URLROOT; ?>/admins/Staffs/<?php echo $organization->OrganizationID; ?>" class="button">View Staffs</a>
+                                <?php endif; ?>
                             <td>
                                 <a href="<?php echo URLROOT; ?>/admins/editOrganization/<?php echo $organization->OrganizationID; ?>" class="button edit">Edit</a>
                                 <a href="<?php echo URLROOT; ?>/admins/deleteOrganization/<?php echo $organization->OrganizationID; ?>" class="button delete">Delete</a>

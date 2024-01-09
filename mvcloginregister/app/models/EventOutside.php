@@ -149,5 +149,14 @@ class EventOutside{
             return false;
         }
     }
+    public function getEventByStudentIdApproved($studentId){
+        $this->db->query('SELECT * FROM eventOutside WHERE studentID = :studentId AND approvalStatus = 1');
+
+        $this->db->bind(':studentId', $studentId);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
 }
 

@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/admins/nav.php'; ?>
 <html>
 <style>
     /* admins/course.css */

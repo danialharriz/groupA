@@ -149,5 +149,14 @@ class Event{
             return false;
         }
     }
+    public function getEventByIdEnded($eventId){
+        $this->db->query('SELECT * FROM Event WHERE EventID = :eventId AND EndDateAndTime < NOW()');
+
+        $this->db->bind(':eventId', $eventId);
+
+        $row = $this->db->single();
+
+        return $row;
+    }
 }
 ?>

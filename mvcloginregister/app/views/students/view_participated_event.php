@@ -1,24 +1,4 @@
-<?php
-/*
-    public function view_participated_event(){
-        $data = [
-            'title' => 'Participated Events',
-            'events' => '',
-            'Error' => '',
-        ];
-        $event_participated = $this->participateModel->get_eventid($_SESSION['user_id']);
-        $events = $this->studentModel->get_participated_events($event_participated);
-        //get event organization name
-        foreach ($events as $event) {
-            $event->organization_name = $this->organizationModel->getOrganizationName($event->organization_id);
-        }
-        $data['events'] = $events;
-        $this->view('students/view_participated_event', $data);
-    }
-    //controller
-*/
-?>
-
+<?php require APPROOT . '/views/students/nav.php' ?>
 <html>
 <head>
     <title>Participated Events</title>

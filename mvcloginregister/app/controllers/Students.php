@@ -11,6 +11,7 @@ class Students extends Controller {
         $this->outsideEventModel = $this->model('EventOutside');
         $this->courseModel = $this->model('Course');
         $this->rewardModel = $this->model('Reward');
+        $this->resumeModel = $this->model('Resume');
 
         if (!isLoggedIn()) {
             header('location: ' . URLROOT . '/users/logout');
@@ -19,7 +20,6 @@ class Students extends Controller {
             header('location: ' . URLROOT . '/users/logout');    
         }
     }
-
     public function addOutsideEvent() {
         $data = [
             'title' => 'Add Outside Event',
@@ -124,7 +124,6 @@ class Students extends Controller {
         }
         $this->view('students/addOutsideEvent', $data);
     }
-    
     public function event_participated(){
         $data = [
             'title' => 'Event Participated',
@@ -149,7 +148,6 @@ class Students extends Controller {
             echo "<script>alert('You have not participated any event yet.');window.location.href = '" . URLROOT . "/students/viewUpcomingEvents';</script>";    
         }
     }
-
     public function viewUpcomingEvents() {
         $data = [
             'title' => 'Upcoming Events',
@@ -244,15 +242,6 @@ class Students extends Controller {
             echo "<script>alert('Something went wrong. Please try again.');</script>";
         }
     }
-    public function getUrl(){
-        if(isset($_GET['url'])){
-          $url = rtrim($_GET['url'], '/');
-          $url = filter_var($url, FILTER_SANITIZE_URL);
-          $url = explode('/', $url);
-          return $url;
-        }
-    }
-
     public function viewOutsideEvents() {
         $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
         $data = [
@@ -261,12 +250,8 @@ class Students extends Controller {
             'Error' => '',
         ];
         $data['events'] = $this->outsideEventModel->getEventByStudentId($student_id);
-        if(empty($data['events'])){
-            echo "<script>alert('You have not added any outside event yet.');window.location.href = '" . URLROOT . "/students/viewUpcomingEvents';</script>";    
-        }
         $this->view('students/viewOutsideEvents', $data);
     }
-
     public function viewOutsideEvent(){
         $url = $this->getUrl();
         $eventid = $url[2];
@@ -278,7 +263,6 @@ class Students extends Controller {
         $data['event'] = $this->outsideEventModel->getEventById($eventid);
         $this->view('students/viewOutsideEvent', $data);
     }
-
     public function deleteOutsideEvent() {
         $url = $this->getUrl();
         $eventid = $url[2];
@@ -294,7 +278,6 @@ class Students extends Controller {
             echo "<script>alert('Something went wrong. Please try again.');</script>";
         }
     }
-
     public function updateOutsideEvent() {
         $url = $this->getUrl();
         $eventid = $url[2];
@@ -385,7 +368,6 @@ class Students extends Controller {
         }
         $this->view('students/updateOutsideEvent', $data);
     }
-
     public function feedback(){
         $url = $this->getUrl();
         $participantid = $url[2];
@@ -503,7 +485,8 @@ class Students extends Controller {
         $events = $this->participateModel->get_eventid($student_id);
         if($events){
             foreach ($events as $event) {
-                if($event->event_details->EndDateAndTime > date("Y-m-d H:i:s")){
+                $event->event_details = $this->eventModel->getEventById($event->EventID);
+                if($event->event_details->EndDateAndTime < date("Y-m-d H:i:s")){
                     $points += $this->eventModel->getEventById($event->EventID)->RewardPoints;
                 }
             }
@@ -656,13 +639,107 @@ class Students extends Controller {
         }
         $this->view('students/profile', $data);
     }
-
+    public function resume(){
+        $data = [
+            'title' => 'Fill Resume',
+            'resume' => '',
+            'Error' => '',
+        ];
+        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $data['resume'] = $this->resumeModel->getResumeByStudentId($student_id);
+        $data['student'] = $this->studentModel->getStudentByUserId($_SESSION['user_id']);
+        $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+        $data['organization'] = $this->organizationModel->getOrganizationById($data['student']->OrganizationID);
+        //event participated
+        $event_participated = $this->participateModel->get_eventid($student_id);
+        //for each event participated, get the event details, fetch only event that ended
+        if (!empty($event_participated)) {
+            $filtered_events = [];
+        
+            foreach ($event_participated as $event) {
+                $event->event_details = $this->eventModel->getEventById($event->EventID);
+        
+                // Check if event ended
+                if ($event->event_details->EndDateAndTime < date("Y-m-d H:i:s")) {
+                    $event->event_details->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+                    $filtered_events[] = $event;
+                }
+            }
+        
+            // Get organization name for the remaining events
+            foreach ($filtered_events as $event) {
+                $event->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+            }
+        
+            $data['events'] = $filtered_events;
+        }        
+        else{
+            $data['events'] = "";
+        }
+        //outside event
+        $data['outside_events'] = $this->outsideEventModel->getEventByStudentIdApproved($student_id);
+        //if post update resume
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $data = [
+                'title' => 'Fill Resume',
+                'resume' => $this->resumeModel->getResumeByStudentId($student_id),
+                'student_id' => $student_id,
+                'education' => trim($_POST['education']),
+                'experience' => trim($_POST['experience']),
+                'skills' => trim($_POST['skills']),
+                'additional' => trim($_POST['additional']),
+                'resumeID' => $this->resumeModel->getResumeByStudentId($student_id)->ResumeID,
+            ];
+            if($this->resumeModel->updateResume($data)){
+                echo "<script>alert('Resume updated successfully.'); window.location.href = '" . URLROOT . "/students/resume';</script>";
+            }else{
+                echo "<script>alert('Something went wrong. Please try again.');</script>";
+            }
+            $this->view('students/resume', $data);
+        }
+        $this->view('students/resume', $data);
+    }
+    public function view_resume(){
+        $data = [
+            'title' => 'Resume',
+            'resume' => '',
+            'Error' => '',
+        ];
+        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $data['resume'] = $this->resumeModel->getResumeByStudentId($student_id);
+        if(empty($data['resume'])){
+            $data['resume'] = $this->resumeModel->getResumeByStudentId($student_id);
+            $data['resume']->education = "";
+            $data['resume']->experience = "";
+            $data['resume']->skills = "";
+            $data['resume']->additional = "";
+        }
+        $this->view('students/resume', $data);
+    }
+    public function getUrl(){
+        if(isset($_GET['url'])){
+          $url = rtrim($_GET['url'], '/');
+          $url = filter_var($url, FILTER_SANITIZE_URL);
+          $url = explode('/', $url);
+          return $url;
+        }
+    }
     public function index() {
         $data = [
-            'title' => 'Student Dashboard',
+            'title' => 'Upcoming Events',
             'events' => '',
             'Error' => '',
         ];
+        $event_participated = $this->participateModel->get_eventid($_SESSION['user_id']);
+        $data['events'] = $this->eventModel->getUpcomingEvents();
+        //get event organization name
+        foreach ($data['events'] as $event) {
+            $event->organizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+        }
+
         $this->view('students/index', $data);
     }
 }

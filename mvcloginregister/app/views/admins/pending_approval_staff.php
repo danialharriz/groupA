@@ -1,19 +1,4 @@
-<?php
-/*
-    public function pending_approval_staff(){
-        $staffs = $this->adminModel->getPendingStaff();
-        foreach($staffs as $staff){
-            $staff->OrganizationName = $this->organizationModel->getOrganizationName($staff->OrganizationID);
-            $staff->User = $this->userModel->getUserById($staff->UserID);
-        }
-        $data = [
-            'staffs' => $staffs,
-        ];
-        $this->view('admins/pending_approval_staff', $data);
-    }
-*/
-?>
-
+<?php require APPROOT . '/views/admins/nav.php'; ?>
 <html>
     <style>
         body {
@@ -103,18 +88,24 @@
                         <th>Job Title</th>
                         <th>Actions</th>
                     </tr>
-                    <?php foreach($data['staffs'] as $staff) : ?>
+                    <?php if (empty($data['staffs'])) : ?>
                         <tr>
-                            <td><?php echo $staff->User->Name; ?></td>
-                            <td><?php echo $staff->OrganizationName; ?></td>
-                            <td><?php echo $staff->User->Email; ?></td>
-                            <td><?php echo $staff->JobTitle; ?></td>
-                            <td>
-                                <a href="<?php echo URLROOT; ?>/admins/approve_staff/<?php echo $staff->StaffID; ?>" class="button">Approve</a>
-                                <a href="<?php echo URLROOT; ?>/admins/reject_staff/<?php echo $staff->StaffID; ?>" class="button delete">Reject</a>
-                            </td>
+                            <td colspan="5">No pending approval staff</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else : ?>
+                        <?php foreach($data['staffs'] as $staff) : ?>
+                            <tr>
+                                <td><?php echo $staff->User->Name; ?></td>
+                                <td><?php echo $staff->OrganizationName; ?></td>
+                                <td><?php echo $staff->User->Email; ?></td>
+                                <td><?php echo $staff->JobTitle; ?></td>
+                                <td>
+                                    <a href="<?php echo URLROOT; ?>/admins/approve_staff/<?php echo $staff->StaffID; ?>" class="button">Approve</a>
+                                    <a href="<?php echo URLROOT; ?>/admins/reject_staff/<?php echo $staff->StaffID; ?>" class="button delete">Reject</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </table>
             </div>
         </div>

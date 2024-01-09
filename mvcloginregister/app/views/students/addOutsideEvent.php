@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/students/nav.php' ?>
 <html>
 <head>
     <title><?php echo $data['title']; ?></title>

@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/students/nav.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

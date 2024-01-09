@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/admins/nav.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,8 +52,8 @@
     </style>
 </head>
 <body>
-    <h2>Organization Registration</h2>
     <div class="container">
+    <h2>Organization Registration</h2>
         <form action="register_organization.php" method="POST">
             <div class="form-group">
                 <label for="organizationName">Organization Name</label>

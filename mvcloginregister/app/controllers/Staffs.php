@@ -16,7 +16,7 @@ class Staffs extends Controller {
             header('location: ' . URLROOT . '/users/login');
         }
         //check if user is staff
-        if (!isStaff()) {
+        if  ($_SESSION['role'] != '1') {
             //redirect to login page if not logged in
             header('location: ' . URLROOT . '/users/logout');
         }
@@ -498,6 +498,15 @@ class Staffs extends Controller {
     }
     //index function
     public function index(){
+        $orgid = $this->staffModel->getOrganizationId($_SESSION['user_id']);
+        $events = $this->eventModel->getEventByOrganizationId($orgid);
+        //get the organizer name of each event
+        foreach($events as $event){
+            $event->OrganizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+        }
+        $data = [
+            'events' => $events,
+        ];
         $this->view('staffs/index');
     }
 }

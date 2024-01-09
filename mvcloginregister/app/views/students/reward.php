@@ -1,30 +1,4 @@
-<?php
-/*
-    public function reward(){
-        $data = [
-            'title' => 'Reward',
-            'rewards' => '',
-            'Error' => '',
-        ];
-        $points = 0;
-        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
-        $events = $this->participateModel->get_eventid($student_id);
-        if($events){
-            foreach ($events as $event) {
-                if($event->event_details->EndDateAndTime > date("Y-m-d H:i:s")){
-                    $points += $this->eventModel->getEventById($event->EventID)->RewardPoints;
-                }
-            }
-        }
-
-        $data['points'] = $points;
-        $data['rewards'] = $this->rewardModel->getAllRewards();
-        $this->view('students/reward', $data);
-    }
-*/
-?>
-
-
+<?php require APPROOT . '/views/students/nav.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <style>

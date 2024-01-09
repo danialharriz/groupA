@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/staffs/nav.php' ?>
 <html>
     <style>
         body {
