@@ -20,6 +20,17 @@ class Students extends Controller {
             header('location: ' . URLROOT . '/users/logout');    
         }
     }
+    public function org(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        // Get existing organization from model
+        $organization = $this->organizationModel->getOrganizationById($organizationId);
+        $data = [
+            'organization' => $organization,
+        ];
+        // Load view
+        $this->view('students/org', $data);
+    }
     public function addOutsideEvent() {
         $data = [
             'title' => 'Add Outside Event',
@@ -139,7 +150,7 @@ class Students extends Controller {
             }
             //get event organization name
             foreach ($event_participated as $event) {
-                $event->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+                $event->organization = $this->organizationModel->getOrganizationById($event->event_details->OrganizationID);
             }
             $data['events'] = $event_participated;
             $this->view('students/event_participated', $data);
@@ -158,7 +169,7 @@ class Students extends Controller {
         $data['events'] = $this->eventModel->getUpcomingEvents();
         //get event organization name
         foreach ($data['events'] as $event) {
-            $event->organizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+            $event->organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
 
         $this->view('students/viewUpcomingEvents', $data);
@@ -172,7 +183,7 @@ class Students extends Controller {
         ];
         $event = $this->eventModel->getEventById($eventid);
         $studentid = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
-        $event->organization_name = $this->organizationModel->getOrganizationName($event->OrganizationID);
+        $event->organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         $participated = $this->participateModel->check_participated($studentid, $eventid);
         $current_date = date("Y-m-d H:i:s");
         //if event is not participated and event is not expired
@@ -737,9 +748,8 @@ class Students extends Controller {
         $data['events'] = $this->eventModel->getUpcomingEvents();
         //get event organization name
         foreach ($data['events'] as $event) {
-            $event->organizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+            $event->organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
-
         $this->view('students/index', $data);
     }
 }
