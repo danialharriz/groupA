@@ -1,76 +1,84 @@
-<html>
-<style>
-    /* Reset some default browser styles */
-body, h1, form, label, input, select, button {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-}
-
-h1 {
-    text-align: center;
-    margin: 20px 0;
-}
-
-form {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-}
-
-select, input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-#customCourse {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-/* Add more styles as needed for specific elements or layout adjustments */
-
-</style>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Details</title>
+    <link rel="icon" href="<?php echo URLROOT; ?>/public/img/logos/YVLogo.png" type="image/png">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/student_details.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #7C1C2B; /* Updated background color */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #183D64; /* Heading color */
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #183D64; /* Label color */
+        }
+
+        select, input, #customCourse {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            background-color: #FCBD32; /* Select background color */
+            color: #183D64; /* Select text color */
+        }
+
+        #customCourse {
+            display: none;
+        }
+
+        button {
+            background-color: #FCBD32; /* Updated Button background color */
+            color: #183D64; /* Button text color */
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #F5A623; /* Updated Button hover background color */
+        }
+    </style>
 </head>
 <body>
-    <h1>Student Details</h1>
+<link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <form action="<?php echo URLROOT; ?>/users/student_details" method="POST">
+    <img src="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" alt="Logo" style="width: 80px; height: auto;">
+    <h1>Student Details</h1>
+    
         <?php if (empty($data['organizationId'])): ?>
             <label for="organizationID">Institute:</label>
             <select name="organizationID" id="organizationID" required onchange="fetchCourses()">
@@ -149,7 +157,7 @@ button:hover {
                     .then(response => response.json())
                     .then(data => {
                         let option;
-                        for (let i = 0; i < data.length; i++) {
+                        for (let i = 0; data && i < data.length; i++) {
                             option = document.createElement('option');
                             option.text = data[i].CourseName;
                             option.value = data[i].CourseName;
