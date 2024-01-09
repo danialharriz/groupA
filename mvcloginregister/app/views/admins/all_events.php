@@ -116,7 +116,7 @@
                             <td><?php echo $event->StartDateAndTime; ?></td>
                             <td><?php echo $event->EndDateAndTime; ?></td>
                             <td><?php echo $event->Location; ?></td>
-                            <td><?php echo $event->OrganizationName; ?></td>
+                            <td><a href="<?php echo URLROOT; ?>/admins/org/<?php echo $event->Organization->OrganizationID; ?>"><?php echo $event->Organization->OrganizationName; ?></a></td>
                             <td>
                                 <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
                             </td>

@@ -81,7 +81,7 @@ form {
             <?php foreach($data['courses'] as $course): ?>
                 <tr>
                     <td><?php echo $course->CourseName; ?></td>
-                    <td><?php echo $course->Organization->OrganizationName; ?></td>
+                    <td><a href="<?php echo URLROOT; ?>/admins/org/<?php echo $course->Organization->OrganizationID; ?>"><?php echo $course->Organization->OrganizationName; ?></a></td>
                     <td>
                         <button onclick="deleteCourse('<?php echo URLROOT; ?>/admins/delete_course/<?php echo $course->CourseID; ?>')">Delete</button>
                         <script>

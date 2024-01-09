@@ -66,7 +66,7 @@
                     </tr>
                     <?php foreach($data['feedbacks'] as $feedback): ?>
                         <tr>
-                            <td><?php echo $feedback->User->Name; ?></td>
+                            <td><a href="<?php echo URLROOT; ?>/admins/student/<?php echo $feedback->Student->StudentID; ?>"><?php echo $feedback->User->Name; ?></a></td>
                             <td><?php echo $feedback->SubmittedDateAndTime; ?></td>
                             <td><?php echo $feedback->Feedback; ?></td>
                         </tr>

@@ -96,7 +96,7 @@
                         <?php foreach($data['staffs'] as $staff) : ?>
                             <tr>
                                 <td><?php echo $staff->User->Name; ?></td>
-                                <td><?php echo $staff->OrganizationName; ?></td>
+                                <td><a href="<?php echo URLROOT; ?>/org/<?php echo $staff->Organization->OrganizationID; ?>"><?php echo $staff->Organization->OrganizationName; ?></a></td>
                                 <td><?php echo $staff->User->Email; ?></td>
                                 <td><?php echo $staff->JobTitle; ?></td>
                                 <td>

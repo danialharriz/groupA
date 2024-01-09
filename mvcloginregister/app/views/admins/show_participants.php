@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/admins/nav.php'; ?>
+
 <html>
     <style>
         body {
@@ -75,7 +76,7 @@
                     </tr>
                     <?php foreach($data['participants'] as $participant) : ?>
                         <tr>
-                            <td><?php echo $participant->User->Name; ?></td>
+                            <td><a href="<?php echo URLROOT; ?>/admins/student/<?php echo $participant->Student->StudentID; ?>"><?php echo $participant->User->Name; ?></a></td>
                             <td><?php echo $participant->Organization->OrganizationName; ?></td>
                             <td><?php echo $participant->User->Email; ?></td>
                             <td>
