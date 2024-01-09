@@ -1,5 +1,4 @@
 <?php
-
 class Users extends Controller {
     public function __construct() {
         $this->userModel = $this->model('User');
@@ -338,8 +337,7 @@ class Users extends Controller {
         $this->view('users/staff_details', $data);
     }
     //student details
-    public function student_details()
-    {
+    public function student_details(){
         if(!empty($_SESSION['role'])){
             $this->redirectToRole($_SESSION['role']);
         }
@@ -463,6 +461,43 @@ class Users extends Controller {
         }
     }
     //forgot password
+    public function forgot_password(){
+        $data = [
+            'title' => 'Forgot Password',
+            'email' => '',
+            'password' => '',
+            'confirmPassword' => '',
+            'credentialsError' => '',
+        ];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            require APPROOT . "/libraries/Mail/phpmailer/PHPMailerAutoload.php";
+            $email = $_POST['email'];
+            $user = $this->userModel->findUserByEmail($email);
+            if ($user) {
+                $mail = new PHPMailer;
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->Port = 587;
+                $mail->SMTPSecure = 'tls';
+                $mail->SMTPAuth = true;
+                $mail->Username = '';
+                $mail->Password = '';
+                $mail->setFrom('
+                ');
+                $mail->addAddress($email);
+                $mail->Subject = 'Reset Password';
+                $mail->Body = 'Click the link to reset your password: ' . URLROOT . '/users/reset_password/' . $email;
+                if ($mail->send()) {
+                    echo "<script>alert('Email sent.');</script>";
+                } else {
+                    echo "<script>alert('Email not sent.');</script>";
+                }
+            } else {
+                echo "<script>alert('Email not found.');</script>";
+            }
+        }
+        $this->view('users/forgot_password', $data);
+    }
     //index
     public function index() {
         if (isset($_SESSION['user_id'])) {

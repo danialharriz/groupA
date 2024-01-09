@@ -107,6 +107,17 @@ class Admins extends Controller {
         ];
         $this->view('admins/organization', $data);
     }
+    public function org(){
+        $url = $this->getUrl();
+        $organizationId = $url[2];
+        // Get existing organization from model
+        $organization = $this->organizationModel->getOrganizationById($organizationId);
+        $data = [
+            'organization' => $organization,
+        ];
+        // Load view
+        $this->view('admins/org', $data);
+    }
     public function deleteOrganization(){
         $url = $this->getUrl();
         $organizationId = $url[2];
@@ -528,7 +539,7 @@ class Admins extends Controller {
         $events = $this->eventModel->getAllEvent();
         //get the organizer name of each event
         foreach($events as $event){
-            $event->OrganizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+            $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
         $data = [
             'events' => $events,
@@ -573,7 +584,7 @@ class Admins extends Controller {
     public function pending_approval_staff(){
         $staffs = $this->adminModel->getPendingStaff();
         foreach($staffs as $staff){
-            $staff->OrganizationName = $this->organizationModel->getOrganizationName($staff->OrganizationID);
+            $staff->Organization = $this->organizationModel->getOrganizationById($staff->OrganizationID);
             $staff->User = $this->userModel->getUserById($staff->UserID);
         }
         $data = [
@@ -887,12 +898,14 @@ class Admins extends Controller {
     public function staffs(){
         $url = $this->getUrl();
         $organizationId = $url[2];
+        $organization = $this->organizationModel->getOrganizationById($organizationId);
         $staffs = $this->adminModel->getStaffByOrganizationId($organizationId);
         foreach($staffs as $staff){
             $staff->User = $this->userModel->getUserById($staff->UserID);
         }
         $data = [
             'staffs' => $staffs,
+            'organization' => $organization,
         ];
         $this->view('admins/staffs', $data);
     }
@@ -910,14 +923,27 @@ class Admins extends Controller {
     public function students(){
         $url = $this->getUrl();
         $organizationId = $url[2];
+        $organization = $this->organizationModel->getOrganizationById($organizationId);
         $students = $this->studentModel->getStudentByOrganizationId($organizationId);
         foreach($students as $student){
             $student->User = $this->userModel->getUserById($student->UserID);
         }
         $data = [
             'students' => $students,
+            'organization' => $organization,
         ];
         $this->view('admins/students', $data);
+    }
+    public function student(){
+        $url = $this->getUrl();
+        $studentId = $url[2];
+        $student = $this->studentModel->getStudentById($studentId);
+        $student->User = $this->userModel->getUserById($student->UserID);
+        $student->Organization = $this->organizationModel->getOrganizationById($student->OrganizationID);
+        $data = [
+            'student' => $student,
+        ];
+        $this->view('admins/student', $data);
     }
     public function getUrl(){
         if(isset($_GET['url'])){

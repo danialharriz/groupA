@@ -90,6 +90,12 @@ class Student {
             return false;
         }
     }
+    public function getStudentByOrganizationId($organizationId){
+        $this->db->query('SELECT * FROM student WHERE OrganizationID = :organizationId');
+        $this->db->bind(':organizationId', $organizationId);
+        $results = $this->db->resultSet();
+        return $results;
+    }
 }
 
 ?>
