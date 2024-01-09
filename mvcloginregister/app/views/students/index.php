@@ -82,7 +82,7 @@ a:hover {
                                 ?></td>
                                 <td><?php echo $event->StartDateAndTime; ?></td>
                                 <td><?php echo $event->EndDateAndTime; ?></td>
-                                <td><?php echo $event->organizationName; ?></td>
+                                <td><a href="<?php echo URLROOT; ?>/students/org/<?php echo $event->organization->OrganizationID; ?>"><?php echo $event->organization->OrganizationName; ?></a></td>
                                 <td>
                                     <a href="<?php echo URLROOT; ?>/students/view_event/<?php echo $event->EventID; ?>">More Detail</a>
                                 </td>

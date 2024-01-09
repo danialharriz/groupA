@@ -81,7 +81,7 @@
                             echo 'Unknown';
                         }
                     ?></td>
-                    <td><?php echo $event->organization_name; ?></td>
+                    <td><a href="<?php echo URLROOT; ?>/students/org/<?php echo $event->organization->OrganizationID; ?>"><?php echo $event->organization->OrganizationName; ?></a></td>
                     <td><a href="<?php echo URLROOT; ?>/students/view_event/<?php echo $event->event_details->EventID; ?>">View</a></td>
                 </tr>
             <?php endforeach; ?>

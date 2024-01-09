@@ -91,7 +91,7 @@ input[type="submit"]:hover {
                 </tr>
                 <tr>
                     <th>Organizer</th>
-                    <td><?php echo $data['event']->organization_name; ?></td>
+                    <td><a href="<?php echo URLROOT; ?>/students/org/<?php echo $data['event']->organization->OrganizationID; ?>"><?php echo $data['event']->organization->OrganizationName; ?></a></td>
                 </tr>
                 <!-- if $data['event']->canparticipated true, show participate button, if['$data']->cancancel, show cancel participant button, if $data['event']->canfeedback true, show feedback button -->
                 <?php if ($data['event']->canparticipate == true) : ?>
