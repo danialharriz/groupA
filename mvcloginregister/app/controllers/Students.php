@@ -713,22 +713,228 @@ class Students extends Controller {
         }
         $this->view('students/resume', $data);
     }
-    public function view_resume(){
-        $data = [
-            'title' => 'Resume',
-            'resume' => '',
-            'Error' => '',
-        ];
+    public function generateResume(){
         $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
         $data['resume'] = $this->resumeModel->getResumeByStudentId($student_id);
-        if(empty($data['resume'])){
-            $data['resume'] = $this->resumeModel->getResumeByStudentId($student_id);
-            $data['resume']->education = "";
-            $data['resume']->experience = "";
-            $data['resume']->skills = "";
-            $data['resume']->additional = "";
+        $data['student'] = $this->studentModel->getStudentByUserId($_SESSION['user_id']);
+        $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
+        $data['organization'] = $this->organizationModel->getOrganizationById($data['student']->OrganizationID);
+        //event participated
+        $event_participated = $this->participateModel->get_eventid($student_id);
+        //for each event participated, get the event details, fetch only event that ended
+        if (!empty($event_participated)) {
+            $filtered_events = [];
+        
+            foreach ($event_participated as $event) {
+                $event->event_details = $this->eventModel->getEventById($event->EventID);
+        
+                // Check if event ended
+                if ($event->event_details->EndDateAndTime < date("Y-m-d H:i:s")) {
+                    $event->event_details->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+                    $filtered_events[] = $event;
+                }
+            }
+        
+            // Get organization name for the remaining events
+            foreach ($filtered_events as $event) {
+                $event->organization_name = $this->organizationModel->getOrganizationName($event->event_details->OrganizationID);
+            }
+        
+            $data['events'] = $filtered_events;
+        }        
+        else{
+            $data['events'] = "";
         }
-        $this->view('students/resume', $data);
+        //outside event
+        $data['outside_events'] = $this->outsideEventModel->getEventByStudentIdApproved($student_id);
+
+        require APPROOT . '/libraries/FPDF/fpdf.php';
+
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->SetMargins(15, 15, 15);
+
+        $pdf->AddPage();
+        $pdf->SetFont('Times', 'B', 30);
+        $pdf->Cell(40, 10, 'Resume', 0, 1);
+
+        $pdf->Ln();
+
+        // Adjust the image position and size to fit within margins
+        $imageX = $pdf->GetX();
+        $imageY = $pdf->GetY();
+        $imageWidth = 80;
+        $imageHeight = 80;
+        
+        $pdf->Image($data['user']->profilePic, $imageX, $imageY, $imageWidth, $imageHeight);
+
+        $pdf->SetFont('Times', '', 12);
+
+        // Personal details
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+
+
+
+        $pdf->SetFont('Times', '', 12);
+        
+        // Create an associative array for better readability
+        $tableData = array(
+            'Name' => $data['user']->Name,
+            'Email' => $data['user']->Email,
+            'Phone' => $data['user']->Phone,
+            'Institute' => $data['organization']->OrganizationName,
+            'Course' => $data['student']->CourseID,
+            'Address' => $data['student']->Address,
+            'Date of Birth' => $data['student']->DateOfBirth,
+        );
+
+        foreach ($tableData as $label => $value) {
+            $pdf->Cell(80, 10, '', 0, 0, 'L');
+            $pdf->Cell(23, 10, $label, 0, 0, 'L');
+            $pdf->Cell(1, 10, ':', 0, 0, 'L');
+            $pdf->Cell(5); // Add a little space between label and value
+            $pdf->Cell(0, 10, $value, 0, 1);
+        }
+
+        // Education
+        $pdf->Ln();
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Education', 0, 1, 'L');
+
+        $pdf->SetFont('Times', '', 12);
+        $pdf->Cell(0, 10, $data['resume']->education, 0, 'L');
+
+        $pdf->Ln(3); // Move to the next line
+
+        //skill
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Skills', 0, 1);
+
+        $pdf->SetFont('Times', '', 12);
+        if (!empty($data['resume']->skills)) {
+            $pdf->Cell(0, 10, $data['resume']->skills, 0, 'L');
+        }
+        else{
+            $pdf->Cell(0, 10, 'No skill data', 0, 'L');
+        }
+
+        //experience
+        $pdf->Ln(3); // Move to the next line
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Experience', 0, 1);
+
+        $pdf->SetFont('Times', '', 12);
+        if (!empty($data['resume']->experience)) {
+            $pdf->Cell(0, 10, $data['resume']->experience, 0, 'L');
+        }
+        else{
+            $pdf->Cell(0, 10, 'No experience data', 0, 'L');
+        }
+
+        //event participated
+        $pdf->Ln(3); // Move to the next line
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Event Participated', 0, 1);
+
+        $pdf->SetFont('Times', '', 12);
+        if (!empty($data['events'])) {
+            $pdf->Cell(40, 10, 'Event Name', 0, 0, 'L'); // Column name
+            $pdf->Cell(40, 10, 'Organizer', 0, 0, 'L');
+            $pdf->Cell(40, 10, 'Event Type', 0, 0, 'L');
+
+            $pdf->Ln(); // Move to the next line
+            foreach ($data['events'] as $event) {
+                $pdf->Cell(40, 10, $event->event_details->EventName, 0, 0, 'L');
+                $pdf->Cell(40, 10, $event->organization_name, 0, 0, 'L');
+                $eventType = '';
+                switch ($event->event_details->EventType) {
+                    case 1:
+                        $eventType = 'Workshop';
+                        break;
+                    case 2:
+                        $eventType = 'Seminar';
+                        break;
+                    case 3:
+                        $eventType = 'Conference';
+                        break;
+                    case 4:
+                        $eventType = 'Competition';
+                        break;
+                    case 5:
+                        $eventType = 'Other';
+                        break;
+                }
+
+                $pdf->Cell(40, 10, $eventType, 0, 0, 'L');
+                $pdf->Ln(); // Move to the next line
+            }
+        } else {
+            $pdf->Cell(0, 10, 'No event participated', 0, 1, 'L');
+        }
+
+        //outside event
+        $pdf->Ln(3); // Move to the next line
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Outside Event', 0, 1);
+
+        $pdf->SetFont('Times', '', 12);
+        if (!empty($data['outside_events'])) {
+            $pdf->Cell(40, 10, 'Event Name', 0, 0, 'L'); // Column name
+            $pdf->Cell(40, 10, 'Organizer', 0, 0, 'L');
+            $pdf->Cell(40, 10, 'Event Type', 0, 0, 'L');
+
+            $pdf->Ln(); // Move to the next line
+            foreach ($data['outside_events'] as $event) {
+                $pdf->Cell(40, 10, $event->OEventName, 0, 0, 'L');
+                $pdf->Cell(40, 10, $event->OOrganization, 0, 0, 'L');
+                $eventType = '';
+                switch ($event->OEventType) {
+                    case 1:
+                        $eventType = 'Workshop';
+                        break;
+                    case 2:
+                        $eventType = 'Seminar';
+                        break;
+                    case 3:
+                        $eventType = 'Conference';
+                        break;
+                    case 4:
+                        $eventType = 'Competition';
+                        break;
+                    case 5:
+                        $eventType = 'Other';
+                        break;
+                }
+
+                $pdf->Cell(40, 10, $eventType, 0, 0, 'L');
+                $pdf->Ln(); // Move to the next line
+            }
+        } else {
+            $pdf->Cell(0, 10, 'No outside event participated', 0, 1, 'L');
+        }
+
+        //additional
+        $pdf->Ln(3); // Move to the next line
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetTextColor(52, 58, 64); // Dark Gray
+        $pdf->Cell(80, 10, 'Additional Information', 0, 1);
+
+        $pdf->SetFont('Times', '', 12);
+        if (!empty($data['resume']->additional)) {
+            $pdf->Cell(0, 10, $data['resume']->additional, 0, 'L');
+        }
+        else{
+            $pdf->Cell(0, 10, 'No additional information', 0, 'L');
+        }
+
+        $pdf->Output();
+
+        
     }
     public function getUrl(){
         if(isset($_GET['url'])){

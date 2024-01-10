@@ -496,18 +496,25 @@ class Staffs extends Controller {
           return $url;
         }
     }
+    public function student(){
+        $url = $this->getUrl();
+        $studentId = $url[2];
+        $student = $this->studentModel->getStudentById($studentId);
+        $student->User = $this->userModel->getUserById($student->UserID);
+        $student->Organization = $this->organizationModel->getOrganizationById($student->OrganizationID);
+        $data = [
+            'student' => $student,
+        ];
+        $this->view('staffs/student', $data);
+    }
     //index function
     public function index(){
         $orgid = $this->staffModel->getOrganizationId($_SESSION['user_id']);
         $events = $this->eventModel->getEventByOrganizationId($orgid);
-        //get the organizer name of each event
-        foreach($events as $event){
-            $event->OrganizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
-        }
         $data = [
             'events' => $events,
         ];
-        $this->view('staffs/index');
+        $this->view('staffs/index', $data);
     }
 }
 ?>
