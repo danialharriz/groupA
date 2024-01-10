@@ -142,5 +142,14 @@ class Participant{
             return false;
         }
     }
+    public function eventcount($studentId){
+        $this->db->query('SELECT COUNT(EventID) AS eventcount FROM participant WHERE StudentID = :studentId');
+
+        $this->db->bind(':studentId', $studentId);
+
+        $results = $this->db->single();
+
+        return $results->eventcount;
+    }
 }
 ?>

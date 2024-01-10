@@ -95,45 +95,51 @@
                         <th>Feedbacks</th>
                         <th>Actions</th>
                     </tr>
-                    <?php foreach($data['events'] as $event) : ?>
+                    <?php if (empty($data['events'])) : ?>
                         <tr>
-                            <td><?php echo $event->EventName; ?></td>
-                            <td><?php 
-                                if ($event->EventType == 1) {
-                                    echo 'Workshop';
-                                } elseif ($event->EventType == 2) {
-                                    echo 'Seminar';
-                                } elseif ($event->EventType == 3) {
-                                    echo 'Conference';
-                                } elseif ($event->EventType == 4) {
-                                    echo 'Competition';
-                                } elseif ($event->EventType == 5) {
-                                    echo 'Other';
-                                } else {
-                                    echo 'Unknown';
-                                }
-                            ?></td>
-                            <td><?php echo $event->StartDateAndTime; ?></td>
-                            <td><?php echo $event->EndDateAndTime; ?></td>
-                            <td><?php echo $event->Location; ?></td>
-                            <td><a href="<?php echo URLROOT; ?>/admins/org/<?php echo $event->Organization->OrganizationID; ?>"><?php echo $event->Organization->OrganizationName; ?></a></td>
-                            <td>
-                                <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
-                            </td>
-                            <td>
-                                <?php if ($event->EndDateAndTime < date('Y-m-d H:i:s')) : ?>
-                                    <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/feedback/<?php echo $event->EventID; ?>'">Show Feedbacks</button>
-                                <?php else : ?>
-                                    <button class="button" disabled>Unavailable</button>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button class="button edit" onclick="location.href='<?php echo URLROOT; ?>/admins/update_event/<?php echo $event->EventID; ?>'">View</button>
-                                <!--confirmation box for delete-->
-                                <button class="button delete" onclick="if (confirm('Are you sure you want to delete this event?')) location.href='<?php echo URLROOT; ?>/admins/delete_event/<?php echo $event->EventID; ?>'">Delete</button>
-                            </td>
+                            <td colspan="9">No events available</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else : ?>
+                        <?php foreach($data['events'] as $event) : ?>
+                            <tr>
+                                <td><?php echo $event->EventName; ?></td>
+                                <td><?php 
+                                    if ($event->EventType == 1) {
+                                        echo 'Workshop';
+                                    } elseif ($event->EventType == 2) {
+                                        echo 'Seminar';
+                                    } elseif ($event->EventType == 3) {
+                                        echo 'Conference';
+                                    } elseif ($event->EventType == 4) {
+                                        echo 'Competition';
+                                    } elseif ($event->EventType == 5) {
+                                        echo 'Other';
+                                    } else {
+                                        echo 'Unknown';
+                                    }
+                                ?></td>
+                                <td><?php echo $event->StartDateAndTime; ?></td>
+                                <td><?php echo $event->EndDateAndTime; ?></td>
+                                <td><?php echo $event->Location; ?></td>
+                                <td><a href="<?php echo URLROOT; ?>/admins/org/<?php echo $event->Organization->OrganizationID; ?>"><?php echo $event->Organization->OrganizationName; ?></a></td>
+                                <td>
+                                    <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
+                                </td>
+                                <td>
+                                    <?php if ($event->EndDateAndTime < date('Y-m-d H:i:s')) : ?>
+                                        <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/feedback/<?php echo $event->EventID; ?>'">Show Feedbacks</button>
+                                    <?php else : ?>
+                                        <button class="button" disabled>Unavailable</button>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button class="button edit" onclick="location.href='<?php echo URLROOT; ?>/admins/update_event/<?php echo $event->EventID; ?>'">View</button>
+                                    <!--confirmation box for delete-->
+                                    <button class="button delete" onclick="if (confirm('Are you sure you want to delete this event?')) location.href='<?php echo URLROOT; ?>/admins/delete_event/<?php echo $event->EventID; ?>'">Delete</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </table>
             </div>
         </div>

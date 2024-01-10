@@ -185,4 +185,15 @@ class User {
             return false;
         }
     }
+    public function getUserCount() {
+        $this->db->query('SELECT COUNT(*) AS userCount FROM user');
+
+        $row = $this->db->single();
+
+        if ($row) {
+            return $row->userCount;
+        } else {
+            return false;
+        }
+    }
 }

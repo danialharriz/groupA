@@ -72,6 +72,7 @@ CREATE TABLE `event` (
     `EventType` int(1) NULL,
     `RewardPoints` int(11) NULL,
     `OrganizationID` varchar(6) NULL,
+    `Picture` varchar(255) NULL,
     PRIMARY KEY (`EventID`),
     KEY `OrganizationID` (`OrganizationID`),
     CONSTRAINT `event_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
@@ -120,7 +121,6 @@ CREATE TABLE `participant` (
     `ParticipantID` varchar(6) NOT NULL,
     `StudentID` varchar(6) NOT NULL,
     `EventID` varchar(6) NOT NULL,
-    `Attendance` varchar(15) NULL,
     PRIMARY KEY (`ParticipantID`),
     KEY `StudentID` (`StudentID`),
     KEY `EventID` (`EventID`),
@@ -136,7 +136,6 @@ CREATE TABLE `staff` (
     `StaffID` varchar(6) NOT NULL,
     `UserID` varchar(6) NOT NULL,
     `OrganizationID` varchar(6) NOT NULL,
-    `Type` varchar(45) NULL,
     `JobTitle` varchar(45) NULL,
     `validated` int(1) NULL,
     PRIMARY KEY (`StaffID`),
@@ -184,7 +183,6 @@ CREATE TABLE `student` (
 CREATE TABLE `user` (
     `UserID` varchar(6) NOT NULL,
     `Name` varchar(45) NOT NULL,
-    `NickName` varchar(45) NOT NULL,
     `Phone` varchar(45) NOT NULL,
     `Email` varchar(45) NOT NULL,
     `Password` varchar(255) NOT NULL,

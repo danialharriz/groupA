@@ -1,24 +1,4 @@
 <?php
-/*
-database
-CREATE TABLE `event` (
-    `EventID` varchar(6) NOT NULL,
-    `EventName` int(45) NOT NULL,
-    `Description` int(45) NOT NULL,
-    `StartDateAndTime` datetime NOT NULL,
-    `EndDateAndTime` datetime NOT NULL,
-    `Location` varchar(255) NOT NULL,
-    `EventType` varchar(15) NOT NULL,
-    `RewardPoints` int(11) NOT NULL,
-    `OrganizationID` varchar(6) NOT NULL,
-    `Validated` varchar(3) NOT NULL,
-    PRIMARY KEY (`EventID`),
-    KEY `OrganizationID` (`OrganizationID`),
-    CONSTRAINT `event_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-*/
-
-
 
 class Event{
     private $db;
@@ -28,7 +8,7 @@ class Event{
     }
 
     public function addEvent($data){
-        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`)  VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId)");
+        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Picture`) VALUES (:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :picture)");
         
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -41,6 +21,7 @@ class Event{
         $this->db->bind(':organizationId', $data['organizationId']);
         $this->db->bind(':rewardPoints', $data['rewardPoints']);
         
+        $this->db->bind(':picture', $data['picture']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -94,7 +75,7 @@ class Event{
     }
 
     public function updateEvent($data){
-        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints WHERE EventID = :eventId');
+        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, Picture = :picture WHERE EventID = :eventId');
 
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -105,6 +86,12 @@ class Event{
         $this->db->bind(':location', $data['location']);
         $this->db->bind(':eventType', $data['eventType']);
         $this->db->bind(':rewardPoints', $data['rewardPoints']);
+
+        if($data['picture'] != null){
+            $this->db->bind(':picture', $data['picture']);
+        }else{
+            $this->db->bind(':picture', null);
+        }
 
         //Execute function
         if ($this->db->execute()) {
@@ -157,6 +144,13 @@ class Event{
         $row = $this->db->single();
 
         return $row;
+    }
+    public function getEventCount(){
+        $this->db->query('SELECT COUNT(*) AS count FROM Event');
+
+        $row = $this->db->single();
+
+        return $row->count;
     }
 }
 ?>

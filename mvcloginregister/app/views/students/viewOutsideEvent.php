@@ -105,6 +105,10 @@
             <td><?php echo $data['event']->OOrganization; ?></td>
         </tr>
         <tr>
+            <td>Reference</td>
+            <td><?php echo $data['event']->reference; ?></td>
+        </tr>
+        <tr>
             <td>Approval Status</td>
             <td><?php if ($data['event']->approvalStatus == 0) {
                 echo "Pending";

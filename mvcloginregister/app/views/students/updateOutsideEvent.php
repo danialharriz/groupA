@@ -119,6 +119,10 @@
                 <td><input type="text" name="organization" value="<?php echo $data['event']->OOrganization; ?>"></td>
                 <td><span style="color:red"><?php echo $data['organizationError']; ?></span></td>
             </tr>
+            <tr>
+                <td>Reference</td>
+                <td><input type="text" name="reference" value="<?php echo $data['event']->reference; ?>"></td>
+            </tr>
         </table>
         <input type="submit" value="Update">
     </form>

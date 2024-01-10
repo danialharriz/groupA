@@ -1,3 +1,5 @@
+<?php require APPROOT . '/views/staffs/nav.php' ?>
+<html>
 <html>
     <head>
         <title>Event Detail</title>
@@ -7,13 +9,16 @@
                 background-color: #f1f1f1;
             }
             
-            .container {
-                background-color: #FFFFFF;
-                padding: 20px;
+            .container1 {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
             
             input[type=text], input[type=password], input[type=datetime-local], input[type=number] {
-                width: 100%;
+                width: 98%;
                 padding: 15px;
                 margin: 5px 0 22px 0;
                 display: inline-block;
@@ -78,7 +83,7 @@
         </style>
     </head>
     <body>
-        <div class="container">
+        <div class="container1">
             <h1>Event Detail</h1>
             <hr>
             <form action="<?php echo URLROOT; ?>/staffs/update_event/<?php echo $data['eventId']; ?>" method="post">

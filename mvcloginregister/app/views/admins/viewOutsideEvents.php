@@ -87,30 +87,36 @@
                         <th>Organizer</th>
                         <th>Actions</th>
                     </tr>
-                    <?php foreach($data['outsideEvents'] as $outsideEvent) : ?>
+                    <?php if (empty($data['outsideEvents'])) : ?>
                         <tr>
-                            <td><?php echo $outsideEvent->OEventName; ?></td>
-                            <td><?php echo $outsideEvent->OEndDateAndTime; ?></td>
-                            <td><?php echo $outsideEvent->OLocation; ?></td>
-                            <td><?php if($outsideEvent->OEventType == 1) {
-                                echo "Workshop";
-                            } else if($outsideEvent->OEventType == 2) {
-                                echo "Seminar";
-                            } else if($outsideEvent->OEventType == 3) {
-                                echo "Conference";
-                            } else if($outsideEvent->OEventType == 4) {
-                                echo "Competition";
-                            } else if($outsideEvent->OEventType == 5) {
-                                echo "Others";
-                            }
-                            ?></td>
-                            <td><?php echo $outsideEvent->OOrganization; ?></td>
-                            <td>
-                                <!-- view button -->
-                                <a href="<?php echo URLROOT; ?>/admins/view_outside_event/<?php echo $outsideEvent->OEventID; ?>" class="button">View</a>    
-                            </td>
+                            <td colspan="6">No pending outside events.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else : ?>
+                        <?php foreach($data['outsideEvents'] as $outsideEvent) : ?>
+                            <tr>
+                                <td><?php echo $outsideEvent->OEventName; ?></td>
+                                <td><?php echo $outsideEvent->OEndDateAndTime; ?></td>
+                                <td><?php echo $outsideEvent->OLocation; ?></td>
+                                <td><?php if($outsideEvent->OEventType == 1) {
+                                    echo "Workshop";
+                                } else if($outsideEvent->OEventType == 2) {
+                                    echo "Seminar";
+                                } else if($outsideEvent->OEventType == 3) {
+                                    echo "Conference";
+                                } else if($outsideEvent->OEventType == 4) {
+                                    echo "Competition";
+                                } else if($outsideEvent->OEventType == 5) {
+                                    echo "Others";
+                                }
+                                ?></td>
+                                <td><?php echo $outsideEvent->OOrganization; ?></td>
+                                <td>
+                                    <!-- view button -->
+                                    <a href="<?php echo URLROOT; ?>/admins/view_outside_event/<?php echo $outsideEvent->OEventID; ?>" class="button">View</a>    
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </table>
             </div>
         </div>

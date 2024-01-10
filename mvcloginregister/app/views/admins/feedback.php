@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/admins/nav.php'; ?>
-<thml>
+<html>
     <style>
         body {
             font-family: Arial, sans-serif;

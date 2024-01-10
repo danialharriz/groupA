@@ -1,3 +1,5 @@
+<?php require APPROOT . '/views/staffs/nav.php' ?>
+<html>
 <!DOCTYPE html>
 <html>
 <head>

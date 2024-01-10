@@ -352,6 +352,33 @@ class Admins extends Controller {
             if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['organization_id_err']) && empty($data['end_date_and_time_err'])) {
                 // Validated
                 // Register event
+                if(($_POST['image']) != null){
+                    $target_dir = "profile_pictures/";
+                    $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    //check if file name already exist
+                    if (file_exists($target_file)) {
+                        //auto rename file
+                        $i = 1;
+                        while (file_exists($target_file)) {
+                            $target_file = $target_dir . basename($_FILES["image"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                            $i++;
+                        }
+                    }
+                    if($check !== false) {
+                        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                            $data['picture'] = $target_file;
+                        } else {
+                            echo "<script>alert('Something went wrong');</script>";
+                        }
+                    } else {
+                        echo "<script>alert('File is not an image');</script>";
+                    }
+                }else{
+                    $data['picture'] = null;
+                }
+
                 if ($this->eventModel->addEvent($data)) {
                     header('location: ' . URLROOT . '/admins/all_events');
                 } else {
@@ -640,22 +667,7 @@ class Admins extends Controller {
         $eventId = $url[2];
         $outsideEvent = $this->outsideEventModel->getEventById($eventId);
         $data = [
-            'eventId' => $eventId,
-            'eventName' => $outsideEvent->OEventName,
-            'description' => $outsideEvent->ODescription,
-            'startDateAndTime' => $outsideEvent->OStartDateAndTime,
-            'endDateAndTime' => $outsideEvent->OEndDateAndTime,
-            'location' => $outsideEvent->OLocation,
-            'eventType' => $outsideEvent->OEventType,
-            'organization' => $outsideEvent->OOrganization,
-            'event_id_err' => '',
-            'event_name_err' => '',
-            'description_err' => '',
-            'start_date_and_time_err' => '',
-            'end_date_and_time_err' => '',
-            'location_err' => '',
-            'event_type_err' => '',
-            'organization_err' => '',
+            'outsideEvent' => $outsideEvent,
         ];
         //show request student info
         $data['student'] = $this->studentModel->getStudentById($outsideEvent->studentID);
@@ -961,8 +973,11 @@ class Admins extends Controller {
         }
         $data = [
             'staffs' => $staffs,
+            'totalUser' => $this->userModel->getUserCount(),
+            'totalStudent' => $this->studentModel->getStudentCount(),
+            'totalEvent' => $this->eventModel->getEventCount(),
         ];
-        $this->view('admins/index');
+        $this->view('admins/index', $data);
     }
 }
 ?>

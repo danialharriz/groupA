@@ -26,7 +26,7 @@ class EventOutside{
     }
 
     public function addEvent($data){
-        $this->db->query('INSERT INTO eventOutside (OEventID, OEventName, ODescription, OStartDateAndTime, OEndDateAndTime, OLocation, OEventType, OOrganization, approvalStatus, studentID) VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :organization, :approvalStatus, :studentId)');
+        $this->db->query('INSERT INTO eventOutside (OEventID, OEventName, ODescription, OStartDateAndTime, OEndDateAndTime, OLocation, OEventType, OOrganization, approvalStatus, studentID, reference) VALUES(:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :organization, :approvalStatus, :studentId, :reference)');
 
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -39,6 +39,11 @@ class EventOutside{
         $this->db->bind(':organization', $data['organization']);
         $this->db->bind(':approvalStatus', $data['approvalStatus']);
         $this->db->bind(':studentId', $data['studentId']);
+        if ($data['reference'] == null) {
+            $this->db->bind(':reference', 'NULL');
+        } else {
+            $this->db->bind(':reference', $data['reference']);
+        }
 
         //Execute function
         if ($this->db->execute()) {
@@ -94,7 +99,7 @@ class EventOutside{
     }
 
     public function updateEvent($data){
-        $this->db->query('UPDATE eventOutside SET OEventName = :eventName, ODescription = :description, OStartDateAndTime = :startDateAndTime, OEndDateAndTime = :endDateAndTime, OLocation = :location, OEventType = :eventType, OOrganization = :organization, approvalStatus = :approvalStatus WHERE OEventID = :eventId');
+        $this->db->query('UPDATE eventOutside SET OEventName = :eventName, ODescription = :description, OStartDateAndTime = :startDateAndTime, OEndDateAndTime = :endDateAndTime, OLocation = :location, OEventType = :eventType, OOrganization = :organization, approvalStatus = :approvalStatus, reference = :reference WHERE OEventID = :eventId');
 
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -106,6 +111,11 @@ class EventOutside{
         $this->db->bind(':eventType', $data['eventType']);
         $this->db->bind(':organization', $data['organization']);
         $this->db->bind(':approvalStatus', $data['approvalStatus']);
+        if ($data['reference'] == null) {
+            $this->db->bind(':reference', 'NULL');
+        } else {
+            $this->db->bind(':reference', $data['reference']);
+        }
 
         //Execute function
         if ($this->db->execute()) {

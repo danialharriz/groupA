@@ -20,30 +20,28 @@
             color: #333;
         }
 
-        .table-container {
-            margin-top: 20px;
-            overflow-x: auto;
-        }
-
+        /* Styles for the staff table */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        th, td {
+        .staff-table th, .staff-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
-        th {
+        .staff-table th {
             background-color: #f2f2f2;
+            color: #333;
         }
 
-        tr:hover {
+        .staff-table tr:hover {
             background-color: #f5f5f5;
         }
+
 
         .button {
             display: inline-block;
@@ -71,6 +69,24 @@
             background-color: #d32f2f;
         }
 
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #333;
+        }
+
+        .card h1 {
+            color: #007BFF;
+            font-size: 36px;
+            margin-top: 10px;
+        }
     </style>
     <head>
         <title>Pending Approval Staff</title>
@@ -78,9 +94,31 @@
     </head>
     <body>
         <div class="container">
+                <table class="summary-table">
+                <th>
+                    <div class = "card">
+                        <h3>Total User in the system</h3>
+                        <h1><?php echo $data['totalUser']; ?></h1>
+                    </div>
+                </th>
+                <th>
+                    <div class = "card">
+                        <h3>Total Event in the system</h3>
+                        <h1><?php echo $data['totalEvent']; ?></h1>
+                    </div>
+                </th>
+                <th>
+                    <div class = "card">
+                        <h3>Total Student registered</h3>
+                        <h1><?php echo $data['totalStudent']; ?></h1>    
+                    </div>
+                </th>
+            </table>
+        </div>
+        <div class="container">
             <h1>Pending Approval Staff</h1>
             <div class="table-container">
-                <table>
+                <table class="staff-table">
                     <tr>
                         <th>Staff Name</th>
                         <th>Organization Name</th>

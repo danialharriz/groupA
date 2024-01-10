@@ -96,6 +96,15 @@ class Student {
         $results = $this->db->resultSet();
         return $results;
     }
+    public function getStudentCount(){
+        $this->db->query('SELECT COUNT(*) AS count FROM student');
+        $row = $this->db->single();
+        if ($row) {
+            return $row->count;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

@@ -43,6 +43,7 @@ class Students extends Controller {
             'organization' => '',
             'approvalStatus' => '',
             'studentId' => '',
+            'reference' => '',
             'eventNameError' => '',
             'descriptionError' => '',
             'startDateTimeError' => '',
@@ -90,6 +91,11 @@ class Students extends Controller {
                 $id = $id + 1;
                 $id = str_pad($id, 4, '0', STR_PAD_LEFT);
                 $data['eventId'] = 'OE' . $id;
+            }
+            if (empty(trim($_POST['reference']))) {
+                $data['reference'] = null;
+            } else {
+                $data['reference'] = trim($_POST['reference']);
             }
             // Validate Event Name
             if (empty($data['eventName'])) {
@@ -335,6 +341,11 @@ class Students extends Controller {
                 'approvalStatusError' => '',
                 'studentIdError' => '',
             ];
+            if (empty(trim($_POST['reference']))) {
+                $data['reference'] = '';
+            } else {
+                $data['reference'] = trim($_POST['reference']);
+            }
             // Validate Event Name
             if (empty($data['eventName'])) {
                 $data['eventNameError'] = 'Please enter event name';
@@ -950,12 +961,40 @@ class Students extends Controller {
             'events' => '',
             'Error' => '',
         ];
-        $event_participated = $this->participateModel->get_eventid($_SESSION['user_id']);
+        $student = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $eventparticipatedcount = $this->participateModel->eventcount($student);
         $data['events'] = $this->eventModel->getUpcomingEvents();
+        
+        $data['eventparticipatedcount'] = $eventparticipatedcount;
         //get event organization name
         foreach ($data['events'] as $event) {
             $event->organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
+
+        $points = 0;
+        $count = 0;
+        $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+        $events = $this->participateModel->get_eventid($student_id);
+        if($events){
+            foreach ($events as $event) {
+                $event->event_details = $this->eventModel->getEventById($event->EventID);
+                if($event->event_details->EndDateAndTime < date("Y-m-d H:i:s")){
+                    $points += $this->eventModel->getEventById($event->EventID)->RewardPoints;
+                    $count++;
+                }
+            }
+        }
+        $data['points'] = $points;
+        $data['rewards'] = $this->rewardModel->getAllRewards();
+        $totalstage = 0;
+        foreach ($data['rewards'] as $reward) {
+            if ($points >= $reward->RewardPoints) {
+                $currreward = $reward;
+            }
+            $totalstage++;
+        }
+        $data['eventparticipatedcount'] = $count;
+        $data['reward'] = $currreward;
         $this->view('students/index', $data);
     }
 }

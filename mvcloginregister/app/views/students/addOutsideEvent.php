@@ -94,6 +94,9 @@ button:hover {
             <option value="5" <?php echo ($data['eventType'] == 5) ? 'selected' : ''; ?>>Other</option>
         </select>
         <span class="invalid-feedback"><?php echo $data['eventTypeError']; ?></span>
+
+        <label for="reference">Reference:</label>
+        <input type="text" name="reference" id="reference" value="<?php echo $data['reference']; ?>">
         
         <!--submit btn-->
         <button type="submit" id="submit" value="submit">Submit</button>

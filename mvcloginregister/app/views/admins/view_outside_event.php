@@ -72,39 +72,56 @@
                 <table>
                     <tr>
                         <th>Event Name</th>
-                        <td><?php echo $data['eventName']; ?></td>
+                        <td><?php echo $data['outsideEvent']->OEventName; ?></td>
                     </tr>
                     <tr>
                         <th>Description</th>
-                        <td><?php echo $data['description']; ?></td>
+                        <td><?php echo $data['outsideEvent']->ODescription; ?></td>
                     </tr>
                     <tr>
                         <th>Start Date and Time</th>
-                        <td><?php echo $data['startDateAndTime']; ?></td>
+                        <td><?php echo $data['outsideEvent']->OStartDateAndTime; ?></td>
                     </tr>
                     <tr>
                         <th>End Date and Time</th>
-                        <td><?php echo $data['endDateAndTime']; ?></td>
+                        <td><?php echo $data['outsideEvent']->OEndDateAndTime; ?></td>
                     </tr>
                     <tr>
                         <th>Location</th>
-                        <td><?php echo $data['location']; ?></td>
+                        <td><?php echo $data['outsideEvent']->OLocation; ?></td>
                     </tr>
                     <tr>
                         <th>Event Type</th>
-                        <td><?php echo $data['eventType']; ?></td>
+                        <td><?php
+                            if ($data['outsideEvent']->OEventType == 1) {
+                                echo 'Workshop';
+                            } else if ($data['outsideEvent']->OEventType == 2) {
+                                echo 'Seminar';
+                            } else if ($data['outsideEvent']->OEventType == 3) {
+                                echo 'Conference';
+                            } else if ($data['outsideEvent']->OEventType == 4) {
+                                echo 'Competition';
+                            } else if ($data['outsideEvent']->OEventType == 5) {
+                                echo 'Others';
+                            } else {
+                                echo 'Unknown';
+                            }
+                            ?></td>
                     </tr>
                     <tr>
                         <th>Organizer</th>
-                        <td><?php echo $data['organization']; ?></td>
+                        <td><?php echo $data['outsideEvent']->OOrganization; ?></td>
                     </tr>
                     <tr>
+                        <th>Reference</th>
+                        <td><?php echo $data['outsideEvent']->reference; ?></td>
+                    <tr>
                         <th>Request By</th>
-                        <td><?php echo $data['user']->Name; ?></td>
+                        <td><a href="<?php echo URLROOT; ?>/admins/student/<?php echo $data['outsideEvent']->studentID; ?>"><?php echo $data['user']->Name; ?></a></td>
                     </tr>
                 </table>
-                <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/approve_outside_event/<?php echo $data['eventId']; ?>'">Approve</button>
-                <button class="button delete" onclick="location.href='<?php echo URLROOT; ?>/admins/reject_outside_event/<?php echo $data['eventId']; ?>'">Reject</button>
+                <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/approve_outside_event/<?php echo $data['outsideEvent']->OEventID; ?>'">Approve</button>
+                <button class="button delete" onclick="location.href='<?php echo URLROOT; ?>/admins/reject_outside_event/<?php echo $data['outsideEvent']->OEventID; ?>'">Reject</button>
             </div>
         </div>
     </body>

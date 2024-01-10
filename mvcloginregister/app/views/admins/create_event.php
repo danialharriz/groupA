@@ -110,6 +110,7 @@ textarea {
         <div class="form-group">
             <label for="event_type">Event Type</label>
             <select name="event_type" class="form-control <?php echo (!empty($data['event_type_err'])) ? 'is-invalid' : ''; ?>">
+                <option value="" selected disabled>Select an Event Type</option>
                 <option value="1" <?php echo ($data['eventType'] == 1) ? 'selected' : ''; ?>>Workshop</option>
                 <option value="2" <?php echo ($data['eventType'] == 2) ? 'selected' : ''; ?>>Seminar</option>
                 <option value="3" <?php echo ($data['eventType'] == 3) ? 'selected' : ''; ?>>Conference</option>
@@ -118,6 +119,11 @@ textarea {
             </select>
             <span class="invalid-feedback"><?php echo $data['event_type_err']; ?></span>
         </div>
+        <!--upload picture-->
+     <!--   <div class="form-group">
+            <label for="image">Upload Picture</label>
+            <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg">
+        </div> -->
         <input type="hidden" name="organization_id" value="<?php echo $data['organizationId']; ?>">
         <input type="submit" value="Create Event" class="btn btn-primary">
     </form>
