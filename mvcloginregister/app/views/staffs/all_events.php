@@ -90,7 +90,6 @@
                         <th>Event Start</th>
                         <th>Event End</th>
                         <th>Location</th>
-                        <th>Organizer</th>
                         <th>Participants</th>
                         <th>Feedbacks</th>
                         <th>Actions</th>
@@ -116,7 +115,6 @@
                             <td><?php echo $event->StartDateAndTime; ?></td>
                             <td><?php echo $event->EndDateAndTime; ?></td>
                             <td><?php echo $event->Location; ?></td>
-                            <td><?php echo $event->OrganizationName; ?></td>
                             <td>
                                 <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
                             </td>

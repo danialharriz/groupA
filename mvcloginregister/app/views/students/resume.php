@@ -2,61 +2,135 @@
 <html>
 <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 <style>
-    /* styles.css (or include it in your HTML file) */
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    body {
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
 }
 
 .container2 {
-    width: 50%;
-    margin: 50px auto;
+    width: 80%;
+    margin: auto;
     background-color: #fff;
     padding: 20px;
+    margin-top: 20px;
     border-radius: 8px;
-    box
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header {
-    background-color: #0e77ca;
-    color: #ffffff;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    border-radius: 8px 8px 0 0;
-}
-
-.input-group {
-    margin: 10px 0px 10px 0px;
-}
-
-.input-group label {
-    display: block;
-    text-align: left;
-    margin: 3px;
-}
-
-.input-group input {
-    height: 30px;
-    width: 93%;
-    padding: 5px 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.btn {
+    background-color: #3498db;
+    color: #fff;
     padding: 10px;
-    font-size: 15px;
-    color: white;
-    background: #0e77ca;
-    border: none;
-    border-radius: 5px;
+    text-align: center;
+    border-radius: 4px 4px 0 0;
 }
 
+.profilePic img {
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
 
+.profileInfo table {
+    width: 100%;
+}
+
+.profileInfo table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.event table,
+.resume-form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.event th,
+.event td,
+.resume-form textarea,
+.resume-form button {
+    padding: 8px;
+    text-align: left;
+}
+
+.event th {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.event td {
+    border-bottom: 1px solid #ddd;
+}
+
+.resume-form button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#exportPdfBtn {
+    background-color: #27ae60;
+}
+
+.resume-form button:hover,
+#exportPdfBtn:hover {
+    background-color: #218c53;
+}
+    /* Add this style to your existing styles */
+    .container3 {
+        width: 80%;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .container3 .header {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .container3 .input-group {
+        margin-bottom: 15px;
+    }
+
+    .container3 label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .container3 textarea {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    .container3 .btn {
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .container3 .btn:hover {
+        background-color: #218c53;
+    }
 </style>
 <head>
     <title>Resume</title>
@@ -126,7 +200,11 @@ body {
                     <?php foreach($data['events'] as $event): ?>
                         <tr>
                             <td><?php echo $event->event_details->EventName; ?></td>
-                            <td><?php echo $event->event_details->EventType; ?></td>
+                            <td><?php if($event->event_details->EventType == 1) echo "Workshop";
+                                        else if($event->event_details->EventType == 2) echo "Seminar";
+                                        else if($event->event_details->EventType == 3) echo "Conference";
+                                        else if($event->event_details->EventType == 4) echo "Competition";
+                                        else if($event->event_details->EventType == 5) echo "Others"; ?></td>
                             <td><?php echo $event->event_details->Description; ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -169,7 +247,7 @@ body {
             </table>
                 </div>
     </div>
-    <div class = "container2">
+    <div class = "container3">
         <div class="header">
             <h2>Resume Additional details</h2>
         </div>
@@ -196,6 +274,9 @@ body {
         </form>
         <div class="input-group">
             <button type="button" class="btn" id="exportPdfBtn">Export as PDF</button>
+        </div>
+        <div class = "input-group">
+            <button type="button" class="btn" onclick="location.href='<?php echo URLROOT; ?>/students/generateResume/'">View Resume</button>
         </div>
     </div>
 </body>

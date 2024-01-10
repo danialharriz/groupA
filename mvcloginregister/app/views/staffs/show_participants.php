@@ -1,3 +1,4 @@
+<?php require APPROOT . '/views/staffs/nav.php' ?>
 <html>
     <style>
         body {
@@ -68,22 +69,26 @@
                 <table>
                     <tr>
                         <th>Student Name</th>
-                        <th>Organization</th>
                         <th>Contact</th>
                         <th>Actions</th>
                     </tr>
-                    <?php foreach($data['participants'] as $participant) : ?>
+                    <?php if (empty($data['participants'])) : ?>
                         <tr>
-                            <td><?php echo $participant->User->Name; ?></td>
-                            <td><?php echo $participant->Organization->OrganizationName; ?></td>
-                            <td><?php echo $participant->User->Email; ?></td>
-                            <td>
-                                <form action="<?php echo URLROOT; ?>/staffs/delete_participant/<?php echo $participant->ParticipantID; ?>" method="post">
-                                    <input type="submit" value="Delete">
-                                </form>
-                            </td>
+                            <td colspan="4">No participants found.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else : ?>
+                        <?php foreach($data['participants'] as $participant) : ?>
+                            <tr>
+                                <td><a href="<?php echo URLROOT; ?>/staffs/student/<?php echo $participant->student->StudentID; ?>"><?php echo $participant->User->Name; ?></a></td>
+                                <td><?php echo $participant->User->Email; ?></td>
+                                <td>
+                                    <form action="<?php echo URLROOT; ?>/staffs/delete_participant/<?php echo $participant->ParticipantID; ?>" method="post">
+                                        <input type="submit" value="Delete">
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </table>
             </div>
         </div>
