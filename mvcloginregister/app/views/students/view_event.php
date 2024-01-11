@@ -1,56 +1,86 @@
 <?php require APPROOT . '/views/students/nav.php' ?>
-<html>
-<style>
-    .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-}
-
-.table-container {
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-input[type="submit"] {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
-}
-</style>
+<html lang="en">
 <head>
-    <!--event name-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $data['event']->EventName; ?></title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1><?php echo $data['event']->EventName; ?></h1>
         <div class="table-container">
             <table>
+            <?php if(isset($data['event']->Picture)) : ?>
+        <img src="<?php echo URLROOT; ?>/public/<?php echo $data['event']->Picture; ?>" alt="Event Picture">
+    <?php endif; ?>
                 <tr>
                     <th>Event Name</th>
                     <td><?php echo $data['event']->EventName; ?></td>
@@ -60,6 +90,10 @@ input[type="submit"]:hover {
                     <td><?php echo $data['event']->Description; ?></td>
                 </tr>
                 <tr>
+                    <th>Register Deadline</th>
+                    <td><?php echo $data['event']->Deadline; ?></td>
+                </tr>
+                <tr>
                     <th>Start Date and Time</th>
                     <td><?php echo $data['event']->StartDateAndTime; ?></td>
                 </tr>
@@ -67,6 +101,9 @@ input[type="submit"]:hover {
                     <th>End Date and Time</th>
                     <td><?php echo $data['event']->EndDateAndTime; ?></td>
                 </tr>
+                <tr>
+                    <th>Seat</th>
+                    <td><?php echo $data['participantcount'];?> / <?php echo $data['event']->MaxParticipants; ?></td>
                 <tr>
                     <th>Location</th>
                     <td><?php echo $data['event']->Location; ?></td>
@@ -127,3 +164,5 @@ input[type="submit"]:hover {
             </table>
         </div>
     </div>
+</body>
+</html>

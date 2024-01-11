@@ -75,7 +75,7 @@ textarea {
     <title>Create Event</title>
 </head>
 <body>
-    <form action="<?php echo URLROOT; ?>/admins/create_event" method="POST">
+    <form action="<?php echo URLROOT; ?>/admins/create_event" enctype="multipart/form-data" method="POST">
         <h1>Create Event</h1>
         <!--Event name-->
         <div class="form-group">
@@ -119,11 +119,25 @@ textarea {
             </select>
             <span class="invalid-feedback"><?php echo $data['event_type_err']; ?></span>
         </div>
+        <!--deadline-->
+        <div class="form-group">
+            <label for="deadline">Deadline</label>
+            <input type="datetime-local" name="deadline" class="form-control <?php echo (!empty($data['deadline_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['deadline']; ?>">
+            <span class="invalid-feedback"><?php echo $data['deadline_err']; ?></span>
+        </div>
+        <!--Max participants-->
+        <div class="form-group">
+            <label for="max_participant">Max Participants</label>
+            <input type="number" name="max_participant" class="form-control <?php echo (!empty($data['max_participant_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['maxParticipant']; ?>">
+            <span class="invalid-feedback"><?php echo $data['max_participant_err']; ?></span>
+        </div>
         <!--upload picture-->
-     <!--   <div class="form-group">
+        <!-- File upload field -->
+        <div class="form-group">
             <label for="image">Upload Picture</label>
             <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg">
-        </div> -->
+        </div>
+
         <input type="hidden" name="organization_id" value="<?php echo $data['organizationId']; ?>">
         <input type="submit" value="Create Event" class="btn btn-primary">
     </form>

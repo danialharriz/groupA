@@ -1,88 +1,148 @@
 <?php require APPROOT . '/views/admins/nav.php'; ?>
-<html>
-    <head>
-        <title>Event Detail</title>
-        <style>
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                background-color: #f1f1f1;
-            }
-            
-            .container {
-                background-color: #FFFFFF;
-                padding: 20px;
-            }
-            
-            input[type=text], input[type=password], input[type=datetime-local], input[type=number] {
-                width: 100%;
-                padding: 15px;
-                margin: 5px 0 22px 0;
-                display: inline-block;
-                border: none;
-                background: #f1f1f1;
-            }
-            
-            input[type=text]:focus, input[type=password]:focus, input[type=datetime-local]:focus, input[type=number]:focus {
-                background-color: #ddd;
-                outline: none;
-            }
-            
-            hr {
-                border: 1px solid #f1f1f1;
-                margin-bottom: 25px;
-            }
-            
-            .registerbtn {
-                background-color: #4CAF50;
-                color: white;
-                padding: 16px 20px;
-                margin: 8px 0;
-                border: none;
-                cursor: pointer;
-                width: 100%;
-                opacity: 0.9;
-            }
-            
-            .registerbtn:hover {
-                opacity: 1;
-            }
-            
-            a {
-                color: dodgerblue;
-            }
-            
-            .signin {
-                background-color: #f1f1f1;
-                text-align: center;
-            }
-            
-            .button {
-                background-color: #4CAF50; /* Green */
-                border: none;
-                color: white;
-                padding: 5px 10px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 12px;
-                margin: 2px 2px;
-                cursor: pointer;
-            }
-            
-            .button.delete {
-                background-color: #FF0000; /* Red color */
-            }
-            
-            .button.edit {
-                background-color: #0000FF; /* Blue color */
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Event Detail</h1>
-            <hr>
-            <form action="<?php echo URLROOT; ?>/admins/update_event/<?php echo $data['eventId']; ?>" method="post">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Detail</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            padding: 20px;
+            max-width: 600px;
+            margin: 50px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="datetime-local"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        hr {
+            border: 1px solid #f1f1f1;
+            margin-bottom: 25px;
+        }
+
+        .registerbtn, .button {
+            display: inline-block;
+            width: 49%;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            opacity: 0.9;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .registerbtn:hover, .button:hover {
+            opacity: 1;
+        }
+
+        .registerbtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .button {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+        }
+
+        .button.delete {
+            background-color: #FF0000;
+            color: white;
+        }
+
+        .button.edit {
+            background-color: #0000FF;
+            color: white;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+        }
+
+        span.error {
+            color: red;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Add the following styles for the file upload */
+        .upload {
+            margin-bottom: 15px;
+        }
+
+        .round {
+            border: 2px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .round input[type="file"] {
+            display: none;
+        }
+
+        .round label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Event Detail</h1>
+        <hr>
+        <?php if ($data['picture'] != null) : ?>
+            <img src="<?php echo URLROOT; ?>/public/<?php echo $data['picture']; ?>" alt="Event Picture">
+        <?php endif; ?>
+        <form action="<?php echo URLROOT; ?>/admins/update_event/<?php echo $data['eventId']; ?>" method="post" enctype="multipart/form-data" id="form">
+            <label for="picture"><b>Update Event Picture</b></label>
+            <div class="upload">
+                <div class="round">
+                    <input type="file" name="picture" id="picture" accept="image/*">
+                    <label for="picture">Choose File</label>
+                </div>
+            </div>
+            <input type="hidden" name="posttype" value="updatepic">
+            <input type="submit" name="upload" value="Update" class="button">
+        </form>
+        <form action="<?php echo URLROOT; ?>/admins/update_event/<?php echo $data['eventId']; ?>" method="post">
+        
                 <label for="event_name"><b>Event Name</b></label>
                 <input type="text" placeholder="Enter Event Name" name="event_name" value="<?php echo $data['eventName']; ?>">
                 <span style="color:red;"><?php echo $data['event_name_err']; ?></span>
@@ -95,6 +155,12 @@
                 <label for="end_date_and_time"><b>End Date and Time</b></label>
                 <input type="datetime-local" placeholder="Enter End Date and Time" name="end_date_and_time" value="<?php echo $data['endDateAndTime']; ?>">
                 <span style="color:red;"><?php echo $data['end_date_and_time_err']; ?></span>
+                <label for="deadline"><b>Deadline</b></label>
+                <input type="datetime-local" placeholder="Enter Deadline" name="deadline" value="<?php echo $data['deadline']; ?>">
+                <span style="color:red;"><?php echo $data['deadline_err']; ?></span>
+                <label for="MaxParticipants"><b>Maximum Participants</b></label>
+                <input type="number" placeholder="Enter Maximum Participants" name="MaxParticipants" value="<?php echo $data['maxParticipant']; ?>">
+                <span style="color:red;"><?php echo $data['maxParticipant_err']; ?></span>
                 <label for="location"><b>Location</b></label>
                 <input type="text" placeholder="Enter Location" name="location" value="<?php echo $data['location']; ?>">
                 <span style="color:red;"><?php echo $data['location_err']; ?></span>
@@ -107,7 +173,6 @@
                     <option value="5" <?php echo ($data['eventType'] == 5) ? 'selected' : ''; ?>>Other</option>
                 </select>
                 <span style="color:red;"><?php echo $data['event_type_err']; ?></span>
-                <span style="color:red;"><?php echo $data['reward_points_err']; ?></span>
                 <button type="submit" class="registerbtn">Update</button>
                 <!-- back button -->
                 <a href="<?php echo URLROOT; ?>/admins/all_events" class="button">Back</a>
