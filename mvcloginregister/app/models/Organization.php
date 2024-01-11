@@ -76,7 +76,7 @@ class Organization {
     }
 
     public function getAllOrganizations(){
-        $this->db->query('SELECT * FROM organization');
+        $this->db->query('SELECT * FROM organization ORDER BY TYPE ASC');
 
         $results = $this->db->resultSet();
 

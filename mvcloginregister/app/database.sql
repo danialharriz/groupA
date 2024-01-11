@@ -33,7 +33,7 @@ USE `2_databasemanagementsystemyouthventure`;
 CREATE TABLE `course` (
     `CourseID` varchar(6) NOT NULL,
     `OrganizationID` varchar(6) NOT NULL,
-    `CourseName` varchar(45) NOT NULL,
+    `CourseName` varchar(255) NOT NULL,
     KEY `OrganizationID` (`OrganizationID`),
     CONSTRAINT `course_ibfk_1` FOREIGN KEY (`OrganizationID`) REFERENCES `organization` (`OrganizationID`),
     PRIMARY KEY (`CourseID`)
@@ -66,6 +66,8 @@ CREATE TABLE `event` (
     `EventID` varchar(6) NOT NULL,
     `EventName` varchar(45) NOT NULL,
     `Description` text NOT NULL,
+    `MaxParticipants` int(11) NULL,
+    `Deadline` datetime NULL,
     `StartDateAndTime` datetime NULL,
     `EndDateAndTime` datetime NULL,
     `Location` varchar(255) NOT NULL,

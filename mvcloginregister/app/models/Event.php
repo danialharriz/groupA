@@ -8,7 +8,7 @@ class Event{
     }
 
     public function addEvent($data){
-        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Picture`) VALUES (:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :picture)");
+        $this->db->query("INSERT INTO `event`(`EventID`, `EventName`, `Description`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Picture`, `Deadline`, `MaxParticipants`) VALUES (:eventId, :eventName, :description, :startDateAndTime, :endDateAndTime, :location, :eventType, :rewardPoints, :organizationId, :picture, :deadline, :maxParticipant)");
         
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -20,6 +20,8 @@ class Event{
         $this->db->bind(':eventType', $data['eventType']);
         $this->db->bind(':organizationId', $data['organizationId']);
         $this->db->bind(':rewardPoints', $data['rewardPoints']);
+        $this->db->bind(':deadline', $data['deadline']);
+        $this->db->bind(':maxParticipant', $data['maxParticipant']);
         
         $this->db->bind(':picture', $data['picture']);
 
@@ -75,7 +77,7 @@ class Event{
     }
 
     public function updateEvent($data){
-        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, Picture = :picture WHERE EventID = :eventId');
+        $this->db->query('UPDATE Event SET EventName = :eventName, Description = :description, StartDateAndTime = :startDateAndTime, EndDateAndTime = :endDateAndTime, Location = :location, EventType = :eventType, RewardPoints = :rewardPoints, Deadline = :deadline, MaxParticipants = :maxParticipant WHERE EventID = :eventId');
 
         //Bind values
         $this->db->bind(':eventId', $data['eventId']);
@@ -86,12 +88,8 @@ class Event{
         $this->db->bind(':location', $data['location']);
         $this->db->bind(':eventType', $data['eventType']);
         $this->db->bind(':rewardPoints', $data['rewardPoints']);
-
-        if($data['picture'] != null){
-            $this->db->bind(':picture', $data['picture']);
-        }else{
-            $this->db->bind(':picture', null);
-        }
+        $this->db->bind(':deadline', $data['deadline']);
+        $this->db->bind(':maxParticipant', $data['maxParticipant']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -151,6 +149,20 @@ class Event{
         $row = $this->db->single();
 
         return $row->count;
+    }
+    public function updatePicture($eventId, $picture){
+        $this->db->query('UPDATE Event SET Picture = :picture WHERE EventID = :eventId');
+
+        //Bind values
+        $this->db->bind(':eventId', $eventId);
+        $this->db->bind(':picture', $picture);
+
+        //Execute function
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 ?>

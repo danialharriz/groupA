@@ -283,6 +283,8 @@ class Admins extends Controller {
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
                 'rewardPoints' => '',
+                'deadline' => trim($_POST['deadline']),
+                'maxParticipant' => trim($_POST['max_participant']),
                 //get the organization id from stafff table
                 'organizationId' => $this->adminModel->getOrganizationId($_SESSION['user_id']),
                 'event_id_err' => '',
@@ -294,6 +296,8 @@ class Admins extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'max_participant_err' => '',
                 //'validated_err' => '',
             ];
             $start_date = new DateTime($data['startDateAndTime']);
@@ -352,11 +356,12 @@ class Admins extends Controller {
             if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['organization_id_err']) && empty($data['end_date_and_time_err'])) {
                 // Validated
                 // Register event
-                if(($_POST['image']) != null){
-                    $target_dir = "profile_pictures/";
+                //upload picture
+                if(isset($_FILES["image"])){
+                    $target_dir = "event_pictures/";
                     $target_file = $target_dir . basename($_FILES["image"]["name"]);
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    
                     //check if file name already exist
                     if (file_exists($target_file)) {
                         //auto rename file
@@ -366,16 +371,12 @@ class Admins extends Controller {
                             $i++;
                         }
                     }
-                    if($check !== false) {
-                        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                            $data['picture'] = $target_file;
-                        } else {
-                            echo "<script>alert('Something went wrong');</script>";
-                        }
+                    if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
+                        $data['picture'] = $target_file;
                     } else {
-                        echo "<script>alert('File is not an image');</script>";
+                        $data['picture'] = null;
                     }
-                }else{
+                } else {
                     $data['picture'] = null;
                 }
 
@@ -400,6 +401,8 @@ class Admins extends Controller {
                 'eventType' => '',
                 'rewardPoints' => '',
                 'organizationId' => '',
+                'deadline' => '',
+                'maxParticipant' => '',
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -409,6 +412,8 @@ class Admins extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'max_participant_err' => '',
                 //'validated_err' => '',
             ];
             // Load view
@@ -423,6 +428,43 @@ class Admins extends Controller {
         $eventId = $url[2];
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            //check if post type is updatepic
+            if(isset($_POST['posttype'])){
+                //upload picture
+                if(isset($_FILES["picture"])){
+                    $target_dir = "event_pictures/";
+                    $target_file = $target_dir . basename($_FILES["picture"]["name"]);
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    
+                    //check if file name already exist
+                    if (file_exists($target_file)) {
+                        //auto rename file
+                        $i = 1;
+                        while (file_exists($target_file)) {
+                            $target_file = $target_dir . basename($_FILES["picture"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                            $i++;
+                        }
+                    }
+                    if(move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)){
+                        //delete old picture
+                        $event = $this->eventModel->getEventById($eventId);
+                        if($event->Picture != null){
+                            unlink($event->Picture);
+                        }
+                        $data['picture'] = $target_file;
+                    } else {
+                        $data['picture'] = null;
+                    }
+                } else {
+                    $data['picture'] = null;
+                }
+                //update picture
+                if($this->eventModel->updatePicture($eventId, $data['picture'])){
+                    echo "<script>alert('Picture updated successfully'); window.location.href = '" . URLROOT . "/admins/update_event/$eventId';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            }
             // Process form
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -434,6 +476,9 @@ class Admins extends Controller {
                 'endDateAndTime' => trim($_POST['end_date_and_time']),
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
+                'rewardPoints' => '',
+                'deadline' => trim($_POST['deadline']),
+                'maxParticipant' => trim($_POST['MaxParticipants']),
                 //'rewardPoints' => trim($_POST['reward_points']),
                 'event_id_err' => '',
                 'event_name_err' => '',
@@ -444,6 +489,7 @@ class Admins extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
                 //'validated_err' => '',
             ];
             $start_date = new DateTime($data['startDateAndTime']);
@@ -522,6 +568,9 @@ class Admins extends Controller {
                 'eventType' => $event->EventType,
                 'rewardPoints' => $event->RewardPoints,
                 'organizationId' => $event->OrganizationID,
+                'deadline' => $event->Deadline,
+                'maxParticipant' => $event->MaxParticipants,
+                'picture' => $event->Picture,
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -531,6 +580,8 @@ class Admins extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'maxParticipant_err' => '',
                 //'validated_err' => '',
             ];
             // Load view
@@ -543,10 +594,17 @@ class Admins extends Controller {
         //get event id from url
         $url = $this->getUrl();
         $eventId = $url[2];
+        //delete the picture of the event
+        $event = $this->eventModel->getEventById($eventId);
+        if($event->Picture != null){
+            unlink($event->Picture);
+        }
         //get all participants of the event
         $participantId = $this->participantModel->getParticipantByEventId($eventId);
         //delete all feedbacks of the event
-        if($this->feedbackModel->deleteFeedbackByParticipantId($participantId)){
+        foreach($participantId as $participant){
+            $this->feedbackModel->deleteFeedbackByParticipantId($participant->ParticipantID);
+        }
             //delete all participants of the event
             if($this->participantModel->deleteParticipantByEventId($eventId)){
                 //delete event
@@ -558,9 +616,7 @@ class Admins extends Controller {
             } else {
                 echo "<script>alert('Something went wrong');</script>";
             }
-        } else {
-            echo "<script>alert('Something went wrong');</script>";
-        }
+
     }
     public function all_events(){
         $events = $this->eventModel->getAllEvent();
@@ -633,7 +689,7 @@ class Admins extends Controller {
                     echo "<script>alert('Something went wrong');</script>";
                 }
             } else {
-                if($this->userModel->setRole($userrid, 1)){
+                if($this->userModel->setRole($userid, 1)){
                     echo "<script>alert('Staff approved successfully'); window.location.href = '" . URLROOT . "/admins/pending_approval_staff';</script>";
                 } else {
                     echo "<script>alert('Something went wrong');</script>";

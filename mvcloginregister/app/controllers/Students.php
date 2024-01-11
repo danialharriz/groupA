@@ -196,12 +196,13 @@ class Students extends Controller {
         $event->canparticipate = false;
         $event->cancancel = false;
         $event->canfeedback = false;
+        $participantcount = $this->participateModel->get_participant_count($eventid);
         if($participated == true){
             $event->participant_id = $this->participateModel->get_participant_id($studentid, $eventid);
             //check if feedback already submitted
             $feedback = $this->feedbackModel->getfeedbackByParticipantId($event->participant_id);
         }
-        if($participated == false && $event->StartDateAndTime > $current_date){
+        if($participated == false && $event->Deadline > $current_date && $event->MaxParticipants > $participantcount){
             $event->canparticipate = true;
         } //if event participated and event is not expired
         else if($participated == true && $event->StartDateAndTime > $current_date){
@@ -211,6 +212,7 @@ class Students extends Controller {
             $event->canfeedback = true;
         }
         $data['event'] = $event;
+        $data['participantcount'] = $participantcount;
         $this->view('students/view_event', $data);
     }
     public function participate(){
@@ -624,7 +626,7 @@ class Students extends Controller {
                 $data['user'] = $this->userModel->getUserById($_SESSION['user_id']);
                 $data['organization'] = $this->organizationModel->getOrganizationById($data['student']->OrganizationID);
                 
-                $target_dir = "profile_pictures/";
+                $target_dir = "event_pictures/";
                 $target_file = $target_dir . basename($_FILES["image"]["name"]);
                 $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                 $check = getimagesize($_FILES["image"]["tmp_name"]);

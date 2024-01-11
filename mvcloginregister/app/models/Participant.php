@@ -151,5 +151,14 @@ class Participant{
 
         return $results->eventcount;
     }
+    public function get_participant_count($eventid){
+        $this->db->query('SELECT COUNT(ParticipantID) AS participantcount FROM participant WHERE EventID = :eventid');
+
+        $this->db->bind(':eventid', $eventid);
+
+        $results = $this->db->single();
+
+        return $results->participantcount;
+    }
 }
 ?>
