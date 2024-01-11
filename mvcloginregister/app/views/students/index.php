@@ -1,6 +1,13 @@
 <?php require APPROOT . '/views/students/nav.php' ?>
 <html>
 <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffcccc; /* New pink background color */
+}
+
 .container1 {
     max-width: 1200px;
     margin: 20px auto;
@@ -44,6 +51,7 @@ table.summary-table {
 h1 {
     text-align: center;
     margin-bottom: 20px;
+    color: black;
 }
 
 /* Updated class name to event-table */
@@ -80,7 +88,6 @@ a:hover {
     text-decoration: underline;
 }
 
-
 </style>
 <head>
     <title>Upcoming Events</title>
@@ -91,7 +98,7 @@ a:hover {
         <table class = "summary table">
             <th>
                 <div class = "card">
-                    <h3>Total event joined</h3>
+                    <h3>Total Events Joined</h3>
                     <h1><?php echo $data['eventparticipatedcount']; ?></h1>
                 </div>
             </th>

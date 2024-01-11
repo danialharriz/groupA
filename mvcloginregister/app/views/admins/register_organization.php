@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Organization Registration</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <style>
         /* Custom CSS styles */
         .container {
@@ -43,8 +44,9 @@
             font-size: 14px;
         }
         h2 {
-            color: #007bff;
+            color: black;
             margin-bottom: 20px;
+
         }
         label {
             font-weight: bold;

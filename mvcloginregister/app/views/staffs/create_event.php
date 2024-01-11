@@ -20,7 +20,7 @@ form {
 
 h1 {
     text-align: center;
-    color: #007bff;
+    color: black;
 }
 
 .form-group {

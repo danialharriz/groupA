@@ -18,6 +18,7 @@
 
         h1 {
             color: #333;
+            text-align: center;
         }
 
         /* Styles for the staff table */
@@ -90,6 +91,7 @@
     </style>
     <head>
         <title>Pending Approval Staff</title>
+        <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
         <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/pending_approval_staff.css">
     </head>
     <body>

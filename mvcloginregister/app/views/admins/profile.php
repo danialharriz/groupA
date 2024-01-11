@@ -14,6 +14,7 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     hr {
@@ -122,6 +123,7 @@
 </style>
 <head>
     <title>Profile</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/profile.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/bootstrap.min.css">
@@ -130,7 +132,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <h1>Profile</h1>
+    <h1>User Profile</h1>
     <hr>
     <!-- profile picture -->
     <form action = "<?php echo URLROOT; ?>/admins/profile" method = "post" enctype = "multipart/form-data" id = "form">

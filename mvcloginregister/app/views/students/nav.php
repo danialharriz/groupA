@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -11,7 +12,7 @@
         }
 
         nav {
-            background-color: #0e77ca;
+            background-color: black;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -45,7 +46,7 @@
         <a href="<?php echo URLROOT; ?>/students/viewUpcomingEvents">Upcoming Events</a>
         <!--event participated-->
         <a href="<?php echo URLROOT; ?>/students/event_participated.php">Event Participated</a>
-        <a href="<?php echo URLROOT; ?>/students/viewOutsideEvents">My Outside Event</a>
+        <a href="<?php echo URLROOT; ?>/students/viewOutsideEvents">Unique Events</a>
         <!--reward-->
         <a href="<?php echo URLROOT; ?>/students/reward">Reward</a>
         <!--resume-->

@@ -125,6 +125,7 @@
 </head>
 <body>
     <div class="container">
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
         <h1>Event Detail</h1>
         <hr>
         <?php if ($data['picture'] != null) : ?>

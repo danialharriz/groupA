@@ -21,6 +21,7 @@ body {
 
 h1 {
     color: #333;
+    text-align: center;
 }
 
 table {
@@ -66,6 +67,7 @@ form {
 </style>
 <head>
     <title>Course</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/course.css">
 </head>
 <body>

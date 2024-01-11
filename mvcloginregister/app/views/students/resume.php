@@ -20,7 +20,7 @@
 }
 
 .header {
-    background-color: #3498db;
+    background-color: black;
     color: #fff;
     padding: 10px;
     text-align: center;
@@ -93,7 +93,7 @@
     }
 
     .container3 .header {
-        background-color: #3498db;
+        background-color: black;
         color: #fff;
         padding: 10px;
         text-align: center;
@@ -131,6 +131,19 @@
     .container3 .btn:hover {
         background-color: #218c53;
     }
+
+    .profilePic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profilePic img {
+    border-radius: 50%;
+    margin-bottom: 10px;
+    align-self: center; /* Center the image within the flex container */
+}
 </style>
 <head>
     <title>Resume</title>

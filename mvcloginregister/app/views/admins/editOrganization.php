@@ -62,6 +62,7 @@
 </style>
 <head>
     <title>Edit Organization</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/editOrganization.css">
 </head>
 <body>

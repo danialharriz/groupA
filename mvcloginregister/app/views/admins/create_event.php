@@ -73,6 +73,7 @@ textarea {
 </style>
 <head>
     <title>Create Event</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
 </head>
 <body>
     <form action="<?php echo URLROOT; ?>/admins/create_event" enctype="multipart/form-data" method="POST">

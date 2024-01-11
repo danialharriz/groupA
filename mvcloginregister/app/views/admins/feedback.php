@@ -51,6 +51,7 @@
     </style>
     <head>
         <title>Feedback</title>
+        <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
         <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/feedback.css">
     </head>
     <body>

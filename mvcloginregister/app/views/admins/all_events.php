@@ -10,7 +10,6 @@
 
         .container {
             width: 80%;
-            margin: 50px auto;
             background-color: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -80,6 +79,7 @@
     <body>
         <div class="container">
             <h1>Events</h1>
+            <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
             <!--add event button-->
             <button class="button" onclick="location.href='<?php echo URLROOT; ?>/admins/create_event'">Add New Event</button>
             <div class="table-container">

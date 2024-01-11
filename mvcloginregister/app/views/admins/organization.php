@@ -10,8 +10,7 @@
         }
 
         .container {
-            width: 80%;
-            margin: 50px auto;
+            width: 90%;
             background-color: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -71,13 +70,14 @@
     </style>
     <head>
         <title>Organization</title>
+        <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
         <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
         <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/organization.css">
     </head>
     <body>
         <div class="container">
             <div class="organization">
-                <h1>Organization</h1>
+                <h1>Partnered Organizations and Institutes</h1>
                 <a href="<?php echo URLROOT; ?>/admins/register_organization" class="button">Add Organization</a>
                 <table>
                     <tr>

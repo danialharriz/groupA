@@ -14,6 +14,7 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     hr {

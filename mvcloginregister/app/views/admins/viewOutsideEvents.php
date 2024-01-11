@@ -20,6 +20,7 @@
 
             h1 {
                 color: #333;
+                text-align: center;
             }
 
             .table-container {
@@ -77,6 +78,7 @@
     <body>
         <div class="container">
             <h1>View Outside Events</h1>
+            <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
             <div class="table-container">
                 <table>
                     <tr>

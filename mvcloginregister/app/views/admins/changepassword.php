@@ -70,6 +70,7 @@ span {
 </style>
 <head>
     <title>Change Password</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <!-- Include your CSS stylesheets and scripts here -->
 </head>
 <body>

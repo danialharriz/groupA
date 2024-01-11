@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -11,7 +12,7 @@
         }
 
         nav {
-            background-color: #0e77ca;
+            background-color: black;
             color: white;
             padding: 10px 20px;
             text-align: center;

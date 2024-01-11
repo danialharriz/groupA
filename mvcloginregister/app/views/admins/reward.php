@@ -4,7 +4,6 @@
     body {
         font-family: Arial, sans-serif;
         background-color: #f8f8f8;
-        margin: 20px;
         color: #333;
     }
 
@@ -13,6 +12,7 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     form {
@@ -111,7 +111,6 @@
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/reward.css">
 </head>
 <body>
-    <h1>Reward</h1>
     <h2>Available Rewards</h2>
     <table>
         <tr>
