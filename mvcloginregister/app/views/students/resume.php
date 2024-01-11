@@ -272,9 +272,9 @@
                 <button type="submit" class="btn" name="resume_btn">Update</button>
             </div>
         </form>
-        <div class="input-group">
+        <!--<div class="input-group">
             <button type="button" class="btn" id="exportPdfBtn">Export as PDF</button>
-        </div>
+        </div>-->
         <div class = "input-group">
             <button type="button" class="btn" onclick="location.href='<?php echo URLROOT; ?>/students/generateResume/'">View Resume</button>
         </div>

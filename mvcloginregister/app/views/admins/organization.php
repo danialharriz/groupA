@@ -71,6 +71,7 @@
     </style>
     <head>
         <title>Organization</title>
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
         <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/organization.css">
     </head>
     <body>
@@ -107,13 +108,17 @@
                             <td><?php echo $organization->ContactPhone; ?></td>
                             <td>
                                 <?php if ($organization->Type == 1) : ?>
-                                    <a href="<?php echo URLROOT; ?>/admins/Students/<?php echo $organization->OrganizationID; ?>" class="button">View Students</a>
+                                    <a href="<?php echo URLROOT; ?>/admins/Students/<?php echo $organization->OrganizationID; ?>" class="button">Students</a>
                                 <?php elseif ($organization->Type == 2) : ?>
-                                    <a href="<?php echo URLROOT; ?>/admins/Staffs/<?php echo $organization->OrganizationID; ?>" class="button">View Staffs</a>
+                                    <a href="<?php echo URLROOT; ?>/admins/Staffs/<?php echo $organization->OrganizationID; ?>" class="button">Staffs</a>
                                 <?php endif; ?>
                             <td>
-                                <a href="<?php echo URLROOT; ?>/admins/editOrganization/<?php echo $organization->OrganizationID; ?>" class="button edit">Edit</a>
-                                <a href="<?php echo URLROOT; ?>/admins/deleteOrganization/<?php echo $organization->OrganizationID; ?>" class="button delete">Delete</a>
+                                <a href="<?php echo URLROOT; ?>/admins/editOrganization/<?php echo $organization->OrganizationID; ?>" class="button edit">
+                                    <i class="uil uil-edit"></i> 
+                                </a>
+                                <a href="<?php echo URLROOT; ?>/admins/deleteOrganization/<?php echo $organization->OrganizationID; ?>" class="button delete">
+                                    <i class="uil uil-trash-alt"></i> 
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

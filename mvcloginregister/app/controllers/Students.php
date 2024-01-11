@@ -800,18 +800,21 @@ class Students extends Controller {
         );
 
         foreach ($tableData as $label => $value) {
-            $pdf->Cell(80, 10, '', 0, 0, 'L');
+            $pdf->Cell(85, 10, '', 0, 0, 'L');
             $pdf->Cell(23, 10, $label, 0, 0, 'L');
             $pdf->Cell(1, 10, ':', 0, 0, 'L');
             $pdf->Cell(5); // Add a little space between label and value
             $pdf->Cell(0, 10, $value, 0, 1);
         }
 
+        //add a line
         // Education
+        $pdf->Ln();
         $pdf->Ln();
         $pdf->SetFont('Arial', 'B', 16);
         $pdf->SetTextColor(52, 58, 64); // Dark Gray
         $pdf->Cell(80, 10, 'Education', 0, 1, 'L');
+
 
         $pdf->SetFont('Times', '', 12);
         $pdf->Cell(0, 10, $data['resume']->education, 0, 'L');

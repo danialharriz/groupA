@@ -324,7 +324,7 @@ class Users extends Controller {
                         $this -> userModel -> addRole(1);
                         $_SESSION['role'] = 1;
                     }
-                    $this -> redirectToRole($_SESSION['role']);
+                    $this->redirectToRole($_SESSION['role']);
 
                     exit();
 

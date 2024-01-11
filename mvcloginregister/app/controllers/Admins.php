@@ -626,7 +626,7 @@ class Admins extends Controller {
         $userid = $this->adminModel->getStaff($staffId)->UserID;
         if($this->adminModel->approveStaff($staffId)){
             $orgid = $this->adminModel->getStaff($staffId)->OrganizationID;
-            if($orgid = "O00001"){
+            if($orgid  == 'O00001'){
                 if($this->userModel->setRole($userid, 3)){
                     echo "<script>alert('Staff approved successfully'); window.location.href = '" . URLROOT . "/admins/pending_approval_staff';</script>";
                 } else {

@@ -78,6 +78,7 @@
             <div class="form-group">
                 <label for="type">Type</label>
                 <select name="type" id="type" class="form-control" required>
+                    <option value="">Select Type</option>
                     <option value="1">Institute</option>
                     <option value="2">Company</option>
                 </select>
