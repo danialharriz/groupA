@@ -96,7 +96,7 @@ button:hover {
         <span class="invalid-feedback"><?php echo $data['eventTypeError']; ?></span>
 
         <label for="reference">Reference:</label>
-        <input type="text" name="reference" id="reference" value="<?php echo $data['reference']; ?>">
+        <input type="text" name="reference" id="reference" value="<?php echo $data['reference']; ?>" placeholder="Enter reference as prove such as link of event, link of cert etc">
         
         <!--submit btn-->
         <button type="submit" id="submit" value="submit">Submit</button>

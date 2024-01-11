@@ -1,76 +1,82 @@
-<?php require APPROOT . '/views/staffs/nav.php' ?>
-<html>
+<?php require APPROOT . '/views/staffs/nav.php'; ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Create Event</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
 
-/* Form container */
-.form-container {
-    max-width: 400px;
-    margin: 0 auto;
+form {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
     padding: 20px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Form title */
-.form-container h1 {
+h1 {
     text-align: center;
-    margin-bottom: 20px;
+    color: #007bff;
 }
 
-/* Form input fields */
 .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
+    color: #495057;
 }
 
-.form-control {
+input[type="text"],
+input[type="datetime-local"],
+select,
+textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
     border-radius: 4px;
 }
 
-/* Invalid input styling */
-.is-invalid {
-    border-color: #dc3545;
+textarea {
+    resize: vertical;
 }
 
-.invalid-feedback {
-    color: #dc3545;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-/* Submit button */
-.form-container button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #4caf50;
+.btn-primary {
+    background-color: #007bff;
     color: #fff;
+    padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.form-container button:hover {
-    background-color: #45a049;
+.btn-primary:hover {
+    background-color: #0056b3;
 }
-    </style>
+
+.invalid-feedback {
+    color: #dc3545;
+    display: block;
+    margin-top: 5px;
+}
+
+
+</style>
+<head>
+    <title>Create Event</title>
 </head>
 <body>
-    <h1>Create Event</h1>
-    <form action="<?php echo URLROOT; ?>/staffs/create_event" method="POST">
+    <form action="<?php echo URLROOT; ?>/staffs/create_event" enctype="multipart/form-data" method="POST">
+        <h1>Create Event</h1>
         <!--Event name-->
         <div class="form-group">
             <label for="event_name">Event Name</label>
@@ -104,6 +110,7 @@
         <div class="form-group">
             <label for="event_type">Event Type</label>
             <select name="event_type" class="form-control <?php echo (!empty($data['event_type_err'])) ? 'is-invalid' : ''; ?>">
+                <option value="" selected disabled>Select an Event Type</option>
                 <option value="1" <?php echo ($data['eventType'] == 1) ? 'selected' : ''; ?>>Workshop</option>
                 <option value="2" <?php echo ($data['eventType'] == 2) ? 'selected' : ''; ?>>Seminar</option>
                 <option value="3" <?php echo ($data['eventType'] == 3) ? 'selected' : ''; ?>>Conference</option>
@@ -112,6 +119,25 @@
             </select>
             <span class="invalid-feedback"><?php echo $data['event_type_err']; ?></span>
         </div>
+        <!--deadline-->
+        <div class="form-group">
+            <label for="deadline">Deadline</label>
+            <input type="datetime-local" name="deadline" class="form-control <?php echo (!empty($data['deadline_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['deadline']; ?>">
+            <span class="invalid-feedback"><?php echo $data['deadline_err']; ?></span>
+        </div>
+        <!--Max participants-->
+        <div class="form-group">
+            <label for="max_participant">Max Participants</label>
+            <input type="number" name="max_participant" class="form-control <?php echo (!empty($data['max_participant_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['maxParticipant']; ?>">
+            <span class="invalid-feedback"><?php echo $data['max_participant_err']; ?></span>
+        </div>
+        <!--upload picture-->
+        <!-- File upload field -->
+        <div class="form-group">
+            <label for="image">Upload Picture</label>
+            <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg">
+        </div>
+
         <input type="hidden" name="organization_id" value="<?php echo $data['organizationId']; ?>">
         <input type="submit" value="Create Event" class="btn btn-primary">
     </form>

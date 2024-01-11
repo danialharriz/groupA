@@ -98,6 +98,7 @@
         <?php if (!empty($data['organizationId'])): ?>
             <label for="courseID">Course:</label>
             <select name="courseID" id="courseID" required onchange="showCustomCourseInput()">
+                <option value="" selected disabled>Select a course</option>
                 <?php foreach($data['course'] as $course): ?>
                     <option value="<?php echo $course->CourseName; ?>"><?php echo $course->CourseName; ?></option>
                 <?php endforeach; ?>

@@ -48,7 +48,9 @@ class Staffs extends Controller {
                 'endDateAndTime' => trim($_POST['end_date_and_time']),
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
-                //'rewardPoints' => trim($_POST['reward_points']),
+                'rewardPoints' => '',
+                'deadline' => trim($_POST['deadline']),
+                'maxParticipant' => trim($_POST['max_participant']),
                 //get the organization id from stafff table
                 'organizationId' => $this->staffModel->getOrganizationId($_SESSION['user_id']),
                 'event_id_err' => '',
@@ -60,8 +62,30 @@ class Staffs extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'max_participant_err' => '',
                 //'validated_err' => '',
             ];
+            $start_date = new DateTime($data['startDateAndTime']);
+            $end_date = new DateTime($data['endDateAndTime']);
+            $interval = $start_date->diff($end_date);
+
+            // Calculate total hours in addition to days
+            $total_hours = $interval->h + ($interval->days * 24);
+
+            // reward points = duration (hours) < 24 hours = 1, 24.1 hours = 2, 48.1 hours = 3, etc.
+            // event type 1 = 10, type 2 = 20, type 3 = 30, type 4 = 40, type 5 = 0
+            if ($data['eventType'] == 1) {
+                $data['rewardPoints'] = ceil($total_hours / 24) * 10;
+            } else if ($data['eventType'] == 2) {
+                $data['rewardPoints'] = ceil($total_hours / 24) * 20;
+            } else if ($data['eventType'] == 3) {
+                $data['rewardPoints'] = ceil($total_hours / 24) * 30;
+            } else if ($data['eventType'] == 4) {
+                $data['rewardPoints'] = ceil($total_hours / 24) * 40;
+            } else if ($data['eventType'] == 5) {
+                $data['rewardPoints'] = 0;
+            }
             // Validate data
             if(empty($data['eventName'])){
                 $data['event_name_err'] = 'Please enter event name';
@@ -89,10 +113,39 @@ class Staffs extends Controller {
                 $data['end_date_and_time_err'] = 'End date and time must be later than start date and time';
                 echo "<script>alert('End date and time must be later than start date and time');</script>";
             }
+            //start time must be 3 day later than current time
+            if($data['startDateAndTime'] < date("Y-m-d H:i:s", strtotime("+3 days"))){
+                $data['start_date_and_time_err'] = 'Start date and time must be 3 days later than current time';
+                echo "<script>alert('Start date and time must be 3 days later than current time');</script>";
+            }
             // Make sure errors are empty
             if (empty($data['event_name_err']) && empty($data['description_err']) && empty($data['start_date_and_time_err']) && empty($data['end_date_and_time_err']) && empty($data['location_err']) && empty($data['event_type_err']) && empty($data['organization_id_err']) && empty($data['end_date_and_time_err'])) {
                 // Validated
                 // Register event
+                //upload picture
+                if(isset($_FILES["image"])){
+                    $target_dir = "event_pictures/";
+                    $target_file = $target_dir . basename($_FILES["image"]["name"]);
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    
+                    //check if file name already exist
+                    if (file_exists($target_file)) {
+                        //auto rename file
+                        $i = 1;
+                        while (file_exists($target_file)) {
+                            $target_file = $target_dir . basename($_FILES["image"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                            $i++;
+                        }
+                    }
+                    if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
+                        $data['picture'] = $target_file;
+                    } else {
+                        $data['picture'] = null;
+                    }
+                } else {
+                    $data['picture'] = null;
+                }
+
                 if ($this->eventModel->addEvent($data)) {
                     header('location: ' . URLROOT . '/staffs/all_events');
                 } else {
@@ -114,6 +167,8 @@ class Staffs extends Controller {
                 'eventType' => '',
                 'rewardPoints' => '',
                 'organizationId' => '',
+                'deadline' => '',
+                'maxParticipant' => '',
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -123,6 +178,8 @@ class Staffs extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'max_participant_err' => '',
                 //'validated_err' => '',
             ];
             // Load view
@@ -136,6 +193,43 @@ class Staffs extends Controller {
         $eventId = $url[2];
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            //check if post type is updatepic
+            if(isset($_POST['posttype'])){
+                //upload picture
+                if(isset($_FILES["picture"])){
+                    $target_dir = "event_pictures/";
+                    $target_file = $target_dir . basename($_FILES["picture"]["name"]);
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    
+                    //check if file name already exist
+                    if (file_exists($target_file)) {
+                        //auto rename file
+                        $i = 1;
+                        while (file_exists($target_file)) {
+                            $target_file = $target_dir . basename($_FILES["picture"]["name"], "." . $imageFileType) . $i . "." . $imageFileType;
+                            $i++;
+                        }
+                    }
+                    if(move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)){
+                        //delete old picture
+                        $event = $this->eventModel->getEventById($eventId);
+                        if($event->Picture != null){
+                            unlink($event->Picture);
+                        }
+                        $data['picture'] = $target_file;
+                    } else {
+                        $data['picture'] = null;
+                    }
+                } else {
+                    $data['picture'] = null;
+                }
+                //update picture
+                if($this->eventModel->updatePicture($eventId, $data['picture'])){
+                    echo "<script>alert('Picture updated successfully'); window.location.href = '" . URLROOT . "/staffs/update_event/$eventId';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            }
             // Process form
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -147,6 +241,9 @@ class Staffs extends Controller {
                 'endDateAndTime' => trim($_POST['end_date_and_time']),
                 'location' => trim($_POST['location']),
                 'eventType' => trim($_POST['event_type']),
+                'rewardPoints' => '',
+                'deadline' => trim($_POST['deadline']),
+                'maxParticipant' => trim($_POST['MaxParticipants']),
                 //'rewardPoints' => trim($_POST['reward_points']),
                 'event_id_err' => '',
                 'event_name_err' => '',
@@ -157,6 +254,7 @@ class Staffs extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
                 //'validated_err' => '',
             ];
             $start_date = new DateTime($data['startDateAndTime']);
@@ -235,6 +333,9 @@ class Staffs extends Controller {
                 'eventType' => $event->EventType,
                 'rewardPoints' => $event->RewardPoints,
                 'organizationId' => $event->OrganizationID,
+                'deadline' => $event->Deadline,
+                'maxParticipant' => $event->MaxParticipants,
+                'picture' => $event->Picture,
                 'event_id_err' => '',
                 'event_name_err' => '',
                 'description_err' => '',
@@ -244,6 +345,8 @@ class Staffs extends Controller {
                 'event_type_err' => '',
                 'reward_points_err' => '',
                 'organization_id_err' => '',
+                'deadline_err' => '',
+                'maxParticipant_err' => '',
                 //'validated_err' => '',
             ];
             // Load view

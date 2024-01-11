@@ -121,7 +121,7 @@
             </tr>
             <tr>
                 <td>Reference</td>
-                <td><input type="text" name="reference" value="<?php echo $data['event']->reference; ?>"></td>
+                <td><input type="text" name="reference" value="<?php echo $data['event']->reference; ?>" placeholder="Enter reference as prove such as link of event, link of cert etc"></td>
             </tr>
         </table>
         <input type="submit" value="Update">

@@ -84,6 +84,7 @@
         <form action="<?php echo URLROOT; ?>/users/selectRole" method="post">
             <label for="selected_role">Choose your role:</label>
             <select id="selected_role" name="selected_role" required>
+                <option value="" disabled selected>Select your role</option>
                 <option value="student">Student</option>
                 <option value="staff">Staff</option>
             </select>
