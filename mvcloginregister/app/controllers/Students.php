@@ -182,6 +182,14 @@ class Students extends Controller {
         ];
         $event_participated = $this->participateModel->get_eventid($_SESSION['user_id']);
         $data['events'] = $this->eventModel->getUpcomingEvents();
+        //search bar
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $search = $_POST['search'];
+            $data['events'] = $this->eventModel->searchUpcomingEvent($search);
+        }
         //get event organization name
         foreach ($data['events'] as $event) {
             $event->organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
@@ -278,6 +286,15 @@ class Students extends Controller {
             'Error' => '',
         ];
         $data['events'] = $this->outsideEventModel->getEventByStudentId($student_id);
+        //search
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+            $search = $_POST['search'];
+            $data['events'] = $this->outsideEventModel->searchEvent($search, $student_id);
+        }
         $this->view('students/viewOutsideEvents', $data);
     }
     public function viewOutsideEvent(){

@@ -168,5 +168,15 @@ class EventOutside{
 
         return $results;
     }
+    public function searchEvent($search, $student_id){
+        $this->db->query('SELECT * FROM eventOutside WHERE (OEventName LIKE :search OR OOrganization LIKE :search) AND studentID = :student_id');
+
+        $this->db->bind(':search', '%' . $search . '%');
+        $this->db->bind(':student_id', $student_id);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
 }
 

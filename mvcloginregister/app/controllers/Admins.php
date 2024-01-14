@@ -690,11 +690,8 @@ class Admins extends Controller {
         foreach($events as $event){
             $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
-        $data = [
-            'events' => $events,
-        ];
         //search, can either search by event name or organization name
-        if(isset($_POST['submit-search'])){
+        if(isset($_POST['search'])){
             $search = $_POST['search'];
             if ($search == "Workshop" || $search == "workshop"){
                 $search = 1;
@@ -704,17 +701,19 @@ class Admins extends Controller {
                 $search = 3;
             } else if ($search == "Competition" || $search == "competition"){
                 $search = 4;
-            } else{
+            } else if ($search == "Others" || $search == "others"){
                 $search = 5;
+            } else {
+                $search = $search;
             }
             $events = $this->eventModel->searchEvent($search);
             foreach($events as $event){
                 $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
             }
-            $data = [
-                'events' => $events,
-            ];
         }
+        $data = [
+            'events' => $events,
+        ];
         $this->view('admins/all_events', $data);
     }
     public function show_participants($eventId){

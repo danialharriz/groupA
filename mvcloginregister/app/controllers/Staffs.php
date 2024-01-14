@@ -417,11 +417,34 @@ class Staffs extends Controller {
         $events = $this->eventModel->getEventByOrganizationId($orgid);
         //get the organizer name of each event
         foreach($events as $event){
-            $event->OrganizationName = $this->organizationModel->getOrganizationName($event->OrganizationID);
+            $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
         }
         $data = [
             'events' => $events,
         ];
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            if ($search == "Workshop" || $search == "workshop"){
+                $search = 1;
+            } else if ($search == "Seminar" || $search == "seminar"){
+                $search = 2;
+            } else if ($search == "Conference" || $search == "conference"){
+                $search = 3;
+            } else if ($search == "Competition" || $search == "competition"){
+                $search = 4;
+            } else if ($search == "Others" || $search == "others"){
+                $search = 5;
+            } else {
+                $search = $search;
+            }
+            $events = $this->eventModel->searchEventOrg($search, $orgid);
+            foreach($events as $event){
+                $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
+            }
+            $data = [
+                'events' => $events,
+            ];
+        }
         $this->view('staffs/all_events', $data);
     }
     public function profile(){
@@ -614,9 +637,37 @@ class Staffs extends Controller {
     public function index(){
         $orgid = $this->staffModel->getOrganizationId($_SESSION['user_id']);
         $events = $this->eventModel->getEventByOrganizationId($orgid);
+        //get the organizer name of each event
+        foreach($events as $event){
+            $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
+        }
         $data = [
             'events' => $events,
         ];
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            if ($search == "Workshop" || $search == "workshop"){
+                $search = 1;
+            } else if ($search == "Seminar" || $search == "seminar"){
+                $search = 2;
+            } else if ($search == "Conference" || $search == "conference"){
+                $search = 3;
+            } else if ($search == "Competition" || $search == "competition"){
+                $search = 4;
+            } else if ($search == "Others" || $search == "others"){
+                $search = 5;
+            } else {
+                $search = $search;
+            }
+            $events = $this->eventModel->searchEventOrg($search, $orgid);
+            foreach($events as $event){
+                $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
+            }
+            $data = [
+                'events' => $events,
+            ];
+        }
+        $data['totalEvent'] = count($data['events']);
         $this->view('staffs/index', $data);
     }
 }

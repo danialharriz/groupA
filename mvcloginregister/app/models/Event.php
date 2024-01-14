@@ -185,5 +185,24 @@ class Event{
 
         return $results;
     }
+    public function searchUpcomingEvent($search){
+        $this->db->query('SELECT * FROM Event WHERE EventName LIKE :search OR EventType LIKE :search OR OrganizationID IN (SELECT OrganizationID FROM Organization WHERE OrganizationName LIKE :search) AND StartDateAndTime > NOW()');
+
+        $this->db->bind(':search', '%' . $search . '%');
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
+    public function searchEventOrg($search, $orgid){
+        $this->db->query('SELECT * FROM Event WHERE OrganizationID = :orgid AND (EventName LIKE :search OR EventType LIKE :search)');
+
+        $this->db->bind(':search', '%' . $search . '%');
+        $this->db->bind(':orgid', $orgid);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
 }
 ?>
