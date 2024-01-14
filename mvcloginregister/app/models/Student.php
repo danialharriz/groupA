@@ -105,6 +105,14 @@ class Student {
             return false;
         }
     }
-}
 
+    //search student by name and organization id name from the user table
+    public function searchStudent($search, $organizationId){
+        $this->db->query('SELECT * FROM student WHERE OrganizationID = :organizationId AND StudentID IN (SELECT StudentID FROM user WHERE Name LIKE :search)');
+        $this->db->bind(':organizationId', $organizationId);
+        $this->db->bind(':search', '%' . $search . '%');
+        $results = $this->db->resultSet();
+        return $results;
+    }
+}
 ?>

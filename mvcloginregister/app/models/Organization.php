@@ -44,7 +44,7 @@ class Organization {
         }
     }
     public function updateOrganization($data) {
-        $this->db->query('UPDATE Organization SET OrganizationName = :organizationName, Address = :address, City = :city, State = :state, Website = :website, Type = :type, ContactEmail = :contactEmail, ContactPhone = :contactPhone WHERE OrganizationID = :organizationId');
+        $this->db->query('UPDATE Organization SET OrganizationName = :organizationName, Address = :address, City = :city, State = :state, Website = :website, Type = :type, ContactEmail = :contactEmail, ContactPhone = :contactPhone, emailending = :emailending WHERE OrganizationID = :organizationId');
 
         //Bind values
         $this->db->bind(':organizationId', $data['organizationId']);
@@ -56,6 +56,7 @@ class Organization {
         $this->db->bind(':type', $data['type']);
         $this->db->bind(':contactEmail', $data['contactEmail']);
         $this->db->bind(':contactPhone', $data['contactPhone']);
+        $this->db->bind(':emailending', $data['emailending']);
 
         //Execute function
         if ($this->db->execute()) {
@@ -195,6 +196,16 @@ class Organization {
         } else {
             return false;
         }
+    }
+
+    public function searchOrganization($search) {
+        $this->db->query('SELECT * FROM organization WHERE OrganizationName LIKE :search OR Address LIKE :search OR City LIKE :search OR State LIKE :search OR Website LIKE :search OR ContactEmail LIKE :search OR ContactPhone LIKE :search');
+
+        $this->db->bind(':search', '%' . $search . '%');
+
+        $results = $this->db->resultSet();
+
+        return $results;
     }
 } 
 ?>

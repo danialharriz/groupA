@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/organization.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;

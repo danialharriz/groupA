@@ -96,3 +96,4 @@ span {
     <!-- Include your additional HTML and scripts here -->
 </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

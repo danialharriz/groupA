@@ -2,10 +2,9 @@
 <html>
 
 <head>
-    <title>View Outside Events</title>
+    <title>Unique Events Approval</title>
     <style>
                     body {
-                font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
                 margin: 0;
                 padding: 0;
@@ -80,7 +79,7 @@
 
 <body>
     <div class="container">
-        <h1>View Outside Events</h1>
+        <h1>Unique Events Approval</h1>
         <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
         <div class="table-container">
             <table>
@@ -94,7 +93,7 @@
                 </tr>
                 <?php if (empty($data['outsideEvents'])) : ?>
                     <tr>
-                        <td colspan="6">No pending outside events.</td>
+                        <td colspan="6">No pending approvals.</td>
                     </tr>
                 <?php else : ?>
                     <?php foreach($data['outsideEvents'] as $outsideEvent) : ?>

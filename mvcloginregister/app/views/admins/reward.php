@@ -10,14 +10,13 @@
         /* Custom CSS styles */
 
         body {
-            font-family: Arial, sans-serif;
             background-color: #f2f2f2;
             color: #333;
         }
 
         .container7 {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 20px auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;

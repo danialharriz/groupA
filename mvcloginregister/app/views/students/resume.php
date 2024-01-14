@@ -3,85 +3,85 @@
 <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 <style>
     body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
 
-.container2 {
-    width: 80%;
-    margin: auto;
-    background-color: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    .container2 {
+        width: 80%;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-.header {
-    background-color: black;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-    border-radius: 4px 4px 0 0;
-}
+    .header {
+        background-color: #7C1C2B; /* Updated color */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        border-radius: 4px 4px 0 0;
+    }
 
-.profilePic img {
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
+    .profilePic img {
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
 
-.profileInfo table {
-    width: 100%;
-}
+    .profileInfo table {
+        width: 100%;
+    }
 
-.profileInfo table td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
+    .profileInfo table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
 
-.event table,
-.resume-form textarea {
-    width: 100%;
-    margin-bottom: 10px;
-}
+    .event table,
+    .resume-form textarea {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 
-.event th,
-.event td,
-.resume-form textarea,
-.resume-form button {
-    padding: 8px;
-    text-align: left;
-}
+    .event th,
+    .event td,
+    .resume-form textarea,
+    .resume-form button {
+        padding: 8px;
+        text-align: left;
+    }
 
-.event th {
-    background-color: #3498db;
-    color: #fff;
-}
+    .event th {
+        background-color: #183D64; /* Updated color */
+        color: #fff;
+    }
 
-.event td {
-    border-bottom: 1px solid #ddd;
-}
+    .event td {
+        border-bottom: 1px solid #ddd;
+    }
 
-.resume-form button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 4px;
-}
+    .resume-form button {
+        background-color: #183D64; /* Updated color */
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
 
-#exportPdfBtn {
-    background-color: #27ae60;
-}
+    #exportPdfBtn {
+        background-color: #FCBD32; /* Updated color */
+    }
 
-.resume-form button:hover,
-#exportPdfBtn:hover {
-    background-color: #218c53;
-}
-    /* Add this style to your existing styles */
+    .resume-form button:hover,
+    #exportPdfBtn:hover {
+        background-color: #218c53;
+    }
+
     .container3 {
         width: 80%;
         margin: auto;
@@ -93,7 +93,7 @@
     }
 
     .container3 .header {
-        background-color: black;
+        background-color: #7C1C2B; /* Updated color */
         color: #fff;
         padding: 10px;
         text-align: center;
@@ -120,7 +120,7 @@
     }
 
     .container3 .btn {
-        background-color: #3498db;
+        background-color: #183D64; /* Updated color */
         color: #fff;
         border: none;
         padding: 10px 15px;
@@ -133,18 +133,19 @@
     }
 
     .profilePic {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 
-.profilePic img {
-    border-radius: 50%;
-    margin-bottom: 10px;
-    align-self: center; /* Center the image within the flex container */
-}
+    .profilePic img {
+        border-radius: 50%;
+        margin-bottom: 10px;
+        align-self: center; /* Center the image within the flex container */
+    }
 </style>
+
 <head>
     <title>Resume</title>
 </head>
@@ -281,16 +282,18 @@
                 <label>Additional</label>
                 <textarea name="additional" rows="5" cols="40"><?php echo $data['resume']->additional; ?></textarea>
             </div>
-            <div class="input-group">
+        <div style = "text-align: center;">
                 <button type="submit" class="btn" name="resume_btn">Update</button>
             </div>
         </form>
         <!--<div class="input-group">
             <button type="button" class="btn" id="exportPdfBtn">Export as PDF</button>
         </div>-->
-        <div class = "input-group">
+        <br>
+        <div style = "text-align: center;">
             <button type="button" class="btn" onclick="location.href='<?php echo URLROOT; ?>/students/generateResume/'">View Resume</button>
         </div>
+        <br>
     </div>
 </body>
 <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
@@ -302,3 +305,4 @@
     });
 </script>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

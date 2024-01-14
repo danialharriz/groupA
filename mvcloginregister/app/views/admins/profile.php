@@ -5,12 +5,8 @@
     <br>
     <title>Profile</title>
     <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/profile.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/bootstrap.min.css">
     <script src="<?php echo URLROOT; ?>/js/jquery-3.5.1.min.js"></script>
     <script src="<?php echo URLROOT; ?>/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         /* Common styles for profile pictures */
 

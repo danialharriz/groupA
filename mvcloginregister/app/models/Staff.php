@@ -132,6 +132,21 @@ class Staff {
             return null; // or handle the case when $results is false
         }
     }
+    public function searchStaff($search, $organizationId){
+        //search by Search by name, email, job title
+        $this->db->query('SELECT * FROM staff WHERE (JobTitle LIKE :search OR UserId IN (SELECT UserId FROM user WHERE Name LIKE :search OR Email LIKE :search)) AND OrganizationId = :organizationId');
+
+        $this->db->bind(':search', '%' . $search . '%');
+        $this->db->bind(':organizationId', $organizationId);
+
+        $results = $this->db->resultSet();
+
+        if ($results) {
+            return $results;
+        } else {
+            return null; // or handle the case when $results is false
+        }
+    }
 }
 
 ?>

@@ -149,6 +149,16 @@ class Students extends Controller {
         ];
         $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
         $event_participated = $this->participateModel->get_eventid($student_id);
+        //search bar
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            $student_id = $this->studentModel->getStudentByUserId($_SESSION['user_id'])->StudentID;
+            $event_participated = $this->participateModel->get_eventid($student_id);
+            $search = $_POST['search'];
+            $event_participated = $this->eventModel->searchEventParticipated($search, $student_id);
+        }
         //for each event participated, get the event details
         if(!empty($event_participated)){
             foreach ($event_participated as $event) {
@@ -159,11 +169,10 @@ class Students extends Controller {
                 $event->organization = $this->organizationModel->getOrganizationById($event->event_details->OrganizationID);
             }
             $data['events'] = $event_participated;
-            $this->view('students/event_participated', $data);
+        } else {
+            $data['events'] = '';
         }
-        else{
-            echo "<script>alert('You have not participated any event yet.');window.location.href = '" . URLROOT . "/students/viewUpcomingEvents';</script>";    
-        }
+        $this->view('students/event_participated', $data);
     }
     public function viewUpcomingEvents() {
         $data = [
@@ -777,8 +786,13 @@ class Students extends Controller {
         $imageY = $pdf->GetY();
         $imageWidth = 80;
         $imageHeight = 80;
-        
+    
+        if(!empty($data['user']->profilePic)){
         $pdf->Image($data['user']->profilePic, $imageX, $imageY, $imageWidth, $imageHeight);
+        }
+        else{
+            $pdf->Image('https://www.w3schools.com/howto/img_avatar.png', $imageX, $imageY, $imageWidth, $imageHeight);
+        }
 
         $pdf->SetFont('Times', '', 12);
 
@@ -806,7 +820,7 @@ class Students extends Controller {
             $pdf->Cell(23, 10, $label, 0, 0, 'L');
             $pdf->Cell(1, 10, ':', 0, 0, 'L');
             $pdf->Cell(5); // Add a little space between label and value
-            $pdf->Cell(0, 10, $value, 0, 1);
+            $pdf->MultiCell(0, 10, $value, 0, 'L');
         }
 
         //add a line
@@ -819,7 +833,12 @@ class Students extends Controller {
 
 
         $pdf->SetFont('Times', '', 12);
-        $pdf->Cell(0, 10, $data['resume']->education, 0, 'L');
+        if (!empty($data['resume']->education)) {
+            $pdf->MultiCell(0, 10, $data['resume']->education, 0, 'L');
+        }
+        else{
+            $pdf->Cell(0, 10, 'No education data', 0, 'L');
+        }
 
         $pdf->Ln(3); // Move to the next line
 
@@ -830,10 +849,10 @@ class Students extends Controller {
 
         $pdf->SetFont('Times', '', 12);
         if (!empty($data['resume']->skills)) {
-            $pdf->Cell(0, 10, $data['resume']->skills, 0, 'L');
+            $pdf->MultiCell(0, 10, $data['resume']->skills, 0, 'L');
         }
         else{
-            $pdf->Cell(0, 10, 'No skill data', 0, 'L');
+            $pdf->MultiCell(0, 10, 'No skill data', 0, 'L');
         }
 
         //experience
@@ -844,7 +863,7 @@ class Students extends Controller {
 
         $pdf->SetFont('Times', '', 12);
         if (!empty($data['resume']->experience)) {
-            $pdf->Cell(0, 10, $data['resume']->experience, 0, 'L');
+            $pdf->MultiCell(0, 10, $data['resume']->experience, 0, 'L');
         }
         else{
             $pdf->Cell(0, 10, 'No experience data', 0, 'L');
@@ -858,14 +877,14 @@ class Students extends Controller {
 
         $pdf->SetFont('Times', '', 12);
         if (!empty($data['events'])) {
-            $pdf->Cell(40, 10, 'Event Name', 0, 0, 'L'); // Column name
-            $pdf->Cell(40, 10, 'Organizer', 0, 0, 'L');
-            $pdf->Cell(40, 10, 'Event Type', 0, 0, 'L');
+            $pdf->Cell(50, 10, 'Event Name', 0, 0, 'L'); // Column name
+            $pdf->Cell(50, 10, 'Organizer', 0, 0, 'L');
+            $pdf->Cell(50, 10, 'Event Type', 0, 0, 'L');
 
             $pdf->Ln(); // Move to the next line
             foreach ($data['events'] as $event) {
-                $pdf->Cell(40, 10, $event->event_details->EventName, 0, 0, 'L');
-                $pdf->Cell(40, 10, $event->organization_name, 0, 0, 'L');
+                $pdf->Cell(50, 10, $event->event_details->EventName, 0, 0, 'L');
+                $pdf->Cell(50, 10, $event->organization_name, 0, 0, 'L');
                 $eventType = '';
                 switch ($event->event_details->EventType) {
                     case 1:
@@ -885,7 +904,7 @@ class Students extends Controller {
                         break;
                 }
 
-                $pdf->Cell(40, 10, $eventType, 0, 0, 'L');
+                $pdf->Cell(50, 10, $eventType, 0, 0, 'L');
                 $pdf->Ln(); // Move to the next line
             }
         } else {
@@ -934,18 +953,14 @@ class Students extends Controller {
             $pdf->Cell(0, 10, 'No outside event participated', 0, 1, 'L');
         }
 
-        //additional
-        $pdf->Ln(3); // Move to the next line
-        $pdf->SetFont('Arial', 'B', 16);
-        $pdf->SetTextColor(52, 58, 64); // Dark Gray
-        $pdf->Cell(80, 10, 'Additional Information', 0, 1);
+        if(!empty($data['resume']->additional)){
+            $pdf->Ln(3); // Move to the next line
+            $pdf->SetFont('Arial', 'B', 16);
+            $pdf->SetTextColor(52, 58, 64); // Dark Gray
+            $pdf->Cell(80, 10, 'Additional Information', 0, 1);
 
-        $pdf->SetFont('Times', '', 12);
-        if (!empty($data['resume']->additional)) {
-            $pdf->Cell(0, 10, $data['resume']->additional, 0, 'L');
-        }
-        else{
-            $pdf->Cell(0, 10, 'No additional information', 0, 'L');
+            $pdf->SetFont('Times', '', 12);
+            $pdf->MultiCell(0, 10, $data['resume']->additional, 0, 'L');
         }
 
         $pdf->Output();

@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/feedback.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f2f2f2;

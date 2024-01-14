@@ -70,3 +70,4 @@ h3 {
 
 </style>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

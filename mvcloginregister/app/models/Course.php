@@ -95,5 +95,15 @@ class Course{
         $row = $this->db->single();
         return $row->CourseID;
     }
+
+    public function searchCourse($search){
+        $this->db->query('SELECT * FROM Course WHERE CourseName LIKE :search');
+
+        $this->db->bind(':search', '%' . $search . '%');
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
 }
 ?>

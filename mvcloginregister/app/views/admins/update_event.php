@@ -6,7 +6,6 @@
     <title>Event Detail</title>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
             background-color: #f1f1f1;
             margin: 0;
             padding: 0;

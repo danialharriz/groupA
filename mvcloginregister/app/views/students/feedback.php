@@ -16,21 +16,21 @@
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: #ffffff;
+            background-color: #FCBD32; /* Updated color */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             border-radius: 8px;
         }
 
         h1 {
-            color: #007bff;
+            color: #183D64; /* Updated color */
             text-align: center;
         }
 
         label {
             display: block;
             margin-bottom: 10px;
-            color: #495057;
+            color: #7C1C2B; /* Updated color */
         }
 
         textarea {
@@ -47,7 +47,7 @@
             cursor: pointer;
             border: none;
             border-radius: 4px;
-            background-color: #007bff;
+            background-color: #183D64; /* Updated color */
             color: #ffffff;
         }
 
@@ -58,6 +58,10 @@
         .error-message {
             color: #dc3545;
             margin-top: 5px;
+        }
+
+        .button-container {
+            text-align: center;
         }
     </style>
 </head>
@@ -70,8 +74,16 @@
             <?php if (!empty($data['feedbackError'])) : ?>
                 <p class="error-message"><?php echo $data['feedbackError']; ?></p>
             <?php endif; ?>
-            <button type="submit">Submit Feedback</button>
+            <div class = "button-container">
+            <button type="submit"><span class="icon">🚀</span>Submit Feedback</button>
+            </div>
         </form>
+
+        <br>
+        <div style = "text-align: center;">
+            <button onclick="window.history.back()" style = "background-color: #630E25;"><i class="bi bi-arrow-left-circle"></i> Back</button>
+        </div>
     </div>
 </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

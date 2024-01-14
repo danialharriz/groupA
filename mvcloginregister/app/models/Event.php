@@ -164,5 +164,26 @@ class Event{
             return false;
         }
     }
+
+    //search, can either search by event name or organization name or event type
+    public function searchEvent($search){
+        $this->db->query('SELECT * FROM Event WHERE EventName LIKE :search OR EventType LIKE :search OR OrganizationID IN (SELECT OrganizationID FROM Organization WHERE OrganizationName LIKE :search)');
+
+        $this->db->bind(':search', '%' . $search . '%');
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
+    public function searchEventParticipated($search, $student_id){
+        $this->db->query('SELECT * FROM Event WHERE EventName LIKE :search OR EventType LIKE :search OR OrganizationID IN (SELECT OrganizationID FROM Organization WHERE OrganizationName LIKE :search) AND EventID IN (SELECT EventID FROM Participant WHERE StudentID = :student_id)');
+
+        $this->db->bind(':search', '%' . $search . '%');
+        $this->db->bind(':student_id', $student_id);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+    }
 }
 ?>

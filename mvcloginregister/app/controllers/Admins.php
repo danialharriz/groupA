@@ -105,6 +105,14 @@ class Admins extends Controller {
         $data = [
             'organizations' => $organizations,
         ];
+        //search
+        if(isset($_POST['submit-search'])){
+            $search = $_POST['search'];
+            $organizations = $this->organizationModel->searchOrganization($search);
+            $data = [
+                'organizations' => $organizations,
+            ];
+        }
         $this->view('admins/organization', $data);
     }
     public function org(){
@@ -242,7 +250,65 @@ class Admins extends Controller {
         }
         $data = [
             'courses' => $courses,
+            'courseNameError' => '',
+            'organizationIdError' => '',
         ];
+        $data['organizations'] = $this->organizationModel->getAllInstitute();
+        //search
+        //if search button is clicked
+        if(isset($_POST['searchCourse'])){
+            $search = $_POST['search'];
+            $courses = $this->courseModel->searchCourse($search);
+            foreach($courses as $course){
+                $course->Organization = $this->organizationModel->getOrganizationById($course->OrganizationID);
+            }
+            $data = [
+                'courses' => $courses,
+                'courseNameError' => '',
+                'organizationIdError' => '',
+            ];
+            $data['organizations'] = $this->organizationModel->getAllInstitute();
+        }
+        //if add course button is clicked
+        if(isset($_POST['addCourse'])){
+            $data = [
+                'courseName' => trim($_POST['courseName']),
+                'organizationId' => trim($_POST['organizationId']),
+                'courseNameError' => '',
+                'organizationIdError' => '',
+            ];
+            $course_id = $this->courseModel->getMaxId();
+            //if there is no course id in database, set course id to C00001, else auto increment
+            if ($course_id == null) {
+                $course_id = 'C00001';
+            } else {
+                $course_id = substr($course_id, 1);
+                $course_id = intval($course_id);
+                $course_id = 'C' . sprintf('%05d', $course_id + 1);
+            }
+            $data['courseId'] = $course_id;
+            // Validate data
+            if(empty($data['courseName'])){
+                $data['courseNameError'] = 'Please enter course name';
+            }
+            if(empty($data['organizationId'])){
+                $data['organizationIdError'] = 'Please select an organization';
+            }
+            // Make sure errors are empty
+            if (empty($data['courseNameError']) && empty($data['organizationIdError'])) {
+                // Validated
+                // Register course
+                if ($this->courseModel->addCourse($data)) {
+                    // Redirect to login
+                    echo "<script>alert('Course added successfully'); window.location.href = '" . URLROOT . "/admins/course';</script>";
+                } else {
+                    echo "<script>alert('Something went wrong');</script>";
+                }
+            } else {
+                // Load view with errors
+                $this->view('admins/course', $data);
+            }
+        }
         $this->view('admins/course', $data);
     }
     public function delete_course(){
@@ -627,6 +693,28 @@ class Admins extends Controller {
         $data = [
             'events' => $events,
         ];
+        //search, can either search by event name or organization name
+        if(isset($_POST['submit-search'])){
+            $search = $_POST['search'];
+            if ($search == "Workshop" || $search == "workshop"){
+                $search = 1;
+            } else if ($search == "Seminar" || $search == "seminar"){
+                $search = 2;
+            } else if ($search == "Conference" || $search == "conference"){
+                $search = 3;
+            } else if ($search == "Competition" || $search == "competition"){
+                $search = 4;
+            } else{
+                $search = 5;
+            }
+            $events = $this->eventModel->searchEvent($search);
+            foreach($events as $event){
+                $event->Organization = $this->organizationModel->getOrganizationById($event->OrganizationID);
+            }
+            $data = [
+                'events' => $events,
+            ];
+        }
         $this->view('admins/all_events', $data);
     }
     public function show_participants($eventId){
@@ -639,6 +727,20 @@ class Admins extends Controller {
         $data = [
             'participants' => $participants,
         ];
+        //search
+        if(isset($_POST['submit-search'])){
+            $search = $_POST['search'];
+            $participants = $this->participantModel->searchParticipant($search, $eventId);
+            foreach ($participants as $participant){
+                $participant->Student = $this->studentModel->getStudentById($participant->StudentID);
+                $participant->User = $this->userModel->getUserById($participant->Student->UserID);
+                $participant->Organization = $this->organizationModel->getOrganizationById($participant->Student->OrganizationID);
+            }
+            $data = [
+                'participants' => $participants,
+            ];
+            
+        }
         $this->view('admins/show_participants', $data);
     }
     public function remove_participant($participantID){
@@ -975,6 +1077,20 @@ class Admins extends Controller {
             'staffs' => $staffs,
             'organization' => $organization,
         ];
+        //search staff
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            $staffs = $this->adminModel->searchStaff($search, $organizationId);
+            if (!is_null($staffs)) {
+                foreach($staffs as $staff){
+                    $staff->User = $this->userModel->getUserById($staff->UserID);
+                }
+            }
+            $data = [
+                'staffs' => $staffs,
+                'organization' => $organization,
+            ];
+        }
         $this->view('admins/staffs', $data);
     }
     public function staff(){
@@ -1000,6 +1116,20 @@ class Admins extends Controller {
             'students' => $students,
             'organization' => $organization,
         ];
+        //search student
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            $students = $this->studentModel->searchStudent($search, $organizationId);
+            if (!is_null($students)) {
+                foreach($students as $student){
+                    $student->User = $this->userModel->getUserById($student->UserID);
+                }
+            }
+            $data = [
+                'students' => $students,
+                'organization' => $organization,
+            ];
+        }
         $this->view('admins/students', $data);
     }
     public function student(){

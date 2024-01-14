@@ -160,5 +160,18 @@ class Participant{
 
         return $results->participantcount;
     }
+
+    //search name or organization name
+    public function searchParticipant($search, $eventId){
+        $this->db->query('SELECT * FROM participant INNER JOIN student ON participant.StudentID = student.StudentID INNER JOIN user ON student.UserID = user.UserID INNER JOIN organization ON student.OrganizationID = organization.OrganizationID WHERE (user.Name LIKE :search OR organization.OrganizationName LIKE :search) AND participant.EventID = :eventId');
+
+        $this->db->bind(':search', '%' . $search . '%');
+        $this->db->bind(':eventId', $eventId);
+
+        $results = $this->db->resultSet();
+
+        return $results;
+
+    }
 }
 ?>

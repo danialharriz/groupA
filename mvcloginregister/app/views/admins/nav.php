@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <!-- Bootstrap Font Icon CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    
+
     <style>
         header {
             margin-bottom: 20px;
@@ -36,7 +39,6 @@
 
         .container {
             width: 80%;
-            margin: 20px auto;
         }
 
         h1 {
@@ -74,14 +76,13 @@
                     <a class="nav-link" href="<?php echo URLROOT; ?>/admins/course">Course</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo URLROOT; ?>/admins/pending_approval_staff">Pending Approval
-                        Staff</a>
+                    <a class="nav-link" href="<?php echo URLROOT; ?>/admins/pending_approval_staff">Staff Approval</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo URLROOT; ?>/admins/all_events">All Events</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo URLROOT; ?>/admins/viewOutsideEvents">Outside Events</a>
+                    <a class="nav-link" href="<?php echo URLROOT; ?>/admins/viewOutsideEvents">Unique Events Approval</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo URLROOT; ?>/admins/reward">Reward</a>

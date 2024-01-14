@@ -5,7 +5,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ffcccc; /* New pink background color */
+    background-color: #183D64; /* Updated background color */
+    color: #000000; /* Updated text color */
 }
 
 .container1 {
@@ -16,13 +17,11 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Updated class name to summary-table */
 table.summary-table {
     width: 100%;
     margin-top: 20px;
 }
 
-/* Updated class name to summary-table */
 .summary-table th {
     padding: 12px;
     text-align: left;
@@ -38,12 +37,12 @@ table.summary-table {
 }
 
 .card h3 {
-    color: #333;
+    color:  #7C1C2B;
     margin-bottom: 10px;
 }
 
 .card h1 {
-    color: #007BFF;
+    color: #183D64; /* Updated heading color */
     font-size: 36px;
     margin-top: 10px;
 }
@@ -51,36 +50,33 @@ table.summary-table {
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: black;
+    color: #000000; /* Updated text color */
 }
 
-/* Updated class name to event-table */
 table.event-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-/* Updated class name to event-table */
 .event-table th, .event-table td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    color: #000000; /* Updated text color */
 }
 
-/* Updated class name to event-table */
 .event-table th {
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: #7C1C2B; /* Updated heading background color */
+    color: #fff; /* Updated heading text color */
 }
 
-/* Updated class name to event-table */
 .event-table tr:hover {
-    background-color: #f5f5f5;
+    background-color: #ffff80
 }
 
 a {
-    color: #337ab7;
+    color: #FCBD32; /* Updated link color */
     text-decoration: none;
 }
 
@@ -103,12 +99,13 @@ a:hover {
                 </div>
             </th>
             <th>
+                <?php if (isset($data['reward'])) : ?>
                 <div class = "card">
-                    <?php if (!empty($data['reward'])) : ?>
                         <h3>Title</h3>
                         <h1><?php echo $data['reward']->RewardName ?></h1>
-                    <?php endif; ?>
+                    
                 </div>
+                <?php endif; ?>
             </th>
         </table>
     </div>
@@ -159,3 +156,4 @@ a:hover {
     </div>
 </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

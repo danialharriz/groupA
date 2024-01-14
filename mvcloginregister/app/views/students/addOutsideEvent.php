@@ -1,63 +1,76 @@
 <?php require APPROOT . '/views/students/nav.php' ?>
 <html>
+
 <head>
     <title><?php echo $data['title']; ?></title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-form {
-    width: 50%;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
 
-label {
-    display: block;
-    margin-top: 10px;
-}
+        label {
+            display: block;
+            margin-top: 10px;
+        }
 
-input, select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-}
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
 
-button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-button:hover {
-    background-color: #45a049;
-}
+        button:hover {
+            background-color: #45a049;
+        }
 
-.invalidFeedback {
-    color: red;
-    margin-top: 5px;
-    display: block;
-}
+        .invalidFeedback {
+            color: red;
+            margin-top: 5px;
+            display: block;
+        }
 
+        /* Added styles for the icons */
+        button i {
+            margin-right: 5px;
+        }
+
+        .container13 {
+            margin: 50px auto;
+        }
     </style>
 </head>
+
 <body>
+    <div class="container13">
     <h1><?php echo $data['title']; ?></h1>
     <form action="<?php echo URLROOT; ?>/students/addOutsideEvent" method="POST">
         <label for="eventName">Event Name:</label>
@@ -97,11 +110,17 @@ button:hover {
 
         <label for="reference">Reference:</label>
         <input type="text" name="reference" id="reference" value="<?php echo $data['reference']; ?>" placeholder="Enter reference as prove such as link of event, link of cert etc">
-        
-        <!--submit btn-->
-        <button type="submit" id="submit" value="submit">Submit</button>
-    </form>
-</body>
-</html>
-        
 
+        <!--submit btn-->
+        <div style="text-align: center;">
+            <button type="submit" id="submit" value="submit"><i class="bi bi-check-circle"></i> Submit</button>
+        </div>
+    </form>
+    <div style="text-align: center;">
+        <button onclick="window.history.back()" style = "background-color: #630E25;"><i class="bi bi-arrow-left-circle"></i> Back</button>
+    </div>
+    </div>
+</body>
+
+</html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

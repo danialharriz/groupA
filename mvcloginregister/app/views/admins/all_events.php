@@ -6,7 +6,6 @@
         background-color: #fff;
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
     }
 
     h1 {
@@ -108,9 +107,8 @@
 <head>
     <title>Events</title>
     <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/all_events.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
 </head>
 
 <body>
@@ -121,7 +119,7 @@
             <div class="button-container">
                 <input type="text" placeholder="Search by event name or organizer" name="search">
                 <button type="submit" class="button"><i class="fas fa-search icon"></i> Search</button>
-                <a href="<?php echo URLROOT; ?>/admins/create_event"><button type="button" class="button add"><i class="fas fa-plus icon"></i> Add Event</button></a>
+                <a href="<?php echo URLROOT; ?>/admins/create_event"><button type="button" class="button add"><i class="fas fa-plus icon"></i>Add Event</button></a>
             </div>
         </form>
 

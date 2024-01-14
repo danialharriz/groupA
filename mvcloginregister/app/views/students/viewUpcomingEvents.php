@@ -116,3 +116,4 @@
         </div>
     </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>
