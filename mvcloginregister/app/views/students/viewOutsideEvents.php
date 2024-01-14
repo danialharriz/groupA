@@ -1,16 +1,19 @@
 <?php require APPROOT . '/views/students/nav.php' ?>
 <html>
+
+<head>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <style>
 <style>
     body {
         font-family: Arial, sans-serif;
         padding: 0;
         background-color: #f2f2f2;
-        
     }
 
     h1 {
         text-align: center;
-        color: black;
+        color: #183D64;
     }
 
     .container {
@@ -19,6 +22,7 @@
         background-color: #fff;
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
     }
 
     table {
@@ -34,52 +38,85 @@
     }
 
     th {
-        background-color: #f2f2f2;
+        background-color: #7C1C2B;
+        color: #fff;
     }
 
     tr:hover {
         background-color: #f5f5f5;
     }
 
-    a {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
-
-    .btn-add-event {
+    a.button {
         display: inline-block;
-        padding: 8px 12px;
-        margin-bottom: 10px;
-        font-size: 14px;
-        text-align: center;
+        padding: 8px 15px;
         text-decoration: none;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
+        border-radius: 5px;
+        margin: 5px;
         cursor: pointer;
     }
 
-    .btn-add-event:hover {
-        background-color: #0056b3;
+    a.button.add-event {
+        background-color: #183D64;
+        color: #fff;
+    }
+
+    a.button.add-event:hover {
+        background-color: #FCBD32;
     }
 
     .table-responsive-sm {
         overflow-x: auto;
     }
+
+    .icon {
+        font-size: 18px;
+        margin-right: 5px;
+        color: #FCBD32;
+    }
+
+    .search-bar {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .search-button {
+        background-color: #183D64;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
+    .search-button:hover {
+        background-color: #FCBD32;
+    }
 </style>
-<head>
+
+
     <title>Unique Events</title>
 </head>
+
 <body>
     <div class="container">
-        <h1>My Unique Events</h1> 
+        <h1><i class="icon uil-calendar"></i>My Unique Events</h1>
+        <!-- search bar -->
+        <form action="<?php echo URLROOT; ?>/students/viewOutsideEvents" method="POST" class="search-bar">
+            <input type="text" name="search" placeholder="Search Organization" class="search-input">
+            <button type="submit" name="submit-search" class="search-button"><i class="icon uil-search"></i>Search</button>
+            <a href="<?php echo URLROOT; ?>/students/addOutsideEvent" class="button add-event"><i class="icon uil-plus"></i>Add New Outside Event</a>
+        </form>
         <!--button to add new outside event-->
-        <a href="<?php echo URLROOT; ?>/students/addOutsideEvent" class="btn btn-add-event">Add New Outside Event</a>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -100,10 +137,10 @@
                                         <td colspan="5">You don't have any outside event.</td>
                                     </tr>
                                 <?php else : ?>
-                                    <?php foreach($data['events'] as $event) : ?>
+                                    <?php foreach ($data['events'] as $event) : ?>
                                         <tr>
                                             <td><?php echo $event->OEventName; ?></td>
-                                            <td><?php 
+                                            <td><?php
                                                 switch ($event->OEventType) {
                                                     case 1:
                                                         echo 'Workshop';
@@ -124,9 +161,9 @@
                                                         echo 'Unknown';
                                                         break;
                                                 }
-                                            ?></td>
+                                                ?></td>
                                             <td><?php echo $event->OOrganization; ?></td>
-                                            <td><?php 
+                                            <td><?php
                                                 switch ($event->approvalStatus) {
                                                     case 0:
                                                         echo 'Pending';
@@ -141,7 +178,7 @@
                                                         echo 'Unknown';
                                                         break;
                                                 }
-                                            ?></td>
+                                                ?></td>
                                             <?php if ($event->approvalStatus == 2) : ?>
                                                 <td><a href="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $event->OEventID; ?>">Update</a></td>
                                             <?php else : ?>
@@ -158,5 +195,6 @@
         </div>
     </div>
 </body>
+
 </html>
 <?php require APPROOT . '/views/includes/footer.php'; ?>

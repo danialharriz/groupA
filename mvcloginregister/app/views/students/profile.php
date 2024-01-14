@@ -9,7 +9,7 @@
     }
 
     h1 {
-        color: #fff; /* Updated heading color */
+        color: #183D64; /* Updated heading color */
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 10px;

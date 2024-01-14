@@ -16,6 +16,11 @@
         padding: 0;
     }
 
+    header {
+        top: 0;
+        position: sticky;
+    }
+
     nav {
         background-color: #333;
         color: white;
@@ -48,11 +53,14 @@
 </head>
 
 <body>
+    <header>
     <nav>
         <a href="<?php echo URLROOT; ?>/staffs/index"><i class="bi bi-house"></i> Home </a>
+        <a href="<?php echo URLROOT; ?>/staffs/all_events"><i class="bi bi-calendar3"></i>  Events</a>
         <a href="<?php echo URLROOT; ?>/staffs/profile"><i class="bi bi-person"></i>  Profile</a>
         <a href="<?php echo URLROOT; ?>/users/logout"><i class="bi bi-arrow-right-square-fill"></i>  Logout</a>
     </nav>
+    </header>
 </body>
 
 </html>

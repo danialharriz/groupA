@@ -3,72 +3,100 @@
     <head>
         <title>Upcoming Events</title>
         <style>
-            body {
-                font-family: Arial, sans-serif;
-                padding: 0;
-                background-color: #f2f2f2;
-            }
+    body {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        background-color: #f2f2f2;
+    }
 
-            .container {
-                max-width: 1200px;
-                margin: 20px auto;
-                background-color: #fff;
-                padding: 20px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
 
-            h1 {
-                text-align: center;
-                color: #333;
-            }
+    h1 {
+        text-align: center;
+        color: #183D64;
+    }
 
-            .table-container {
-                margin-top: 20px;
-                overflow-x: auto;
-            }
+    .table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-            th, td {
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
-            }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
 
-            th {
-                background-color: #f2f2f2;
-            }
+    th {
+        background-color: #7C1C2B;
+        color: #fff;
+    }
 
-            tr:hover {
-                background-color: #f5f5f5;
-            }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
 
-            .button {
-                display: inline-block;
-                padding: 8px 12px;
-                margin: 5px;
-                font-size: 14px;
-                text-align: center;
-                text-decoration: none;
-                background-color: #4caf50;
-                color: #fff;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
+    .button-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
 
-            .button:hover {
-                background-color: #45a049;
-            }
-        </style>
+    input[type="text"] {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+        flex: 1;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 5px;
+        font-size: 14px;
+        text-align: center;
+        text-decoration: none;
+        background-color: #183D64;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button:hover {
+        background-color: #FCBD32;
+    }
+
+    .icon {
+        margin-right: 5px;
+    }
+</style>
+
     </head>
     <body>
         <div class="container">
             <h1>Upcoming Events</h1>
+            <form action="<?php echo URLROOT; ?>/students/viewUpcomingEvents" method="post">
+                <div class="button-container">
+                    <input type="text" placeholder="Search by event name or organizer" name="search">
+                    <button type="submit" class="button"><i class="fas fa-search icon"></i> Search</button>
+                </div>
+            </form>
             <div class="table-container">
                 <table>
                     <tr>

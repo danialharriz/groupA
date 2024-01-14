@@ -7,25 +7,25 @@
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f1f1f1;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         .container {
             max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
+            margin: 50px auto;
+            background-color: #ffffff; /* Updated color */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
         }
 
         h1 {
             text-align: center;
             margin-bottom: 20px;
+            color: #183D64; /* Updated color */
         }
 
         .table-container {
@@ -45,7 +45,13 @@
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #7C1C2B; /* Updated background color */
+            color: #fff; /* Updated text color */
+        }
+
+        tr {
+            background-color: #ffffae;
+            color: #183D64;
         }
 
         img {
@@ -70,6 +76,10 @@
 
         input[type="submit"]:hover {
             background-color: #45a049;
+        }
+
+        .icon {
+            /* Add your icon styles here */
         }
     </style>
 </head>
@@ -131,37 +141,24 @@
                     <td><a href="<?php echo URLROOT; ?>/students/org/<?php echo $data['event']->organization->OrganizationID; ?>"><?php echo $data['event']->organization->OrganizationName; ?></a></td>
                 </tr>
                 <!-- if $data['event']->canparticipated true, show participate button, if['$data']->cancancel, show cancel participant button, if $data['event']->canfeedback true, show feedback button -->
-                <?php if ($data['event']->canparticipate == true) : ?>
-                    <tr>
-                        <td colspan="2">
-                            <form action="<?php echo URLROOT; ?>/students/participate/<?php echo $data['event']->EventID; ?>" method="post">
-                                <input type="submit" value="Participate">
-                            </form>
-                        </td>
-                    </tr>
-                <?php elseif ($data['event']->cancancel == true) : ?>
-                    <tr>
-                        <td colspan="2">
-                            <form action="<?php echo URLROOT; ?>/students/cancel_participation/<?php echo $data['event']->participant_id; ?>" method="post">
-                                <input type="submit" value="Cancel Participant">
-                            </form>
-                        </td>
-                    </tr>
-                <?php elseif ($data['event']->canfeedback == true) : ?>
-                    <tr>
-                        <td colspan="2">
-                        <form action="<?php echo URLROOT; ?>/students/feedback/<?php echo $data['event']->participant_id; ?>" method="get">
-                            <input type="submit" value="Feedback">
-                        </form>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-                <?php if ($data['event']->canparticipate == false && $data['event']->cancancel == false && $data['event']->canfeedback == false) : ?>
-                    <tr>
-                        <td colspan="2">Unavailable</td>
-                    </tr>
-                <?php endif; ?>
+                
             </table>
+            <?php if ($data['event']->canparticipate == true) : ?>
+                        <form action="<?php echo URLROOT; ?>/students/participate/<?php echo $data['event']->EventID; ?>" method="post">
+                            <input type="submit" value="Participate">
+                        </form>
+            <?php elseif ($data['event']->cancancel == true) : ?>
+                        <form action="<?php echo URLROOT; ?>/students/cancel_participation/<?php echo $data['event']->participant_id; ?>" method="post">
+                            <input type="submit" value="Cancel Participant">
+                        </form>
+            <?php elseif ($data['event']->canfeedback == true) : ?>
+                    <form action="<?php echo URLROOT; ?>/students/feedback/<?php echo $data['event']->participant_id; ?>" method="get">
+                        <input type="submit" value="Feedback">
+                    </form>
+            <?php endif; ?>
+            <?php if ($data['event']->canparticipate == false && $data['event']->cancancel == false && $data['event']->canfeedback == false) : ?>
+                <p>Unavalable</p>
+            <?php endif; ?>
         </div>
     </div>
 </body>

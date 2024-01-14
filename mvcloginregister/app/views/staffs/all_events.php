@@ -1,103 +1,153 @@
-<?php require APPROOT . '/views/staffs/nav.php' ?>
+<?php require APPROOT . '/views/staffs/nav.php'; ?>
 <html>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
-        }
+<style>
+    .container {
+        width: 80%;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+    }
 
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    h1 {
+        text-align: center;
+        color: #FCBD32;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+    .button-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        .button {
-            background-color: #4caf50;
-            color: #fff;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
+    .button {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
 
-        .button.edit {
-            background-color: #2196f3;
-        }
+    .button.edit {
+        background-color: #007bff;
+        color: #fff;
+    }
 
-        .button.delete {
-            background-color: #f44336;
-        }
+    .button.edit:hover {
+        background-color: #0056b3;
+    }
 
-        .button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+    .button.delete {
+        color: #ff8080;
+    }
 
-        .table-container {
-            margin-top: 20px;
-        }
+    .button.delete:hover {
+        background-color: #EE2E2E;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
+    button.add {
+        background-color: #239B56;
+        color: #fff;
+    }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
+    button.add:hover {
+        background-color: #9FE2BF;
+    }
 
-        th {
-            background-color: #f2f2f2;
-        }
+    .table-container {
+        margin-top: 20px;
+    }
 
-        /* Optional: Add some styling for better readability */
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-        tr:hover {
-            background-color: #e5e5e5;
-        }
-    </style>
-    <head>
-        <title>Events</title>
-        <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/all_events.css">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Events</h1>
-            <!--add event button-->
-            <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/create_event'">Add New Event</button>
-            <div class="table-container">
-                <table>
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #183D64;
+        color: #FCBD32;
+    }
+
+    /* Optional: Add some styling for better readability */
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #e5e5e5;
+    }
+
+    /* Edit and Delete button styling */
+    .button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* Icons styling */
+    .icon {
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+    .icon-edit {
+        color: #007bff;
+    }
+
+    .icon-delete {
+        color: #EE2E2E;
+    }
+</style>
+
+<head>
+    <title>Events</title>
+    <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Events</h1>
+        <!-- Search bar -->
+        <form action="<?php echo URLROOT; ?>/staffs/all_events" method="POST">
+            <div class="button-container">
+                <input type="text" placeholder="Search by event name or organizer" name="search">
+                <button type="submit" class="button"><i class="fas fa-search icon"></i> Search</button>
+                <a href="<?php echo URLROOT; ?>/staffs
+            /create_event"><button type="button" class="button add"><i class="fas fa-plus icon"></i> Add Event</button></a>
+            </div>
+        </form>
+
+        <!-- Add event button -->
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Type</th>
+                    <th>Event Start</th>
+                    <th>Event End</th>
+                    <th>Location</th>
+                    <th>Organizer</th>
+                    <th>Participants</th>
+                    <th>Feedbacks</th>
+                    <th>Actions</th>
+                </tr>
+                <?php if (empty($data['events'])) : ?>
                     <tr>
-                        <th>Event Name</th>
-                        <th>Type</th>
-                        <th>Event Start</th>
-                        <th>Event End</th>
-                        <th>Location</th>
-                        <th>Participants</th>
-                        <th>Feedbacks</th>
-                        <th>Actions</th>
+                        <td colspan="9">No events available</td>
                     </tr>
-                    <?php foreach($data['events'] as $event) : ?>
+                <?php else : ?>
+                    <?php foreach ($data['events'] as $event) : ?>
                         <tr>
                             <td><?php echo $event->EventName; ?></td>
-                            <td><?php 
+                            <td><?php
                                 if ($event->EventType == 1) {
                                     echo 'Workshop';
                                 } elseif ($event->EventType == 2) {
@@ -111,30 +161,33 @@
                                 } else {
                                     echo 'Unknown';
                                 }
-                            ?></td>
+                                ?></td>
                             <td><?php echo $event->StartDateAndTime; ?></td>
                             <td><?php echo $event->EndDateAndTime; ?></td>
                             <td><?php echo $event->Location; ?></td>
+                            <td><a href="<?php echo URLROOT; ?>/staffs/org/<?php echo $event->Organization->OrganizationID; ?>"><?php echo $event->Organization->OrganizationName; ?></a></td>
                             <td>
-                                <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/show_participants/<?php echo $event->EventID; ?>'">Show Participants</button>
+                                <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/show_participants/<?php echo $event->EventID; ?>'"><i class="fas fa-users icon"></i> Participants</button>
                             </td>
                             <td>
                                 <?php if ($event->EndDateAndTime < date('Y-m-d H:i:s')) : ?>
-                                    <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/feedback/<?php echo $event->EventID; ?>'">Show Feedbacks</button>
+                                    <button class="button" onclick="location.href='<?php echo URLROOT; ?>/staffs/feedback/<?php echo $event->EventID; ?>'"><i class="fas fa-comment-alt-lines icon"></i> Feedbacks</button>
                                 <?php else : ?>
-                                    <button class="button" disabled>Unavailable</button>
+                                    <button class="button" disabled><i class="fas fa-lock-alt icon"></i> Unavailable</button>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button class="button edit" onclick="location.href='<?php echo URLROOT; ?>/staffs/update_event/<?php echo $event->EventID; ?>'">View</button>
-                                <!--confirmation box for delete-->
-                                <button class="button delete" onclick="if (confirm('Are you sure you want to delete this event?')) location.href='<?php echo URLROOT; ?>/staffs/delete_event/<?php echo $event->EventID; ?>'">Delete</button>
+                                <button class="button edit" onclick="location.href='<?php echo URLROOT; ?>/staffs/update_event/<?php echo $event->EventID; ?>'"><i class="fas fa-edit"></i> </button>
+                                <button class="button delete" onclick="if (confirm('Are you sure you want to delete this event?')) location.href='<?php echo URLROOT; ?>/staffs
+                            /delete_event/<?php echo $event->EventID; ?>'"><i class="fas fa-trash-alt"></i> </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                </table>
-            </div>
+                <?php endif; ?>
+            </table>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
 <?php require APPROOT . '/views/includes/footer.php'; ?>

@@ -10,10 +10,25 @@
 
     h1 {
         text-align: center;
-        background-color: #007bff;
-        color: #ffffff;
+        background-color: #7C1C2B;
+        color: #fff;
         padding: 20px;
         margin-bottom: 20px;
+    }
+
+    .icon {
+        font-size: 20px;
+        margin-right: 5px;
+    }
+
+    .container16 {
+        width: 70%;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     table {
@@ -59,11 +74,27 @@
     a:hover {
         text-decoration: underline;
     }
+
+    button {
+        background-color: #7C1C2B;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    .button-container {
+        text-align: center;
+    }
 </style>
 <head>
     <title>View Outside Event</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 </head>
 <body>
+    <div class = "container16">
     <h1>View Outside Event</h1>
     <table>
         <tr>
@@ -122,15 +153,18 @@
     </table>
     <!-- if event is rejected, show update button -->
     <?php if ($data['event']->approvalStatus == 2) : ?>
-        <form action="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $data['event']->OEventID; ?>" method="get">
-            <input type="submit" value="Update">
+            <form action="<?php echo URLROOT; ?>/students/updateOutsideEvent/<?php echo $data['event']->OEventID; ?>" method="get">
+                <i class="icon fas fa-edit"></i><input type="submit" value="Update">
+            </form>
+        <?php endif; ?>
+        <!-- delete button -->
+        <form action="<?php echo URLROOT; ?>/students/deleteOutsideEvent/<?php echo $data['event']->OEventID; ?>" method="post">
+            <i class="icon fas fa-trash-alt"></i><input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this event?');">
         </form>
-    <?php endif; ?>
-    <!--delete button-->
-    <form action="<?php echo URLROOT; ?>/students/deleteOutsideEvent/<?php echo $data['event']->OEventID; ?>" method="post">
-        <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this event?');">
-    </form>
-    <a href="<?php echo URLROOT; ?>/students/viewAllOutsideEvents">Back</a>
+        <div class = "button-container">
+        <button onclick="window.location.href='<?php echo URLROOT; ?>/students/viewOutsideEvents'"><i class="icon fas fa-arrow-left"></i> Back</button>
+    </div>
+    </div>
 </body>
 </html>
 <?php require APPROOT . '/views/includes/footer.php'; ?>
