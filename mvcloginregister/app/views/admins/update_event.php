@@ -14,7 +14,7 @@
         }
 
         .container {
-            background-color: #FFFFFF;
+            background-color: #FCBD32;
             padding: 20px;
             max-width: 600px;
             margin: 50px auto;
@@ -49,7 +49,8 @@
             margin-bottom: 25px;
         }
 
-        .registerbtn, .button {
+        .registerbtn,
+        .button {
             display: inline-block;
             width: 49%;
             padding: 16px 20px;
@@ -62,7 +63,8 @@
             font-size: 16px;
         }
 
-        .registerbtn:hover, .button:hover {
+        .registerbtn:hover,
+        .button:hover {
             opacity: 1;
         }
 
@@ -72,7 +74,7 @@
         }
 
         .button {
-            background-color: #f1f1f1;
+            background-color: #7C1C2B;
             border: 1px solid #ddd;
         }
 
@@ -174,10 +176,11 @@
                     <option value="5" <?php echo ($data['eventType'] == 5) ? 'selected' : ''; ?>>Other</option>
                 </select>
                 <span style="color:red;"><?php echo $data['event_type_err']; ?></span>
-                <button type="submit" class="registerbtn">Update</button>
-                <!-- back button -->
-                <a href="<?php echo URLROOT; ?>/admins/all_events" class="button">Back</a>
+                <button type="submit" class="registerbtn"><i class="bi bi-check"></i> Update</button>
+                <!-- Back button -->
+                <a href="<?php echo URLROOT; ?>/admins/all_events" class="button"><i class="bi bi-arrow-left"></i> Back</a>
             </form>
         </div>
     </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>

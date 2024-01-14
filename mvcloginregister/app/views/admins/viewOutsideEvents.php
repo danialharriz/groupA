@@ -1,9 +1,10 @@
 <?php require APPROOT . '/views/admins/nav.php'; ?>
 <html>
-    <head>
-        <title>View Outside Events</title>
-        <style>
-            body {
+
+<head>
+    <title>View Outside Events</title>
+    <style>
+                    body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
                 margin: 0;
@@ -41,7 +42,8 @@
             }
 
             th {
-                background-color: #f2f2f2;
+                background-color: #7C1C2B;
+                color: #fff;
             }
 
             tr:hover {
@@ -73,33 +75,35 @@
             .button.delete:hover {
                 background-color: #d32f2f;
             }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>View Outside Events</h1>
-            <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
-            <div class="table-container">
-                <table>
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>View Outside Events</h1>
+        <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Event Name</th>
+                    <th>End Date and Time</th>
+                    <th>Location</th>
+                    <th>Event Type</th>
+                    <th>Organizer</th>
+                    <th>Actions</th>
+                </tr>
+                <?php if (empty($data['outsideEvents'])) : ?>
                     <tr>
-                        <th>Event Name</th>
-                        <th>End Date and Time</th>
-                        <th>Location</th>
-                        <th>Event Type</th>
-                        <th>Organizer</th>
-                        <th>Actions</th>
+                        <td colspan="6">No pending outside events.</td>
                     </tr>
-                    <?php if (empty($data['outsideEvents'])) : ?>
+                <?php else : ?>
+                    <?php foreach($data['outsideEvents'] as $outsideEvent) : ?>
                         <tr>
-                            <td colspan="6">No pending outside events.</td>
-                        </tr>
-                    <?php else : ?>
-                        <?php foreach($data['outsideEvents'] as $outsideEvent) : ?>
-                            <tr>
-                                <td><?php echo $outsideEvent->OEventName; ?></td>
-                                <td><?php echo $outsideEvent->OEndDateAndTime; ?></td>
-                                <td><?php echo $outsideEvent->OLocation; ?></td>
-                                <td><?php if($outsideEvent->OEventType == 1) {
+                            <td><?php echo $outsideEvent->OEventName; ?></td>
+                            <td><?php echo $outsideEvent->OEndDateAndTime; ?></td>
+                            <td><?php echo $outsideEvent->OLocation; ?></td>
+                            <td><?php 
+                                if($outsideEvent->OEventType == 1) {
                                     echo "Workshop";
                                 } else if($outsideEvent->OEventType == 2) {
                                     echo "Seminar";
@@ -110,17 +114,20 @@
                                 } else if($outsideEvent->OEventType == 5) {
                                     echo "Others";
                                 }
-                                ?></td>
-                                <td><?php echo $outsideEvent->OOrganization; ?></td>
-                                <td>
-                                    <!-- view button -->
-                                    <a href="<?php echo URLROOT; ?>/admins/view_outside_event/<?php echo $outsideEvent->OEventID; ?>" class="button">View</a>    
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </table>
-            </div>
+                            ?></td>
+                            <td><?php echo $outsideEvent->OOrganization; ?></td>
+                            <td>
+                                <!-- View button with link icon -->
+                                <a href="<?php echo URLROOT; ?>/admins/view_outside_event/<?php echo $outsideEvent->OEventID; ?>" class="button"><i class="bi bi-link"></i> View</a>    
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </table>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
+
+<?php require APPROOT . '/views/includes/footer.php'; ?>

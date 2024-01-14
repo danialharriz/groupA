@@ -1,69 +1,98 @@
 <?php require APPROOT . '/views/admins/nav.php'; ?>
 <html>
-<style>
-    /* editOrganization.css */
-
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f2f2f2;
-    }
-
-    .container {
-        width: 60%;
-        margin: 50px auto;
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-
-    form {
-        width: 80%;
-        margin: 0 auto;
-    }
-
-    label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-
-    input[type="submit"] {
-        background-color: #4caf50;
-        color: #fff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-    /* Optional: Add some styling for better readability */
-    select {
-        padding: 8px;
-    }
-</style>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Organization</title>
     <link rel="icon" href="<?php echo URLROOT ?>/public/img/logos/YVLogo.png" type="image/png">
+    <!-- Adding Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admins/editOrganization.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #183D64;
+        }
+
+        form {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #FCBD32;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; /* Align the icon and text vertically */
+            justify-content: center; /* Center the content horizontally */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #FCB417;
+        }
+
+        /* Optional: Add some styling for better readability */
+        select {
+            padding: 8px;
+        }
+
+        /* Style for the back button */
+        button {
+            background-color: #7C1C2B;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; /* Align the icon and text vertically */
+            justify-content: center; /* Center the content horizontally */
+            margin: 0 auto; /* Add this line to center the button */
+            margin-top: 10px; /* Add some space between submit button and back button */
+        }
+
+        button:hover {
+            background-color: #630E25;
+        }
+
+        /* Style for icons */
+        i {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -96,8 +125,12 @@
             <input type="text" name="emailending" value="<?php echo $data['organization']->emailending; ?>">
             <br>
             <br>
+            <!-- Adding the icon to the submit button -->
             <input type="submit" value="Update Organization">
         </form>
+        <!-- back button -->
+        <button onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Back</button>
     </div>
 </body>
 </html>
+<?php require APPROOT . '/views/includes/footer.php'; ?>
