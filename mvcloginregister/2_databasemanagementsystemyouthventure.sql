@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 11, 2024 at 07:32 PM
+-- Generation Time: Jan 14, 2024 at 10:26 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -76,7 +76,11 @@ CREATE TABLE `event` (
 INSERT INTO `event` (`EventID`, `EventName`, `Description`, `MaxParticipants`, `Deadline`, `StartDateAndTime`, `EndDateAndTime`, `Location`, `EventType`, `RewardPoints`, `OrganizationID`, `Picture`) VALUES
 ('E00001', 'PERMAS Induction 6.0', 'Permas', 20, '2024-01-15 08:00:00', '2024-01-18 08:00:00', '2024-01-19 08:00:00', 'UTM', 1, 10, 'O00001', NULL),
 ('E00002', 'YTM Event', 'YTM Scholars', 50, '2024-01-15 21:00:00', '2024-01-20 08:00:00', '2024-01-21 08:00:00', 'UTM', 1, 10, 'O00006', NULL),
-('E00003', 'Programming Workshop 2.0', 'C++, JAVA', 35, '2024-01-15 21:45:00', '2024-01-25 08:00:00', '2024-01-27 13:00:00', 'Faculty of Computing, N28a', 1, 30, 'O00006', NULL);
+('E00003', 'Programming Workshop 2.0', 'C++, JAVA', 35, '2024-01-15 21:45:00', '2024-01-25 08:00:00', '2024-01-27 13:00:00', 'Faculty of Computing, N28a', 1, 30, 'O00006', NULL),
+('E00004', 'Kem Jati Diri', '123', 30, '2024-01-20 08:00:00', '2024-01-26 08:00:00', '2024-01-27 08:00:00', 'UTM', 4, 40, 'O00006', NULL),
+('E00005', 'Mental Health Awareness', 'Mental Health Matters', 20, '2024-01-16 23:59:00', '2024-01-20 08:00:00', '2024-01-20 21:00:00', 'UTM', 2, 20, 'O00001', NULL),
+('E00006', 'OPERA 2024&#39;', 'SUKAN', 1, '2024-01-19 23:59:00', '2024-01-13 08:00:00', '2024-01-13 22:00:00', 'KTDI', 4, 40, 'O00001', NULL),
+('E00007', 'SUSKOM24&#39;', 'Sukan Sains Komputer', 2, '2024-01-19 11:59:00', '2024-01-20 08:00:00', '2024-01-21 23:59:00', 'KTF', 4, 80, 'O00001', NULL);
 
 -- --------------------------------------------------------
 
@@ -97,6 +101,13 @@ CREATE TABLE `eventoutside` (
   `studentID` varchar(6) NOT NULL,
   `reference` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `eventoutside`
+--
+
+INSERT INTO `eventoutside` (`OEventID`, `OEventName`, `ODescription`, `OStartDateAndTime`, `OEndDateAndTime`, `OLocation`, `OEventType`, `OOrganization`, `approvalStatus`, `studentID`, `reference`) VALUES
+('OE0001', 'CYEBRLYMPICS 23&#39;', 'A crew member for the event', '2023-12-01 08:00:00', '2023-12-04 10:00:00', 'Faculty of Computing, N28a', 4, 'Universiti Teknologi Malaysia', 0, 'S0002', 'www.utm.my');
 
 -- --------------------------------------------------------
 
@@ -161,7 +172,8 @@ CREATE TABLE `participant` (
 --
 
 INSERT INTO `participant` (`ParticipantID`, `StudentID`, `EventID`) VALUES
-('P00001', 'S0001', 'E00002');
+('P00001', 'S0001', 'E00002'),
+('P00002', 'S0002', 'E00006');
 
 -- --------------------------------------------------------
 
@@ -183,7 +195,8 @@ CREATE TABLE `resume` (
 --
 
 INSERT INTO `resume` (`ResumeID`, `StudentID`, `education`, `experience`, `skills`, `additional`) VALUES
-('R0001', 'S0001', NULL, NULL, NULL, NULL);
+('R0001', 'S0001', NULL, NULL, NULL, NULL),
+('R0002', 'S0002', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -203,9 +216,9 @@ CREATE TABLE `reward` (
 
 INSERT INTO `reward` (`RewardID`, `RewardName`, `RewardPoints`) VALUES
 ('R00001', 'Welcome!', 0),
-('R00002', 'Novice User', 100),
 ('R00003', 'Intermediate User', 250),
-('R00004', 'Expert User', 500);
+('R00004', 'Expert User', 500),
+('R00005', 'Novice User', 20);
 
 -- --------------------------------------------------------
 
@@ -228,7 +241,12 @@ CREATE TABLE `staff` (
 INSERT INTO `staff` (`StaffID`, `UserID`, `OrganizationID`, `JobTitle`, `validated`) VALUES
 ('S0001', 'U0001', 'O00001', 'Developer', 1),
 ('S0002', 'U0003', 'O00006', 'Normal Staff', 1),
-('S0003', 'U0004', 'O00007', 'Normal Staff', 1);
+('S0003', 'U0004', 'O00007', 'Normal Staff', 1),
+('S0004', 'U0005', 'O00007', 'Staff', 3),
+('S0005', 'U0006', 'O00006', 'Staf', 3),
+('S0006', 'U0007', 'O00006', 'Staff', 3),
+('S0007', 'U0008', 'O00007', 'Staff', 3),
+('S0008', 'U0009', 'O00001', 'Staff', 3);
 
 -- --------------------------------------------------------
 
@@ -251,7 +269,8 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`StudentID`, `UserID`, `OrganizationID`, `CourseID`, `Address`, `Gender`, `DateOfBirth`) VALUES
-('S0001', 'U0002', 'O00002', 'Course1', 'Taman Nelly 8', 'M', '2003-10-27');
+('S0001', 'U0002', 'O00002', 'Course1', 'Taman Nelly 8', 'F', '2003-10-27'),
+('S0002', 'U0010', 'O00002', 'Bachelor of Computer Science (Data Engineering) wi', 'Sepanggar', 'M', '2003-12-31');
 
 -- --------------------------------------------------------
 
@@ -274,10 +293,16 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserID`, `Name`, `Phone`, `Email`, `Password`, `Role`, `profilePic`) VALUES
-('U0001', 'SuperAdmin', '', 'admin@youthventure.com', '$2y$10$h2kFsbzhHm6frT8doftx5ORWwnYEw9YW47k0iN/e69GVml6diC3hm', '3', ''),
-('U0002', 'Danial Harriz', '', 'danial@gmail.com', '$2y$10$OXFylHff/4rvnTzTWCUmL.idXKSGFa5Z3DWUJ3Hr/7MCu4k2Goc8C', '2', ''),
-('U0003', 'Aiman Misah', '', 'aiman@tm.com', '$2y$10$g6ygzByoUGImfUaMqc6XYONJqS.CkZOGlPWFbHmzu1vfu1bhsTISG', '1', ''),
-('U0004', 'Awel Alex', '', 'awel@huawei.com', '$2y$10$fDbHTb3SXioNQBLtptp05ennwefMcs5p75QYnET6yoZbTIOrovieG', '1', '');
+('U0001', 'SuperAdmin', '', 'admin@youthventure.com', '$2y$10$h2kFsbzhHm6frT8doftx5ORWwnYEw9YW47k0iN/e69GVml6diC3hm', '3', 'profile_pictures/Chicken-Satay.jpeg'),
+('U0002', 'Danial Harriz', '01137737139', 'danial@gmail.com', '$2y$10$OXFylHff/4rvnTzTWCUmL.idXKSGFa5Z3DWUJ3Hr/7MCu4k2Goc8C', '2', ''),
+('U0003', 'Aiman Misah', '011567899', 'aiman@tm.com', '$2y$10$g6ygzByoUGImfUaMqc6XYONJqS.CkZOGlPWFbHmzu1vfu1bhsTISG', '1', 'profile_pictures/Screenshot 2024-01-09 094338.png'),
+('U0004', 'Awel Alex', '', 'awel@huawei.com', '$2y$10$fDbHTb3SXioNQBLtptp05ennwefMcs5p75QYnET6yoZbTIOrovieG', '1', ''),
+('U0005', 'Akhmal Youness', '', 'akhmal@gmail.com', '$2y$10$ihFC05gdeTawexQVxji94.toKXO7daW5aSg4nIqALYjKqqE2eKhW2', '', ''),
+('U0006', 'Andryshon Solumin', '', 'andry@gmail.com', '$2y$10$imZoYhkUhrgIBoUFY5/Rg.kuZ3MEDnMnU7XFC4cH12P3S.uRXrqcO', '', ''),
+('U0007', 'Aidan Andrew', '', 'aidan@gmail.com', '$2y$10$oubS2IsFxhmFiOV5dot9GOLeW5imCa8UMOtmuEriDE5nqmSo/b5eW', '', ''),
+('U0008', 'Ian Wayne Gipit', '', 'wayne@gmail.com', '$2y$10$B8dT6lpCW3IWjaMRivtTO.O9mjj9dCYZcpxbBJ228Onyg2LUcvpBi', '', ''),
+('U0009', 'Jaimie Brillian', '', 'ian@gmail.com', '$2y$10$Z74YPZcd6mr8sNP5JuVm9OrApLPwKVcfuX8quhzrlgASzQXJ3QvcW', '', ''),
+('U0010', 'Napoleon Lo', '', 'napo@gmail.com', '$2y$10$Gc3UiFIe7TlOadXX3fV2KuSm14HSb1DzGWTHflZkt6n8ScuvWu1le', '2', 'event_pictures/Screenshot 2024-01-09 094338.png');
 
 --
 -- Indexes for dumped tables

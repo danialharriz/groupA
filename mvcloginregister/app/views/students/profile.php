@@ -2,7 +2,6 @@
 <html>
 <style>
     body {
-        font-family: Arial, sans-serif;
         background-color: #183D64; /* Updated background color */
         margin: 20px;
         color: #fff; /* Updated text color */
@@ -38,7 +37,7 @@
     input[type="text"],
     input[type="date"],
     input[type="radio"] {
-        width: 100%;
+        width: 90%;
         padding: 10px;
         margin-bottom: 15px;
         border: 1px solid #ccc;
@@ -84,7 +83,6 @@
 
     .upload {
         width: 125px;
-        position: relative;
         margin: auto;
         align-items: center;
     }
@@ -123,6 +121,9 @@
     .container14 {
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        text-align: center;
+        margin : 20px auto;
     }
 
     /* Updated button styling */
@@ -161,7 +162,6 @@
 </style>
 <head>
     <title>Profile</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/profile.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/bootstrap.min.css">
     <script src="<?php echo URLROOT; ?>/js/jquery-3.5.1.min.js"></script>

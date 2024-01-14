@@ -2,7 +2,6 @@
 <html>
     <style>
     body {
-        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
         background-color: #f2f2f2;
@@ -13,6 +12,7 @@
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin: 20px auto;
+        overflow: auto;
     }
 
     h1 {
@@ -111,13 +111,15 @@
     }
     
     .card {
-        width: 300px;
         border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        margin: 10px;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position:static;
+            
+        
     }
 
     .card h3 {
@@ -134,6 +136,7 @@
     i {
         margin-right: 5px;
     }
+
     </style>
     <head>
         <title>Events</title>
